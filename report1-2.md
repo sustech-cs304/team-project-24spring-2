@@ -89,8 +89,8 @@
     Container application that provide easy deployment.
   - **Alipay Sandbox**
     Virtual paying service for developers.
-- **Project Architechture**
-  According to our target users, distributed architecture seems overengineering hence we choose monolithic and layered architechture.
+- **Project Architecture**
+  According to our target users, distributed architecture seems overengineering hence we choose monolithic and layered architecture.
   ![image3](./proposal_image3.png)
 
 ## 3 Task Decomposition & Planning
