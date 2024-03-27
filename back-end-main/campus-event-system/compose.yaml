@@ -1,0 +1,11 @@
+services:
+  postgres:
+    image: 'postgres:14'
+    environment:
+      - 'POSTGRES_DB=campus-event-system'
+      - 'POSTGRES_PASSWORD=campus'
+      - 'POSTGRES_USER=admin'
+    ports:
+      - '15432:5432'
+    volumes:
+      - './pgData:/var/lib/postgresql/data'
