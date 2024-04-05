@@ -81,16 +81,33 @@ export default {
         </a-menu-item>
       </a-sub-menu>
     </a-menu>
+    <div class="white-box">
+      <router-view/>
+    </div>
   </div>
 </template>
 
 <style scoped>
 .menu-demo {
+  display: flex; /* 添加Flexbox布局 */
   box-sizing: border-box;
-  width: 100%;
-  height: calc(100% - 50px);
+  height: calc(100% - 52px);
   padding: 0;
   background-color: var(--color-neutral-2);
+}
+.white-box {
+  border: 1px solid #e1e1e1; /* 淡色边框比纯白色更可见 */
+  background-color: #FFFFFF;
+  flex-grow: 1;
+  margin: 0.1%;
+  padding: 20px; /* 添加一些内边距 */
+  //border-radius: 10px; /* 圆角边框 */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* 轻微的阴影效果 */
+  transition: box-shadow 0.3s ease; /* 鼠标悬停时阴影效果的平滑过渡 */
+}
+
+.white-box:hover {
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* 鼠标悬停时增加阴影 */
 }
 
 </style>
