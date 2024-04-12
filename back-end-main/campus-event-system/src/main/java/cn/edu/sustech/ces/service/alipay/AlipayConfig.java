@@ -20,7 +20,7 @@ public class AlipayConfig {
     private String alipayNotifyUrl;
 
     private final String format="json";
-    private final String charset="utf-8";
+    private final String charset="UTF-8";
     private final String signType="RSA2";
 
 }

@@ -1,6 +1,9 @@
 package cn.edu.sustech.ces.entity;
 
 
+import cn.edu.sustech.ces.enums.OrderStatus;
+import cn.edu.sustech.ces.enums.PurchaseMethod;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -33,5 +36,12 @@ public class Order {
 
     @Enumerated(EnumType.ORDINAL)
     private OrderStatus status;
+
+    @Enumerated(EnumType.ORDINAL)
+    private PurchaseMethod purchaseMethod;
+
+    private long purchaseFinishTime;
+
+    private long purchaseCreateTime;
 
 }

@@ -1,7 +1,7 @@
 package cn.edu.sustech.ces.service;
 
 import cn.edu.sustech.ces.entity.Order;
-import cn.edu.sustech.ces.entity.OrderStatus;
+import cn.edu.sustech.ces.enums.OrderStatus;
 import cn.edu.sustech.ces.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +27,10 @@ public class OrderService {
         order.setStatus(OrderStatus.UNPAID);
         orderRepository.save(order);
         return order;
+    }
+
+    public void updateOrder(Order order) {
+        orderRepository.save(order);
     }
 
     public Order getOrder(UUID orderId) {
