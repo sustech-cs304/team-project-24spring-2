@@ -8,47 +8,47 @@
   >
     <a-form-item
       field="activityName"
-      :label="$t('stepForm.form.label.activityName')"
+      :label="$t('activity.form.label.activityName')"
       :rules="[
         {
           required: true,
-          message: $t('stepForm.form.error.activityName.required'),
+          message: $t('activity.form.error.activityName.required'),
         },
         {
           match: /^[a-zA-Z0-9\u4e00-\u9fa5]{1,20}$/,
-          message: $t('stepForm.form.error.activityName.pattern'),
+          message: $t('activity.form.error.activityName.pattern'),
         },
       ]"
     >
       <a-input
         v-model="formData.activityName"
-        :placeholder="$t('stepForm.placeholder.activityName')"
+        :placeholder="$t('activity.placeholder.activityName')"
       />
     </a-form-item>
     <a-form-item
       field="channelType"
-      :label="$t('stepForm.form.label.channelType')"
+      :label="$t('activity.form.label.channelType')"
       :rules="[
         {
           required: true,
-          message: $t('stepForm.form.error.channelType.required'),
+          message: $t('activity.form.error.channelType.required'),
         },
       ]"
     >
       <a-select
         v-model="formData.channelType"
-        :placeholder="$t('stepForm.placeholder.channelType')"
+        :placeholder="$t('activity.placeholder.channelType')"
       >
         <a-option>APP通用渠道</a-option>
       </a-select>
     </a-form-item>
     <a-form-item
       field="promotionTime"
-      :label="$t('stepForm.form.label.promotionTime')"
+      :label="$t('activity.form.label.promotionTime')"
       :rules="[
         {
           required: true,
-          message: $t('stepForm.form.error.promotionTime.required'),
+          message: $t('activity.form.error.promotionTime.required'),
         },
       ]"
     >
@@ -56,30 +56,30 @@
     </a-form-item>
     <a-form-item
       field="promoteLink"
-      :label="$t('stepForm.form.label.promoteLink')"
+      :label="$t('activity.form.label.promoteLink')"
       :rules="[
         {
           required: true,
-          message: $t('stepForm.form.error.promoteLink.required'),
+          message: $t('activity.form.error.promoteLink.required'),
         },
         {
           type: 'url',
-          message: $t('stepForm.form.error.promoteLink.pattern'),
+          message: $t('activity.form.error.promoteLink.pattern'),
         },
       ]"
       row-class="keep-margin"
     >
       <a-input
         v-model="formData.promoteLink"
-        :placeholder="$t('stepForm.placeholder.promoteLink')"
+        :placeholder="$t('activity.placeholder.promoteLink')"
       />
       <template #help>
-        <span>{{ $t('stepForm.form.tip.promoteLink') }}</span>
+        <span>{{ $t('activity.form.tip.promoteLink') }}</span>
       </template>
     </a-form-item>
     <a-form-item>
       <a-button type="primary" @click="onNextClick">
-        {{ $t('stepForm.button.next') }}
+        {{ $t('activity.button.next') }}
       </a-button>
     </a-form-item>
   </a-form>

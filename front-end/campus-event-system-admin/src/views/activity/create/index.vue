@@ -43,7 +43,6 @@
     AdvanceInfoModel,
     UnitChannelModel,
   } from '@/api/activity';
-
   import BaseInfo from './components/base-info.vue';
   import ChannelInfo from './components/advance-info.vue';
   import Success from './components/success.vue';

@@ -102,7 +102,7 @@
       <a-row style="margin-bottom: 16px">
         <a-col :span="12">
           <a-space>
-            <a-button type="primary">
+            <a-button type="primary" @click=create>
               <template #icon>
                 <icon-plus />
               </template>
@@ -246,6 +246,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { useRoute, useRouter, RouteRecordRaw } from 'vue-router';
   import { computed, ref, reactive, watch, nextTick } from 'vue';
   import { useI18n } from 'vue-i18n';
   import useLoading from '@/hooks/loading';
@@ -259,6 +260,7 @@
   type SizeProps = 'mini' | 'small' | 'medium' | 'large';
   type Column = TableColumnData & { checked?: true };
 
+  const router = useRouter();
   const generateFormModel = () => {
     return {
       number: '',
@@ -398,6 +400,13 @@
       ...formModel.value,
     } as unknown as PolicyParams);
   };
+
+  const create = () => {
+    // openWindow('/activity/create');
+    router.push('/activity/create');
+  };
+
+
   const onPageChange = (current: number) => {
     fetchData({ ...basePagination, current });
   };
@@ -472,6 +481,7 @@
     },
     { deep: true, immediate: true }
   );
+
 </script>
 
 <script lang="ts">
