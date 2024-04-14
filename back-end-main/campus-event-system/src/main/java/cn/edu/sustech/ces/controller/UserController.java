@@ -21,16 +21,15 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/user-id")
-    public User getUserById(Integer id) {
+    public User getUserById(UUID id) {
         return userService.getUserById(id);
     }
 
     @GetMapping("/create-user")
     public String createUser(
-        @RequestParam Integer id,
         @RequestParam String name,
         @RequestParam String email) {
-        User user = new User(id, name, email);
+        User user = new User(name, email);
         user = userRepository.save(user);
         return "User created with ID: " + user.getId();
     }

@@ -9,7 +9,7 @@ import java.util.UUID;
 @Getter
 public class EventDTO {
     private String title;
-    private Integer publisherId;
+    private UUID publisherId;
     private ZonedDateTime publishTime;
     private ZonedDateTime startTime;
     private ZonedDateTime endTime;

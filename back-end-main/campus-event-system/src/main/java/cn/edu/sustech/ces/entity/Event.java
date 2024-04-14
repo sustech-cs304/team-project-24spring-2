@@ -18,14 +18,14 @@ public class Event {
     @UuidGenerator
     private UUID id;
     private String title;
-    private Integer publisher;
+    private UUID publisher;
     private ZonedDateTime publishTime, startTime, endTime;
     private String description;
     private UUID location;
     private Integer availableCapacity;
     private Integer currentCapacity;
 
-    public Event(String title, Integer publisher, ZonedDateTime publishTime, ZonedDateTime startTime, ZonedDateTime endTime, String description, UUID location, Integer availableCapacity, Integer currentCapacity) {
+    public Event(String title, UUID publisher, ZonedDateTime publishTime, ZonedDateTime startTime, ZonedDateTime endTime, String description, UUID location, Integer availableCapacity, Integer currentCapacity) {
         this.title = title;
         this.publisher = publisher;
         this.publishTime = publishTime;

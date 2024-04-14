@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS "events"
 (
     id UUID PRIMARY KEY,
     title VARCHAR(255),
-    publisher INTEGER,
+    publisher UUID,
     publish_time TIMESTAMPTZ,
     start_time TIMESTAMPTZ,
     end_time TIMESTAMPTZ,
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS "events"
 );
 CREATE TABLE IF NOT EXISTS "users"
 (
-    id int PRIMARY KEY,
+    id UUID PRIMARY KEY,
     username VARCHAR(255),
     email VARCHAR(255)
 );
