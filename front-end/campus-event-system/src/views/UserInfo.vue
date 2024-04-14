@@ -27,7 +27,7 @@ export default {
 </script>
 
 <template>
-  <a-space direction="vertical" size="large" :style="{width: '600px'}">
+  <a-space direction="vertical" size="large" :style="{width: '600px'}"  class="userinfo">
     <a-form :model="form" :layout="layout">
       <a-form-item label="Username">
         <a-input v-model="form.name" placeholder="Please enter your username..." />
@@ -58,6 +58,13 @@ export default {
     </a-form>
   </a-space>
 </template>
-
 <style scoped>
+.userinfo {
+
+  justify-content: center;
+  margin-top: 10%;
+  margin-left: 20%;
+}
 </style>
+
+

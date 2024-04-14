@@ -14,11 +14,17 @@ export default {
       required: true,
     }
   },
+  methods: {
+    navigateToDetail() {
+      // 使用 `this.event.id` 来访问当前卡片的 ID
+      this.$router.push(`/eventInfo`);
+    }
+  }
 }
 </script>
 
 <template>
-  <a-card :style="{ width: '360px' }">
+  <a-card :style="{ width: '360px' }" @click="navigateToDetail()">
     <template #actions>
       <span class="icon-hover"> <IconThumbUp/> </span>
       <span class="icon-hover"> <IconShareInternal/> </span>

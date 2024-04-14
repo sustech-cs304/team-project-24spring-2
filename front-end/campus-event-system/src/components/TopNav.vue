@@ -32,7 +32,6 @@ export default {
   setup() {
     const router = useRouter();  // Use the useRouter composable for navigation
 
-    // Method to navigate to different routes
     const navigate = (path) => {
       router.push(path);
     }
@@ -45,7 +44,7 @@ export default {
 
 <template>
   <div class="top-navbar">
-    <div class="brand" @click="navigate('/')">
+    <div class="brand" @click="navigate('/homepage')">
       <img src="@/assets/LOGO.png" alt="Logo" class="logo-image">
       <span class="logo">Campus Events and Entertainment Center</span>
     </div>
@@ -53,9 +52,9 @@ export default {
       <icon-home @click="navigate('/homepage')"/>
       <icon-apps @click="navigate('/events')"/>
       <icon-user @click="navigate('/userinfo')"/>
-      <icon-settings @click="navigate('/settings')"/>
-      <icon-bug @click="navigate('/report-issue')"/>
-      <icon-question-circle @click="navigate('/faq')"/>
+<!--      <icon-settings @click="navigate('/settings')"/>-->
+<!--      <icon-bug @click="navigate('/report-issue')"/>-->
+<!--      <icon-question-circle @click="navigate('/faq')"/>-->
       <icon-export @click="navigate('/logout')"/>
     </div>
   </div>
@@ -68,20 +67,21 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding: 10px 20px;
-  height: 60px; /* Increased to accommodate a larger logo */
-  background-color: #fff;
+  height: 60px;
+  background-color: "--color-background";
+  color: "--color-heading"; /* 设置文字颜色 */
 }
 
 .brand {
   display: flex;
   align-items: center;
-  cursor: pointer; /* Make the logo clickable */
+  cursor: pointer;
 }
 
 .logo-image {
-  margin-right: 15px; /* Slightly more spacing to handle a larger image */
-  height: 50px; /* Increased height from 40px to 50px */
-  width: auto; /* Maintain aspect ratio */
+  margin-right: 15px;
+  height: 50px;
+  width: auto;
 }
 
 .logo {
@@ -90,8 +90,10 @@ export default {
 }
 
 .navigation-icons > * {
-  margin-right: 20px; /* Space out icons */
-  cursor: pointer; /* Indicate icons are clickable */
-  vertical-align: middle; /* Align icons vertically in the middle */
+  margin-right: 20px;
+  cursor: pointer;
+  vertical-align: middle;
+  color: inherit; /* 图标继承父元素的颜色设置 */
 }
 </style>
+

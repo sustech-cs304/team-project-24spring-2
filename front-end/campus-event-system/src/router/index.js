@@ -4,6 +4,7 @@ import Homepage from "@/views/Homepage.vue";
 import Layout from "@/layout/Layout.vue";
 import events from "@/views/Events.vue";
 import userInfo from "@/views/UserInfo.vue";
+import EventInfo from "@/views/EventInfo.vue";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -29,7 +30,12 @@ const router = createRouter({
             path: '/userinfo',
             name: 'userinfo',
             component: userInfo
-          }
+          },
+          {
+            path: '/eventInfo',
+            name: 'eventInfo',
+            component: EventInfo
+          },
       ]
     }
   ]

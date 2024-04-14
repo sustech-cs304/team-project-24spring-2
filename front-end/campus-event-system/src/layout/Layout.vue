@@ -4,20 +4,6 @@ import TopNav from "@/components/TopNav.vue";
 import {Message} from '@arco-design/web-vue';
 import {useRouter} from 'vue-router';
 
-import {
-  IconMenuFold,
-  IconMenuUnfold,
-  IconApps,
-  IconBug,
-  IconBulb,
-  IconSettings,
-  IconUser,
-  IconQuestionCircle,
-  IconHome,
-  IconExport,
-  IconSort,
-} from '@arco-design/web-vue/es/icon';
-
 const router = useRouter();
 
 function navigateToEvents() {
@@ -36,7 +22,7 @@ function navigateToUserInfo() {
 </script>
 
 <template>
-  <div class="main">
+  <div class="main" id="main_contain">
     <div class="top-nav">
       <TopNav/>
     </div>
@@ -65,13 +51,12 @@ function navigateToUserInfo() {
 }
 
 .white-box {
-  border: 1px solid #e1e1e1; /* 淡色边框比纯白色更可见 */
-  background-color: #FFFFFF;
+  border: 1px solid "--color-border"; /* 淡色边框比纯白色更可见 */
+  background-color: "--color-background";
   flex-grow: 1;
   margin: 0.1%;
   padding: 10px; /* 添加一些内边距 */
   height: calc(100% - 52px);
-  //border-radius: 10px; /* 圆角边框 */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 轻微的阴影效果 */
   transition: box-shadow 0.3s ease; /* 鼠标悬停时阴影效果的平滑过渡 */
 }
