@@ -89,7 +89,6 @@ export default {
 
 <style scoped>
 .page-container {
-  /* 确保 page-container 可以适应父容器的大小，可能需要根据实际情况调整 */
   height: 100%;
 }
 

@@ -12,6 +12,8 @@ import {
   IconExport,
   IconSort,
 } from '@arco-design/web-vue/es/icon';
+import { useRoute, useRouter } from 'vue-router';  // Import routing composable
+
 export default {
   name: "TopNav",
   components: {
@@ -27,48 +29,69 @@ export default {
     IconExport,
     IconSort,
   },
-}
+  setup() {
+    const router = useRouter();  // Use the useRouter composable for navigation
 
+    // Method to navigate to different routes
+    const navigate = (path) => {
+      router.push(path);
+    }
+
+    return { navigate };
+  }
+}
 </script>
+
 
 <template>
   <div class="top-navbar">
-    <div class="brand">
+    <div class="brand" @click="navigate('/')">
       <img src="@/assets/LOGO.png" alt="Logo" class="logo-image">
       <span class="logo">Campus Events and Entertainment Center</span>
     </div>
-
-
+    <div class="navigation-icons">
+      <icon-home @click="navigate('/homepage')"/>
+      <icon-apps @click="navigate('/events')"/>
+      <icon-user @click="navigate('/userinfo')"/>
+      <icon-settings @click="navigate('/settings')"/>
+      <icon-bug @click="navigate('/report-issue')"/>
+      <icon-question-circle @click="navigate('/faq')"/>
+      <icon-export @click="navigate('/logout')"/>
+    </div>
   </div>
 </template>
+
 
 <style scoped>
 .top-navbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0px;
-  height: 50px;
+  padding: 10px 20px;
+  height: 60px; /* Increased to accommodate a larger logo */
   background-color: #fff;
-  /* 其他样式 */
 }
 
 .brand {
   display: flex;
   align-items: center;
+  cursor: pointer; /* Make the logo clickable */
 }
 
 .logo-image {
-  /* 这里可以添加一些CSS来调整图片的大小和间距 */
-  margin-top: 5px;
-  height: 140px;
+  margin-right: 15px; /* Slightly more spacing to handle a larger image */
+  height: 50px; /* Increased height from 40px to 50px */
+  width: auto; /* Maintain aspect ratio */
 }
 
 .logo {
-  text-align: center;
-  font-family: 'Roboto', sans-serif; /* 更改为Roboto字体 */
-  font-weight: bold; /* 加粗 */
-  /* 其他样式保持不变 */
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
 }
 
+.navigation-icons > * {
+  margin-right: 20px; /* Space out icons */
+  cursor: pointer; /* Indicate icons are clickable */
+  vertical-align: middle; /* Align icons vertically in the middle */
+}
 </style>
