@@ -1,6 +1,7 @@
 package cn.edu.sustech.ces.controller;
 
 import cn.edu.sustech.ces.entity.Order;
+import cn.edu.sustech.ces.entity.User;
 import cn.edu.sustech.ces.enums.OrderStatus;
 import cn.edu.sustech.ces.enums.PurchaseMethod;
 import cn.edu.sustech.ces.service.OrderService;
@@ -27,7 +28,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/pay")
+@RequestMapping("/api/pay")
 public class PayController {
 
     private final OrderService orderService;
@@ -42,7 +43,9 @@ public class PayController {
 
     @GetMapping("/test-create-order")
     public String testCreateOrder() {
-        Order order = orderService.makeOrder("test", "test", 1.0, UUID.randomUUID());
+        User user = new User();
+        user.setId(UUID.randomUUID());
+        Order order = orderService.makeOrder("test", "test", 1.0, user);
         return order.getId().toString() + " created.";
     }
 

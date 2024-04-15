@@ -1,68 +1,84 @@
 package cn.edu.sustech.ces.service;
 
 import cn.edu.sustech.ces.entity.*;
-import cn.edu.sustech.ces.repository.UserCreateEventRepository;
-import cn.edu.sustech.ces.repository.UserEnrollEventRepository;
+import cn.edu.sustech.ces.enums.PermissionGroup;
 import cn.edu.sustech.ces.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.parameters.P;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
+
+    private final UserRepository userRepository;
 
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private UserCreateEventRepository userCreateEventRepository;
-    @Autowired
-    private UserEnrollEventRepository userEnrollEventRepository;
-
-
-    public User getUserById(UUID id) {
-        return userRepository.findById(id).orElse(null);
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    public User deleteUserById(UUID id) {
-        User user = userRepository.findById(id).orElse(null);
-        if (user != null) {
-            userRepository.deleteById(id);
-        }
+    public User registerUser(String nickname, String realName, String description,
+                             String email, String password, String phone,
+                             PermissionGroup group) {
+        User user = new User();
+        user.setNickname(nickname);
+        user.setRealName(realName);
+        user.setDescription(description);
+        user.setEmail(email);
+        user.setPassword(password);
+        user.setPhone(phone);
+        user.setPermissionGroup(group);
+        userRepository.save(user);
         return user;
     }
 
-    public List<User> searchUsersByField(String field, String value) {
-        switch (field.toLowerCase()) {
-            case "id":
-                return List.of(Objects.requireNonNull(userRepository.findById(UUID.fromString(value)).orElse(null)));
-            case "realname":
-                return userRepository.findByRealname(value);
-            case "email":
-                return userRepository.findByEmail(value);
-            case "nickname":
-                return userRepository.findByNickname(value);
-            case "phone":
-                return userRepository.findByPhone(value);
-            default:
-                throw new IllegalArgumentException("Invalid field for search");
-        }
+    public User getUserById(UUID userId) {
+        return userRepository.findById(userId).orElse(null);
     }
 
-    public List<Event> findEventsByUser(String type, UUID userId) {
-        if (type.equalsIgnoreCase("created")) {
-            return userCreateEventRepository.findByUserId(userId).stream()
-                    .map(UserCreateEvent::getEvent)
-                    .collect(Collectors.toList());
-        } else if (type.equalsIgnoreCase("enrolled")) {
-            return userEnrollEventRepository.findByUserId(userId).stream()
-                    .map(UserEnrollEvent::getEvent)
-                    .collect(Collectors.toList());
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).stream().findFirst().orElse(null);
+    }
+
+    public User getUserByNickname(String nickname) {
+        return userRepository.findByNickname(nickname).stream().findFirst().orElse(null);
+    }
+
+    public User getUserByPhone(String phone) {
+        return userRepository.findByPhone(phone).stream().findFirst().orElse(null);
+    }
+
+    public List<User> getUsersByRealName(String realName) {
+        return userRepository.findByRealName(realName);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String userInput) throws UsernameNotFoundException {
+        User user = null;
+        if (userInput.contains("@")) {
+            user = getUserByEmail(userInput);
+        } else {
+            if (userInput.matches("[0-9]+")) {
+                user = getUserByPhone(userInput);
+            } else {
+                user = getUserByNickname(userInput);
+            }
         }
-        return List.of(); // 返回空列表或抛出异常，如果类型不匹配
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found with input: " + userInput);
+        }
+        return new org.springframework.security.core.userdetails.User(
+                userInput,
+                user.getPassword(),
+                Set.of(new SimpleGrantedAuthority(user.getPermissionGroup().name()))
+        );
     }
 }

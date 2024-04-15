@@ -8,21 +8,6 @@ import cn.edu.sustech.ces.service.EventService;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/activity")
+@RequestMapping("/api/event")
 public class EventController {
-    @Autowired
-    private EventService eventService;
-
-    @PostMapping("/create")
-    public String createEvent(@RequestBody EventDTO eventDTO) {
-        return eventService.createEventService(eventDTO);
-    }
-    @GetMapping("/query")
-    public String queryEvent(@RequestParam("id") UUID id) {
-        return eventService.queryEventService(id);
-    }
-    @GetMapping("/delete")
-    public String deleteEvent(@RequestParam("id") UUID id) {
-        return eventService.deleteEventService(id);
-    }
-}
+ }

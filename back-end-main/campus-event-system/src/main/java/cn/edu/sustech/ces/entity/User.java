@@ -2,12 +2,14 @@ package cn.edu.sustech.ces.entity;
 
 
 
+import cn.edu.sustech.ces.enums.PermissionGroup;
+import cn.edu.sustech.ces.enums.UserGender;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.util.List;
 import java.util.UUID;
-
 
 @Entity(name = "users")
 @Data
@@ -21,20 +23,33 @@ public class User {
     private UUID id;
 
     private String nickname;
-    private String realname;//真实姓名
+
+    private String realName;
+
     private String description;
+
     private String email;
+
     private String password;
+
     private String phone;
-    private int Gender;//0为男，1为女
-    private int authority;//权限,0为普通用户，1为活动管理员（有权利创建活动），2为超级管理员
-    private String avatar;//头像(图片链接)
 
+    @Enumerated(EnumType.ORDINAL)
+    private UserGender gender;
 
+    @Enumerated(EnumType.ORDINAL)
+    private PermissionGroup permissionGroup;
 
-    public User(String nickname, String email) {
-        this.nickname = nickname;
-        this.email = email;
-    }
+    private String avatarUrl;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_events",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "event_id"))
+    private List<Event> events;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "payerId")
+    private List<Order> orders;
+
 
 }

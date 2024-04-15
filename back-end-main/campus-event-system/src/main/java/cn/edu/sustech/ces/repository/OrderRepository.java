@@ -8,8 +8,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface OrderRepository extends ListCrudRepository<Order, Integer> {
-
-    public Optional<Order> findById(UUID id);
+public interface OrderRepository extends ListCrudRepository<Order, UUID> {
 
 }

@@ -1,6 +1,7 @@
 package cn.edu.sustech.ces.service;
 
 import cn.edu.sustech.ces.entity.Order;
+import cn.edu.sustech.ces.entity.User;
 import cn.edu.sustech.ces.enums.OrderStatus;
 import cn.edu.sustech.ces.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,9 @@ public class OrderService {
         this.orderRepository = orderRepository;
     }
 
-    public Order makeOrder(String name, String description, double price, UUID payerId) {
+    public Order makeOrder(String name, String description, double price, User payer) {
         Order order = new Order();
-        order.setPayerId(payerId);
+        order.setPayer(payer);
         order.setName(name);
         order.setDescription(description);
         order.setPrice(price);

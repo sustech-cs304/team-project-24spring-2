@@ -4,10 +4,7 @@ package cn.edu.sustech.ces.entity;
 import cn.edu.sustech.ces.enums.OrderStatus;
 import cn.edu.sustech.ces.enums.PurchaseMethod;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
@@ -30,9 +27,11 @@ public class Order {
 
     private String description;
 
-    private double price;
+    private Double price;
 
-    private UUID payerId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "payer_id", nullable = false)
+    private User payer;
 
     @Enumerated(EnumType.ORDINAL)
     private OrderStatus status;
@@ -40,8 +39,8 @@ public class Order {
     @Enumerated(EnumType.ORDINAL)
     private PurchaseMethod purchaseMethod;
 
-    private long purchaseFinishTime;
+    private Long purchaseFinishTime;
 
-    private long purchaseCreateTime;
+    private Long purchaseCreateTime;
 
 }
