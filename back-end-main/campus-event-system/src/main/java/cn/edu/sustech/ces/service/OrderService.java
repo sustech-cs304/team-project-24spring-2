@@ -21,7 +21,7 @@ public class OrderService {
 
     public Order makeOrder(String name, String description, double price, User payer) {
         Order order = new Order();
-        order.setPayer(payer);
+        order.setPayerId(payer.getId());
         order.setName(name);
         order.setDescription(description);
         order.setPrice(price);

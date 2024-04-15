@@ -24,14 +24,14 @@ public class JwtTokenProvider {
     private long jwtExpirationDate;
 
     public String generateToken(Authentication authentication){
-        String userInput = authentication.getName();
+        CESUserDetails userDetails = (CESUserDetails) authentication.getPrincipal();
 
         Date currentDate = new Date();
 
         Date expireDate = new Date(currentDate.getTime() + jwtExpirationDate);
 
         String token = Jwts.builder()
-                .setSubject(userInput)
+                .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(expireDate)
                 .signWith(key())
@@ -45,14 +45,14 @@ public class JwtTokenProvider {
         );
     }
 
-    public String getUserInput(String token){
+    public String getUserUUID(String token){
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-        String userInput = claims.getSubject();
-        return userInput;
+        String userUUID = claims.getSubject();
+        return userUUID;
     }
 
     public boolean validateToken(String token){

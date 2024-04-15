@@ -6,13 +6,13 @@ import cn.edu.sustech.ces.enums.PermissionGroup;
 import cn.edu.sustech.ces.enums.UserGender;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.util.List;
 import java.util.UUID;
 
 @Entity(name = "users")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
@@ -22,6 +22,7 @@ public class User {
     @UuidGenerator
     private UUID id;
 
+    @Column(nullable = false, unique = true)
     private String nickname;
 
     private String realName;
@@ -41,15 +42,6 @@ public class User {
     private PermissionGroup permissionGroup;
 
     private String avatarUrl;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_events",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "event_id"))
-    private List<Event> events;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "payerId")
-    private List<Order> orders;
 
 
 }

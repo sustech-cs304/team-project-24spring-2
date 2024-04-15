@@ -29,9 +29,7 @@ public class Order {
 
     private Double price;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payer_id", nullable = false)
-    private User payer;
+    private UUID payerId;
 
     @Enumerated(EnumType.ORDINAL)
     private OrderStatus status;

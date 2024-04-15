@@ -19,8 +19,10 @@ public class Event {
     @UuidGenerator
     private UUID id;
 
+    @Column(nullable = false)
     private String title;
 
+    @Column(nullable = false)
     private UUID publisher;
 
     private Long publishTime;
@@ -31,17 +33,12 @@ public class Event {
 
     private String description;
 
+    @Column(nullable = false)
     private Integer availableCapacity;
 
     private Integer altitude;
 
     private Integer longitude;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_events",
-            joinColumns = @JoinColumn(name = "event_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private Set<User> participants;
 
     public void setLocation(int altitude, int longitude) {
         this.altitude = altitude;
