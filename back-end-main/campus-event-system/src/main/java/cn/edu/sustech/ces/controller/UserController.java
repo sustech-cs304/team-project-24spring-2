@@ -1,10 +1,7 @@
 package cn.edu.sustech.ces.controller;
 
 import cn.edu.sustech.ces.entity.Event;
-import cn.edu.sustech.ces.entity.Location;
 import cn.edu.sustech.ces.entity.User;
-import cn.edu.sustech.ces.entity.UserCreateEvent;
-import cn.edu.sustech.ces.repository.LocationRepository;
 import cn.edu.sustech.ces.repository.UserRepository;
 import cn.edu.sustech.ces.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +32,9 @@ public class UserController {
 
     @PostMapping("/create-user")
     public String createUser(
-        @RequestParam String name,
+        @RequestParam String nickname,
         @RequestParam String email) {
-        User user = new User(name, email);
+        User user = new User(nickname, email);
         user = userRepository.save(user);
         return "User created with ID: " + user.getId();
     }
@@ -46,12 +43,27 @@ public class UserController {
     * 该方法在api里传入user json
     * */
     @PutMapping("/update-user")
-    public ResponseEntity<?> updateUser(@RequestBody User user) {
-        if (!userRepository.existsById(user.getId())) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<?> updateUser(@RequestBody User newUser) {
+        if (newUser.getId() == null) {
+            return ResponseEntity.badRequest().body("User ID cannot be null.");
         }
-        userRepository.save(user);
-        return ResponseEntity.ok("User updated with ID: " + user.getId());
+
+        return userRepository.findById(newUser.getId())
+                .map(user -> {
+                    // 更新字段，仅当新值不为 null 时
+                    if (newUser.getNickname() != null) user.setNickname(newUser.getNickname());
+                    if (newUser.getEmail() != null) user.setEmail(newUser.getEmail());
+                    if (newUser.getNickname() != null) user.setNickname(newUser.getNickname());
+                    if (newUser.getRealname() != null) user.setRealname(newUser.getRealname());
+                    if (newUser.getDescription() != null) user.setDescription(newUser.getDescription());
+                    if (newUser.getPassword() != null) user.setPassword(newUser.getPassword());
+                    if (newUser.getPhone() != null) user.setPhone(newUser.getPhone());
+
+                    // 保存更新后的用户
+                    userRepository.save(user);
+                    return ResponseEntity.ok("User updated with ID: " + user.getId());
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build()); // 如果找不到用户，返回404
     }
 
 

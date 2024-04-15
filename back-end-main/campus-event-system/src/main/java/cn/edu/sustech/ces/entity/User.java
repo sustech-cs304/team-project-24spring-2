@@ -1,8 +1,6 @@
 package cn.edu.sustech.ces.entity;
 
 
-import cn.edu.sustech.ces.entity.Order;
-import cn.edu.sustech.ces.entity.Event;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -34,8 +32,8 @@ public class User {
 
 
 
-    public User(String name, String email) {
-        this.nickname = name;
+    public User(String nickname, String email) {
+        this.nickname = nickname;
         this.email = email;
     }
 
