@@ -49,4 +49,21 @@ public class EventService {
         return event;
     }
 
+    public Event setEventStatus(UUID eventId, EventStatus status) {
+        Event event = eventRepository.findById(eventId).orElse(null);
+        if (event != null) {
+            event.setStatus(status);
+            eventRepository.save(event);
+        }
+        return event;
+    }
+
+    public Event updateEvent(Event event) {
+        eventRepository.save(event);
+        return event;
+    }
+
+    public List<Event> getEvents() {
+        return eventRepository.findAll();
+    }
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import cn.edu.sustech.ces.service.EventService;
 
 import javax.swing.text.html.Option;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,7 +26,7 @@ public class EventController {
     private EventService eventService;
 
     @PostMapping("/create-event")
-    @PreAuthorize("hasAnyRole('ADMIN', 'DEPARTMENT_ADMIN', 'SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('INSTITUTE_ADMIN', 'DEPARTMENT_ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<Event> createEvent(@RequestBody JSONObject request) {
 
         CESUserDetails userDetails = (CESUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -46,6 +47,12 @@ public class EventController {
 
         return ResponseEntity.ok(event);
 
+    }
+
+    @PostMapping("/list-events")
+    public ResponseEntity<List<Event>> listEvents() {
+        List<Event> events = eventService.getEvents();
+        return ResponseEntity.ok(events);
     }
 
 }

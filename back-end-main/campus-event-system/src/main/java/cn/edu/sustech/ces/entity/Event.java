@@ -47,7 +47,7 @@ public class Event {
 
     private Integer longitude;
 
-    public void setLocation(int altitude, int longitude) {
+    public void setLocation(Integer altitude, Integer longitude) {
         this.altitude = altitude;
         this.longitude = longitude;
     }
