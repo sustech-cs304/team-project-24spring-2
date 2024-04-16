@@ -1,7 +1,0 @@
-CREATE TABLE IF NOT EXISTS "orders"
-(
-    id BIGINT NOT NULL,
-    name VARCHAR(30) NULL DEFAULT NULL,
-    description VARCHAR(50) NULL DEFAULT NULL,
-    PRIMARY KEY (id)
-);
