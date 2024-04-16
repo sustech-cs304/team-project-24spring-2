@@ -91,13 +91,13 @@
     Virtual paying service for developers.
 - **Project Architecture**
   According to our target users, distributed architecture seems overengineering hence we choose monolithic and layered architecture.
-  ![image3](./proposal_image3.png)
+  ![image3](./assets/proposal_image3.png)
 
 ## 3 Task Decomposition & Planning
 
-![image1](./proposal_image1.png)
+![image1](./assets/proposal_image1.png)
 
-![image2](./proposal_image2.png)
+![image2](./assets/proposal_image2.png)
 
 ## 4 AI Usage
 
