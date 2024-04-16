@@ -7,6 +7,7 @@ import localeMonitor from '@/views/dashboard/monitor/locale/zh-CN';
 
 import localeEventTable from '@/views/event/manage/locale/zh-CN';
 import localeEventCreate from '@/views/event/create/locale/zh-CN';
+import localeEventAudit from '@/views/event/audit/locale/zh-CN';
 
 import localeSearchTable from '@/views/list/search-table/locale/zh-CN';
 import localeCardList from '@/views/list/card/locale/zh-CN';
@@ -69,4 +70,5 @@ export default {
   ...locale500,
   ...localeUserInfo,
   ...localeUserSetting,
+  ...localeEventAudit
 };

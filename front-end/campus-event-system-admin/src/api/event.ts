@@ -63,8 +63,8 @@ export function queryRulesPresetList() {
 export interface BaseInfoModel {
     eventName: string;
     eventType: string;
-    promotionTime: string[];
-    promoteLink: string;
+    eventTime: string[];
+    eventAddress: string;
 }
 export interface AdvanceInfoModel {
     advertisingSource: string;

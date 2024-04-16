@@ -32,6 +32,16 @@ const DASHBOARD: AppRouteRecordRaw = {
         roles: ['admin'],
       },
     },
+    {
+        path: 'audit',
+        name: 'audit',
+        component: () => import('@/views/event/audit/index.vue'),
+        meta: {
+          locale: 'menu.event.audit',
+          requiresAuth: true,
+          roles: ['admin'],
+        },
+      },
   ],
 };
 

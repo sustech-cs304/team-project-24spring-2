@@ -16,7 +16,7 @@
             <a-step :description="$t('event.create.subTitle.baseInfo')">
               {{ $t('event.create.title.baseInfo') }}
             </a-step>
-            <a-step :description="$t('event.create.subTitle.channel')">
+            <a-step :description="$t('event.create.subTitle.advance')">
               {{ $t('event.create.title.channel') }}
             </a-step>
             <a-step :description="$t('event.create.subTitle.finish')">

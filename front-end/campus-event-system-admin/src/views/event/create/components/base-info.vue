@@ -26,55 +26,60 @@
       />
     </a-form-item>
     <a-form-item
-      field="channelType"
-      :label="$t('event.form.label.channelType')"
+      field="eventType"
+      :label="$t('event.form.label.eventType')"
       :rules="[
         {
           required: true,
-          message: $t('event.form.error.channelType.required'),
+          message: $t('event.form.error.eventType.required'),
         },
       ]"
     >
       <a-select
-        v-model="formData.channelType"
-        :placeholder="$t('event.placeholder.channelType')"
+        v-model="formData.eventType"
+        :placeholder="$t('event.placeholder.eventType')"
       >
-        <a-option>APP通用渠道</a-option>
+        <a-option>社交</a-option>
+        <a-option>兴趣交流</a-option>
+        <a-option>体育运动</a-option>
+        <a-option>学习分享</a-option>
+        <a-option>党政学习</a-option>
+        <a-option>其他</a-option>
       </a-select>
     </a-form-item>
     <a-form-item
-      field="promotionTime"
-      :label="$t('event.form.label.promotionTime')"
+      field="eventTime"
+      :label="$t('event.form.label.eventTime')"
       :rules="[
         {
           required: true,
-          message: $t('event.form.error.promotionTime.required'),
+          message: $t('event.form.error.eventTime.required'),
         },
       ]"
     >
-      <a-range-picker v-model="formData.promotionTime" />
+      <a-range-picker v-model="formData.eventTime" />
     </a-form-item>
     <a-form-item
-      field="promoteLink"
-      :label="$t('event.form.label.promoteLink')"
+      field="eventAddress"
+      :label="$t('event.form.label.eventAddress')"
       :rules="[
         {
           required: true,
-          message: $t('event.form.error.promoteLink.required'),
+          message: $t('event.form.error.eventAddress.required'),
         },
         {
           type: 'url',
-          message: $t('event.form.error.promoteLink.pattern'),
+          message: $t('event.form.error.eventAddress.pattern'),
         },
       ]"
       row-class="keep-margin"
     >
       <a-input
-        v-model="formData.promoteLink"
-        :placeholder="$t('event.placeholder.promoteLink')"
+        v-model="formData.eventAddress"
+        :placeholder="$t('event.placeholder.eventAddress')"
       />
       <template #help>
-        <span>{{ $t('event.form.tip.promoteLink') }}</span>
+        <span>{{ $t('event.form.tip.eventAddress') }}</span>
       </template>
     </a-form-item>
     <a-form-item>
@@ -95,8 +100,8 @@
   const formData = ref<BaseInfoModel>({
     eventName: '',
     eventType: '',
-    promotionTime: [],
-    promoteLink: 'https://arco.design',
+    eventTime: [],
+    eventAddress: 'https://arco.design',
   });
 
   const onNextClick = async () => {

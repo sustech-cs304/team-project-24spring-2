@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <Breadcrumb :items="['menu.event', 'menu.event.manage']" />
-    <a-card class="general-card" :title="$t('menu.event.manage')">
+    <Breadcrumb :items="['menu.event', 'menu.event.audit']" />
+    <a-card class="general-card" :title="$t('menu.event.audit')">
       <a-row>
         <a-col :flex="1">
           <a-form
@@ -102,33 +102,22 @@
       <a-row style="margin-bottom: 16px">
         <a-col :span="12">
           <a-space>
-            <a-button type="primary" @click="create">
-              <template #icon>
-                <icon-plus />
-              </template>
-              {{ $t('eventTable.operation.create') }}
-            </a-button>
-            <a-upload action="/">
-              <template #upload-button>
-                <a-button>
-                  {{ $t('eventTable.operation.import') }}
-                </a-button>
-              </template>
-            </a-upload>
+            <!-- <a-space> -->
+              <a-button type="primary">
+                <template #icon>
+                  <icon-download />
+                </template>
+                {{ $t('eventTable.operation.download') }}
+              </a-button>
 
-            <a-button>
-              <template #icon>
-                <icon-download />
-              </template>
-              {{ $t('eventTable.operation.download') }}
-            </a-button>
+            <!-- </a-space> -->
           </a-space>
         </a-col>
         <a-col
           :span="12"
           style="display: flex; align-items: center; justify-content: end"
         >
-          <a-button @click="search">
+          <a-button  @click="search"gf>
             <template #icon> <icon-refresh /> </template>
             {{ $t('eventTable.actions.refresh') }}
           </a-button>
@@ -237,10 +226,7 @@
         </template>
         <template #operations>
           <a-button v-permission="['admin']" type="text" size="small">
-            {{ $t('eventTable.columns.operations.view') }}
-          </a-button>
-          <a-button v-permission="['admin']" type="text" size="small">
-            {{ $t('eventTable.columns.operations.edit') }}
+            {{ $t('eventTable.columns.operations.audit') }}
           </a-button>
         </template>
       </a-table>
@@ -327,10 +313,10 @@
       dataIndex: 'contentType',
       slotName: 'contentType',
     },
-    // {
-    //   title: t('eventTable.columns.supervisor'),
-    //   dataIndex: 'supervisor',
-    // },
+    {
+      title: t('eventTable.columns.supervisor'),
+      dataIndex: 'supervisor',
+    },
     {
       title: t('eventTable.columns.startTime'),
       dataIndex: 'startTime',
