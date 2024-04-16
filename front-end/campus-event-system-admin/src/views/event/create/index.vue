@@ -1,10 +1,10 @@
 <template>
   <div class="container">
-    <Breadcrumb :items="['menu.activity', 'menu.activity.create']" />
+    <Breadcrumb :items="['menu.event', 'menu.event.create']" />
     <a-spin :loading="loading" style="width: 100%">
       <a-card class="general-card">
         <template #title>
-          {{ $t('activity.create.title') }}
+          {{ $t('event.create.title') }}
         </template>
         <div class="wrapper">
           <a-steps
@@ -13,14 +13,14 @@
             line-less
             class="steps"
           >
-            <a-step :description="$t('activity.create.subTitle.baseInfo')">
-              {{ $t('activity.create.title.baseInfo') }}
+            <a-step :description="$t('event.create.subTitle.baseInfo')">
+              {{ $t('event.create.title.baseInfo') }}
             </a-step>
-            <a-step :description="$t('activity.create.subTitle.channel')">
-              {{ $t('activity.create.title.channel') }}
+            <a-step :description="$t('event.create.subTitle.channel')">
+              {{ $t('event.create.title.channel') }}
             </a-step>
-            <a-step :description="$t('activity.create.subTitle.finish')">
-              {{ $t('activity.create.title.finish') }}
+            <a-step :description="$t('event.create.subTitle.finish')">
+              {{ $t('event.create.title.finish') }}
             </a-step>
           </a-steps>
           <keep-alive>
@@ -38,11 +38,11 @@
   import { ref } from 'vue';
   import useLoading from '@/hooks/loading';
   import {
-    submitActivityForm,
+    submiteventForm,
     BaseInfoModel,
     AdvanceInfoModel,
     UnitChannelModel,
-  } from '@/api/activity';
+  } from '@/api/event';
   import BaseInfo from './components/base-info.vue';
   import ChannelInfo from './components/advance-info.vue';
   import Success from './components/success.vue';
@@ -53,7 +53,7 @@
   const submitForm = async () => {
     setLoading(true);
     try {
-      await submitActivityForm(submitModel.value); // The mock api default success
+      await submiteventForm(submitModel.value); // The mock api default success
       step.value = 3;
       submitModel.value = {} as UnitChannelModel; // init
     } catch (err) {

@@ -26,7 +26,7 @@ export interface PolicyListRes {
 }
 
 export function queryPolicyList(params: PolicyParams) {
-    return axios.get<PolicyListRes>('/api/activity/query', {
+    return axios.get<PolicyListRes>('/api/event/query', {
         params,
         paramsSerializer: (obj) => {
             return qs.stringify(obj);
@@ -61,8 +61,8 @@ export function queryRulesPresetList() {
 // CREATE API
 
 export interface BaseInfoModel {
-    activityName: string;
-    activityType: string;
+    eventName: string;
+    eventType: string;
     promotionTime: string[];
     promoteLink: string;
 }
@@ -76,6 +76,6 @@ export interface AdvanceInfoModel {
 
 export type UnitChannelModel = BaseInfoModel & AdvanceInfoModel;
 
-export function submitActivityForm(data: UnitChannelModel) {
-    return axios.post('/api/activity/create', { data });
+export function submiteventForm(data: UnitChannelModel) {
+    return axios.post('/api/event/create', { data });
 }

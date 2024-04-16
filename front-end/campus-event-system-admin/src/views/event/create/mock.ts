@@ -4,7 +4,7 @@ import setupMock, { successResponseWrap } from '@/utils/setup-mock';
 setupMock({
     setup() {
       // submit
-      Mock.mock(new RegExp('/api/activity/create'), () => {
+      Mock.mock(new RegExp('/api/event/create'), () => {
         return successResponseWrap('ok');
       });
     },

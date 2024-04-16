@@ -7,48 +7,48 @@
     :wrapper-col-props="{ span: 18 }"
   >
     <a-form-item
-      field="activityName"
-      :label="$t('activity.form.label.activityName')"
+      field="eventName"
+      :label="$t('event.form.label.eventName')"
       :rules="[
         {
           required: true,
-          message: $t('activity.form.error.activityName.required'),
+          message: $t('event.form.error.eventName.required'),
         },
         {
           match: /^[a-zA-Z0-9\u4e00-\u9fa5]{1,20}$/,
-          message: $t('activity.form.error.activityName.pattern'),
+          message: $t('event.form.error.eventName.pattern'),
         },
       ]"
     >
       <a-input
-        v-model="formData.activityName"
-        :placeholder="$t('activity.placeholder.activityName')"
+        v-model="formData.eventName"
+        :placeholder="$t('event.placeholder.eventName')"
       />
     </a-form-item>
     <a-form-item
       field="channelType"
-      :label="$t('activity.form.label.channelType')"
+      :label="$t('event.form.label.channelType')"
       :rules="[
         {
           required: true,
-          message: $t('activity.form.error.channelType.required'),
+          message: $t('event.form.error.channelType.required'),
         },
       ]"
     >
       <a-select
         v-model="formData.channelType"
-        :placeholder="$t('activity.placeholder.channelType')"
+        :placeholder="$t('event.placeholder.channelType')"
       >
         <a-option>APP通用渠道</a-option>
       </a-select>
     </a-form-item>
     <a-form-item
       field="promotionTime"
-      :label="$t('activity.form.label.promotionTime')"
+      :label="$t('event.form.label.promotionTime')"
       :rules="[
         {
           required: true,
-          message: $t('activity.form.error.promotionTime.required'),
+          message: $t('event.form.error.promotionTime.required'),
         },
       ]"
     >
@@ -56,30 +56,30 @@
     </a-form-item>
     <a-form-item
       field="promoteLink"
-      :label="$t('activity.form.label.promoteLink')"
+      :label="$t('event.form.label.promoteLink')"
       :rules="[
         {
           required: true,
-          message: $t('activity.form.error.promoteLink.required'),
+          message: $t('event.form.error.promoteLink.required'),
         },
         {
           type: 'url',
-          message: $t('activity.form.error.promoteLink.pattern'),
+          message: $t('event.form.error.promoteLink.pattern'),
         },
       ]"
       row-class="keep-margin"
     >
       <a-input
         v-model="formData.promoteLink"
-        :placeholder="$t('activity.placeholder.promoteLink')"
+        :placeholder="$t('event.placeholder.promoteLink')"
       />
       <template #help>
-        <span>{{ $t('activity.form.tip.promoteLink') }}</span>
+        <span>{{ $t('event.form.tip.promoteLink') }}</span>
       </template>
     </a-form-item>
     <a-form-item>
       <a-button type="primary" @click="onNextClick">
-        {{ $t('activity.button.next') }}
+        {{ $t('event.button.next') }}
       </a-button>
     </a-form-item>
   </a-form>
@@ -88,13 +88,13 @@
 <script lang="ts" setup>
   import { ref } from 'vue';
   import { FormInstance } from '@arco-design/web-vue/es/form';
-  import { BaseInfoModel } from '@/api/activity';
+  import { BaseInfoModel } from '@/api/event';
 
   const emits = defineEmits(['changeStep']);
   const formRef = ref<FormInstance>();
   const formData = ref<BaseInfoModel>({
-    activityName: '',
-    activityType: '',
+    eventName: '',
+    eventType: '',
     promotionTime: [],
     promoteLink: 'https://arco.design',
   });

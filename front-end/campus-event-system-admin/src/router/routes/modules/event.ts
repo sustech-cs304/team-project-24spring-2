@@ -2,11 +2,11 @@ import { DEFAULT_LAYOUT } from '../base';
 import { AppRouteRecordRaw } from '../types';
 
 const DASHBOARD: AppRouteRecordRaw = {
-  path: '/activity',
-  name: 'activity',
+  path: '/event',
+  name: 'event',
   component: DEFAULT_LAYOUT,
   meta: {
-    locale: 'menu.activity',
+    locale: 'menu.event',
     requiresAuth: true,
     icon: 'icon-dashboard',
     order: 1,
@@ -15,9 +15,9 @@ const DASHBOARD: AppRouteRecordRaw = {
     {
       path: 'manage',
       name: 'manage',
-      component: () => import('@/views/activity/manage/index.vue'),
+      component: () => import('@/views/event/manage/index.vue'),
       meta: {
-        locale: 'menu.activity.manage',
+        locale: 'menu.event.manage',
         requiresAuth: true,
         roles: ['admin'],
       },
@@ -25,9 +25,9 @@ const DASHBOARD: AppRouteRecordRaw = {
     {
       path: 'create',
       name: 'create',
-      component: () => import('@/views/activity/create/index.vue'),
+      component: () => import('@/views/event/create/index.vue'),
       meta: {
-        locale: 'menu.activity.create',
+        locale: 'menu.event.create',
         requiresAuth: true,
         roles: ['admin'],
       },
