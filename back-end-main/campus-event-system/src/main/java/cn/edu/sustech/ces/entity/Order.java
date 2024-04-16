@@ -31,6 +31,8 @@ public class Order {
 
     private UUID payerId;
 
+    private UUID eventId;
+
     @Enumerated(EnumType.ORDINAL)
     private OrderStatus status;
 

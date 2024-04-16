@@ -4,6 +4,7 @@ import cn.edu.sustech.ces.entity.Order;
 import cn.edu.sustech.ces.entity.User;
 import cn.edu.sustech.ces.enums.OrderStatus;
 import cn.edu.sustech.ces.enums.PurchaseMethod;
+import cn.edu.sustech.ces.security.CESUserDetails;
 import cn.edu.sustech.ces.service.OrderService;
 import cn.edu.sustech.ces.service.alipay.AlipayConfig;
 import com.alibaba.fastjson.JSONObject;
@@ -16,6 +17,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -83,6 +86,7 @@ public class PayController {
     }
 
     @GetMapping("/cancel")
+    @PreAuthorize("isAuthenticated()")
     public void cancelOrder(@NotNull String orderId, HttpServletResponse response) {
 
         // TODO: user verification
@@ -103,13 +107,18 @@ public class PayController {
 
 
     @GetMapping("/alipay")
+    @PreAuthorize("isAuthenticated()")
     public void payOrderByAlipay(@NotNull String orderId, HttpServletResponse response) throws Exception {
 
-        // TODO: user verification
-
+        CESUserDetails userDetails = (CESUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userDetails.getUser();
 
         Order order = orderService.getOrder(UUID.fromString(orderId));
         if (order == null) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+        if (order.getPayerId() != user.getId()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return;
         }

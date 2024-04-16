@@ -1,5 +1,6 @@
 package cn.edu.sustech.ces.entity;
 
+import cn.edu.sustech.ces.enums.EventStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
@@ -27,11 +28,17 @@ public class Event {
 
     private Long publishTime;
 
+    @Enumerated(EnumType.ORDINAL)
+    private EventStatus status;
+
     private Long startTime;
 
     private Long endTime;
 
-    private String description;
+    @Column(nullable = false)
+    private String documentUrl;
+
+    private String imageUrl;
 
     @Column(nullable = false)
     private Integer availableCapacity;
