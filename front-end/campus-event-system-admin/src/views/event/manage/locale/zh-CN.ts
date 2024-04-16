@@ -32,9 +32,12 @@ export default {
   'eventTable.columns.filterType': '筛选方式',
   'eventTable.columns.count': '内容量',
   'eventTable.columns.createdTime': '创建时间',
+  'eventTable.columns.startTime': '开始时间',
+  'eventTable.columns.endTime': '结束时间',
   'eventTable.columns.status': '状态',
   'eventTable.columns.operations': '操作',
   'eventTable.columns.operations.view': '查看',
+  'eventTable.columns.operations.edit': '编辑',
 
   // size
   'eventTable.size.mini': '迷你',

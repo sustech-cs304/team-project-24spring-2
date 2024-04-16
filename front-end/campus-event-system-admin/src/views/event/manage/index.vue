@@ -239,6 +239,9 @@
           <a-button v-permission="['admin']" type="text" size="small">
             {{ $t('eventTable.columns.operations.view') }}
           </a-button>
+          <a-button v-permission="['admin']" type="text" size="small">
+            {{ $t('eventTable.columns.operations.edit') }}
+          </a-button>
         </template>
       </a-table>
     </a-card>
@@ -324,13 +327,17 @@
       dataIndex: 'contentType',
       slotName: 'contentType',
     },
+    // {
+    //   title: t('eventTable.columns.supervisor'),
+    //   dataIndex: 'supervisor',
+    // },
     {
-      title: t('eventTable.columns.supervisor'),
-      dataIndex: 'supervisor',
+      title: t('eventTable.columns.startTime'),
+      dataIndex: 'startTime',
     },
     {
-      title: t('eventTable.columns.createdTime'),
-      dataIndex: 'createdTime',
+      title: t('eventTable.columns.endTime'),
+      dataIndex: 'endTime',
     },
     {
       title: t('eventTable.columns.status'),
@@ -341,6 +348,7 @@
       title: t('eventTable.columns.operations'),
       dataIndex: 'operations',
       slotName: 'operations',
+      align: 'center',
     },
   ]);
 
