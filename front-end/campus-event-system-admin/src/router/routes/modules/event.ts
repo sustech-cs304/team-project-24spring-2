@@ -1,20 +1,20 @@
 import { DEFAULT_LAYOUT } from '../base';
 import { AppRouteRecordRaw } from '../types';
 
-const DASHBOARD: AppRouteRecordRaw = {
+const EVENTS: AppRouteRecordRaw = {
   path: '/event',
   name: 'event',
   component: DEFAULT_LAYOUT,
   meta: {
     locale: 'menu.event',
     requiresAuth: true,
-    icon: 'icon-dashboard',
+    icon: 'icon-fire',
     order: 1,
   },
   children: [
     {
       path: 'manage',
-      name: 'manage',
+      name: 'EventManage',
       component: () => import('@/views/event/manage/index.vue'),
       meta: {
         locale: 'menu.event.manage',
@@ -24,7 +24,7 @@ const DASHBOARD: AppRouteRecordRaw = {
     },
     {
       path: 'create',
-      name: 'create',
+      name: 'EventCreate',
       component: () => import('@/views/event/create/index.vue'),
       meta: {
         locale: 'menu.event.create',
@@ -33,16 +33,26 @@ const DASHBOARD: AppRouteRecordRaw = {
       },
     },
     {
-        path: 'audit',
-        name: 'audit',
-        component: () => import('@/views/event/audit/index.vue'),
-        meta: {
-          locale: 'menu.event.audit',
-          requiresAuth: true,
-          roles: ['admin'],
-        },
+      path: 'audit',
+      name: 'EventAudit',
+      component: () => import('@/views/event/audit/index.vue'),
+      meta: {
+        locale: 'menu.event.audit',
+        requiresAuth: true,
+        roles: ['admin'],
       },
+    },
+    {
+      path: 'settings',
+      name: 'EventSettings',
+      component: () => import('@/views/event/settings/index.vue'),
+      meta: {
+        locale: 'menu.event.settings',
+        requiresAuth: true,
+        roles: ['admin'],
+      },
+    },
   ],
 };
 
-export default DASHBOARD;
+export default EVENTS;

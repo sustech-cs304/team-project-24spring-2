@@ -5,7 +5,7 @@
         <img
           alt="logo"
           src="//tse1-mm.cn.bing.net/th/id/OIP-C.fXpoThIQDcXWZKAMVBpevwHaB7?rs=1&pid=ImgDetMain"
-            style="width: 128px; height: 35px;"
+          style="width: 128px; height: 35px"
         />
         <a-typography-title
           :style="{ margin: 0, fontSize: '18px' }"

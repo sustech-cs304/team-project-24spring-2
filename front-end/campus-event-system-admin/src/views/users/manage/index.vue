@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <Breadcrumb :items="['menu.event', 'menu.event.audit']" />
-    <a-card class="general-card" :title="$t('menu.event.audit')">
+    <Breadcrumb :items="['menu.users', 'menu.users.manage']" />
+    <a-card class="general-card" :title="$t('menu.users.manage')">
       <a-row>
         <a-col :flex="1">
           <a-form
@@ -14,50 +14,55 @@
               <a-col :span="8">
                 <a-form-item
                   field="number"
-                  :label="$t('manageEventTable.form.number')"
+                  :label="$t('manageUsersTable.form.number')"
                 >
                   <a-input
                     v-model="formModel.number"
-                    :placeholder="$t('manageEventTable.form.number.placeholder')"
+                    :placeholder="
+                      $t('manageUsersTable.form.number.placeholder')
+                    "
                   />
                 </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-item field="name" :label="$t('manageEventTable.form.name')">
+                <a-form-item
+                  field="name"
+                  :label="$t('manageUsersTable.form.name')"
+                >
                   <a-input
                     v-model="formModel.name"
-                    :placeholder="$t('manageEventTable.form.name.placeholder')"
+                    :placeholder="$t('manageUsersTable.form.name.placeholder')"
                   />
                 </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item
                   field="contentType"
-                  :label="$t('manageEventTable.form.contentType')"
+                  :label="$t('manageUsersTable.form.contentType')"
                 >
                   <a-select
                     v-model="formModel.contentType"
                     :options="contentTypeOptions"
-                    :placeholder="$t('manageEventTable.form.selectDefault')"
+                    :placeholder="$t('manageUsersTable.form.selectDefault')"
                   />
                 </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item
                   field="filterType"
-                  :label="$t('manageEventTable.form.filterType')"
+                  :label="$t('manageUsersTable.form.filterType')"
                 >
                   <a-select
                     v-model="formModel.filterType"
                     :options="filterTypeOptions"
-                    :placeholder="$t('manageEventTable.form.selectDefault')"
+                    :placeholder="$t('manageUsersTable.form.selectDefault')"
                   />
                 </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item
                   field="createdTime"
-                  :label="$t('manageEventTable.form.createdTime')"
+                  :label="$t('manageUsersTable.form.createdTime')"
                 >
                   <a-range-picker
                     v-model="formModel.createdTime"
@@ -68,12 +73,12 @@
               <a-col :span="8">
                 <a-form-item
                   field="status"
-                  :label="$t('manageEventTable.form.status')"
+                  :label="$t('manageUsersTable.form.status')"
                 >
                   <a-select
                     v-model="formModel.status"
                     :options="statusOptions"
-                    :placeholder="$t('manageEventTable.form.selectDefault')"
+                    :placeholder="$t('manageUsersTable.form.selectDefault')"
                   />
                 </a-form-item>
               </a-col>
@@ -87,13 +92,13 @@
               <template #icon>
                 <icon-search />
               </template>
-              {{ $t('manageEventTable.form.search') }}
+              {{ $t('manageUsersTable.form.search') }}
             </a-button>
             <a-button @click="reset">
               <template #icon>
                 <icon-refresh />
               </template>
-              {{ $t('manageEventTable.form.reset') }}
+              {{ $t('manageUsersTable.form.reset') }}
             </a-button>
           </a-space>
         </a-col>
@@ -102,14 +107,26 @@
       <a-row style="margin-bottom: 16px">
         <a-col :span="12">
           <a-space>
-            <!-- <a-space> -->
-            <a-button type="primary">
+            <a-button type="primary" @click="create">
+              <template #icon>
+                <icon-plus />
+              </template>
+              {{ $t('manageUsersTable.operation.create') }}
+            </a-button>
+            <a-upload action="/">
+              <template #upload-button>
+                <a-button>
+                  {{ $t('manageUsersTable.operation.import') }}
+                </a-button>
+              </template>
+            </a-upload>
+
+            <a-button>
               <template #icon>
                 <icon-download />
               </template>
-              {{ $t('manageEventTable.operation.download') }}
+              {{ $t('manageUsersTable.operation.download') }}
             </a-button>
-            <!-- </a-space> -->
           </a-space>
         </a-col>
         <a-col
@@ -118,10 +135,10 @@
         >
           <a-button @click="search">
             <template #icon> <icon-refresh /> </template>
-            {{ $t('manageEventTable.actions.refresh') }}
+            {{ $t('manageUsersTable.actions.refresh') }}
           </a-button>
           <a-dropdown @select="handleSelectDensity">
-            <a-tooltip :content="$t('manageEventTable.actions.density')">
+            <a-tooltip :content="$t('manageUsersTable.actions.density')">
               <div class="action-icon"><icon-line-height size="18" /></div>
             </a-tooltip>
             <template #content>
@@ -135,7 +152,7 @@
               </a-doption>
             </template>
           </a-dropdown>
-          <a-tooltip :content="$t('manageEventTable.actions.columnSetting')">
+          <a-tooltip :content="$t('manageUsersTable.actions.columnSetting')">
             <a-popover
               trigger="click"
               position="bl"
@@ -212,20 +229,23 @@
                 src="//p3-armor.byteimg.com/tos-cn-i-49unhts6dw/ea8b09190046da0ea7e070d83c5d1731.svg~tplv-49unhts6dw-image.image"
               />
             </a-avatar>
-            {{ $t(`manageEventTable.form.contentType.${record.contentType}`) }}
+            {{ $t(`manageUsersTable.form.contentType.${record.contentType}`) }}
           </a-space>
         </template>
         <template #filterType="{ record }">
-          {{ $t(`manageEventTable.form.filterType.${record.filterType}`) }}
+          {{ $t(`manageUsersTable.form.filterType.${record.filterType}`) }}
         </template>
         <template #status="{ record }">
           <span v-if="record.status === 'offline'" class="circle"></span>
           <span v-else class="circle pass"></span>
-          {{ $t(`manageEventTable.form.status.${record.status}`) }}
+          {{ $t(`manageUsersTable.form.status.${record.status}`) }}
         </template>
         <template #operations>
           <a-button v-permission="['admin']" type="text" size="small">
-            {{ $t('manageEventTable.columns.operations.audit') }}
+            {{ $t('manageUsersTable.columns.operations.view') }}
+          </a-button>
+          <a-button v-permission="['admin']" type="text" size="small">
+            {{ $t('manageUsersTable.columns.operations.edit') }}
           </a-button>
         </template>
       </a-table>
@@ -234,11 +254,12 @@
 </template>
 
 <script lang="ts" setup>
-  import { useRoute, useRouter, RouteRecordRaw } from 'vue-router';
+  import { useRouter } from 'vue-router';
   import { computed, ref, reactive, watch, nextTick } from 'vue';
   import { useI18n } from 'vue-i18n';
   import useLoading from '@/hooks/loading';
-  import { queryPolicyList, EventRecord, EventParams } from '@/api/event';
+  import { queryPolicyList, usersRecord, usersParams } from '@/api/users';
+
   import { Pagination } from '@/types/global';
   import type { SelectOptionData } from '@arco-design/web-vue/es/select/interface';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
@@ -261,7 +282,7 @@
   };
   const { loading, setLoading } = useLoading(true);
   const { t } = useI18n();
-  const renderData = ref<EventRecord[]>([]);
+  const renderData = ref<usersRecord[]>([]);
   const formModel = ref(generateFormModel());
   const cloneColumns = ref<Column[]>([]);
   const showColumns = ref<Column[]>([]);
@@ -277,60 +298,60 @@
   });
   const densityList = computed(() => [
     {
-      name: t('manageEventTable.size.mini'),
+      name: t('manageUsersTable.size.mini'),
       value: 'mini',
     },
     {
-      name: t('manageEventTable.size.small'),
+      name: t('manageUsersTable.size.small'),
       value: 'small',
     },
     {
-      name: t('manageEventTable.size.medium'),
+      name: t('manageUsersTable.size.medium'),
       value: 'medium',
     },
     {
-      name: t('manageEventTable.size.large'),
+      name: t('manageUsersTable.size.large'),
       value: 'large',
     },
   ]);
   const columns = computed<TableColumnData[]>(() => [
     {
-      title: t('manageEventTable.columns.index'),
+      title: t('manageUsersTable.columns.index'),
       dataIndex: 'index',
       slotName: 'index',
     },
     {
-      title: t('manageEventTable.columns.number'),
+      title: t('manageUsersTable.columns.number'),
       dataIndex: 'number',
     },
     {
-      title: t('manageEventTable.columns.name'),
+      title: t('manageUsersTable.columns.name'),
       dataIndex: 'name',
     },
     {
-      title: t('manageEventTable.columns.contentType'),
+      title: t('manageUsersTable.columns.contentType'),
       dataIndex: 'contentType',
       slotName: 'contentType',
     },
+    // {
+    //   title: t('manageUsersTable.columns.supervisor'),
+    //   dataIndex: 'supervisor',
+    // },
     {
-      title: t('manageEventTable.columns.supervisor'),
-      dataIndex: 'supervisor',
-    },
-    {
-      title: t('manageEventTable.columns.startTime'),
+      title: t('manageUsersTable.columns.startTime'),
       dataIndex: 'startTime',
     },
     {
-      title: t('manageEventTable.columns.endTime'),
+      title: t('manageUsersTable.columns.endTime'),
       dataIndex: 'endTime',
     },
     {
-      title: t('manageEventTable.columns.status'),
+      title: t('manageUsersTable.columns.status'),
       dataIndex: 'status',
       slotName: 'status',
     },
     {
-      title: t('manageEventTable.columns.operations'),
+      title: t('manageUsersTable.columns.operations'),
       dataIndex: 'operations',
       slotName: 'operations',
       align: 'center',
@@ -339,40 +360,40 @@
 
   const contentTypeOptions = computed<SelectOptionData[]>(() => [
     {
-      label: t('manageEventTable.form.contentType.img'),
+      label: t('manageUsersTable.form.contentType.img'),
       value: 'img',
     },
     {
-      label: t('manageEventTable.form.contentType.horizontalVideo'),
+      label: t('manageUsersTable.form.contentType.horizontalVideo'),
       value: 'horizontalVideo',
     },
     {
-      label: t('manageEventTable.form.contentType.verticalVideo'),
+      label: t('manageUsersTable.form.contentType.verticalVideo'),
       value: 'verticalVideo',
     },
   ]);
   const filterTypeOptions = computed<SelectOptionData[]>(() => [
     {
-      label: t('manageEventTable.form.filterType.artificial'),
+      label: t('manageUsersTable.form.filterType.artificial'),
       value: 'artificial',
     },
     {
-      label: t('manageEventTable.form.filterType.rules'),
+      label: t('manageUsersTable.form.filterType.rules'),
       value: 'rules',
     },
   ]);
   const statusOptions = computed<SelectOptionData[]>(() => [
     {
-      label: t('manageEventTable.form.status.online'),
+      label: t('manageUsersTable.form.status.online'),
       value: 'online',
     },
     {
-      label: t('manageEventTable.form.status.offline'),
+      label: t('manageUsersTable.form.status.offline'),
       value: 'offline',
     },
   ]);
   const fetchData = async (
-    params: EventParams = { current: 1, pageSize: 20 }
+    params: usersParams = { current: 1, pageSize: 20 }
   ) => {
     setLoading(true);
     try {
@@ -391,12 +412,12 @@
     fetchData({
       ...basePagination,
       ...formModel.value,
-    } as unknown as EventParams);
+    } as unknown as usersParams);
   };
 
   const create = () => {
-    // openWindow('/event/create');
-    router.push('/event/create');
+    // openWindow('/users/create');
+    router.push('/users/create');
   };
 
   const onPageChange = (current: number) => {
@@ -477,7 +498,7 @@
 
 <script lang="ts">
   export default {
-    name: 'eventTable',
+    name: 'UsersTable',
   };
 </script>
 

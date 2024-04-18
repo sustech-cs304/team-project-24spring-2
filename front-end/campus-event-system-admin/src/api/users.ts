@@ -4,7 +4,7 @@ import type { DescData } from '@arco-design/web-vue/es/descriptions/interface';
 
 // MANAGE API
 
-export interface EventRecord {
+export interface UsersRecord {
   id: string;
   number: number;
   name: string;
@@ -17,18 +17,18 @@ export interface EventRecord {
   endTime: string;
 }
 
-export interface EventParams extends Partial<EventRecord> {
+export interface UsersParams extends Partial<UsersRecord> {
   current: number;
   pageSize: number;
 }
 
 export interface PolicyListRes {
-  list: EventRecord[];
+  list: UsersRecord[];
   total: number;
 }
 
-export function queryPolicyList(params: EventParams) {
-  return axios.get<PolicyListRes>('/api/event/query', {
+export function queryPolicyList(params: UsersParams) {
+  return axios.get<PolicyListRes>('/api/users/query', {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -63,10 +63,10 @@ export function queryRulesPresetList() {
 // CREATE API
 
 export interface BaseInfoModel {
-  eventName: string;
-  eventType: string;
-  eventTime: string[];
-  eventAddress: string;
+  usersName: string;
+  usersType: string;
+  usersTime: string[];
+  usersAddress: string;
 }
 export interface AdvanceInfoModel {
   advertisingSource: string;
@@ -78,6 +78,6 @@ export interface AdvanceInfoModel {
 
 export type UnitChannelModel = BaseInfoModel & AdvanceInfoModel;
 
-export function submiteventForm(data: UnitChannelModel) {
-  return axios.post('/api/event/create', { data });
+export function submitusersForm(data: UnitChannelModel) {
+  return axios.post('/api/users/create', { data });
 }

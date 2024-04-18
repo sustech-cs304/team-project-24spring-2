@@ -14,50 +14,50 @@
               <a-col :span="8">
                 <a-form-item
                   field="number"
-                  :label="$t('eventTable.form.number')"
+                  :label="$t('manageEventTable.form.number')"
                 >
                   <a-input
                     v-model="formModel.number"
-                    :placeholder="$t('eventTable.form.number.placeholder')"
+                    :placeholder="$t('manageEventTable.form.number.placeholder')"
                   />
                 </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-item field="name" :label="$t('eventTable.form.name')">
+                <a-form-item field="name" :label="$t('manageEventTable.form.name')">
                   <a-input
                     v-model="formModel.name"
-                    :placeholder="$t('eventTable.form.name.placeholder')"
+                    :placeholder="$t('manageEventTable.form.name.placeholder')"
                   />
                 </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item
                   field="contentType"
-                  :label="$t('eventTable.form.contentType')"
+                  :label="$t('manageEventTable.form.contentType')"
                 >
                   <a-select
                     v-model="formModel.contentType"
                     :options="contentTypeOptions"
-                    :placeholder="$t('eventTable.form.selectDefault')"
+                    :placeholder="$t('manageEventTable.form.selectDefault')"
                   />
                 </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item
                   field="filterType"
-                  :label="$t('eventTable.form.filterType')"
+                  :label="$t('manageEventTable.form.filterType')"
                 >
                   <a-select
                     v-model="formModel.filterType"
                     :options="filterTypeOptions"
-                    :placeholder="$t('eventTable.form.selectDefault')"
+                    :placeholder="$t('manageEventTable.form.selectDefault')"
                   />
                 </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item
                   field="createdTime"
-                  :label="$t('eventTable.form.createdTime')"
+                  :label="$t('manageEventTable.form.createdTime')"
                 >
                   <a-range-picker
                     v-model="formModel.createdTime"
@@ -68,12 +68,12 @@
               <a-col :span="8">
                 <a-form-item
                   field="status"
-                  :label="$t('eventTable.form.status')"
+                  :label="$t('manageEventTable.form.status')"
                 >
                   <a-select
                     v-model="formModel.status"
                     :options="statusOptions"
-                    :placeholder="$t('eventTable.form.selectDefault')"
+                    :placeholder="$t('manageEventTable.form.selectDefault')"
                   />
                 </a-form-item>
               </a-col>
@@ -87,13 +87,13 @@
               <template #icon>
                 <icon-search />
               </template>
-              {{ $t('eventTable.form.search') }}
+              {{ $t('manageEventTable.form.search') }}
             </a-button>
             <a-button @click="reset">
               <template #icon>
                 <icon-refresh />
               </template>
-              {{ $t('eventTable.form.reset') }}
+              {{ $t('manageEventTable.form.reset') }}
             </a-button>
           </a-space>
         </a-col>
@@ -106,12 +106,12 @@
               <template #icon>
                 <icon-plus />
               </template>
-              {{ $t('eventTable.operation.create') }}
+              {{ $t('manageEventTable.operation.create') }}
             </a-button>
             <a-upload action="/">
               <template #upload-button>
                 <a-button>
-                  {{ $t('eventTable.operation.import') }}
+                  {{ $t('manageEventTable.operation.import') }}
                 </a-button>
               </template>
             </a-upload>
@@ -120,7 +120,7 @@
               <template #icon>
                 <icon-download />
               </template>
-              {{ $t('eventTable.operation.download') }}
+              {{ $t('manageEventTable.operation.download') }}
             </a-button>
           </a-space>
         </a-col>
@@ -130,10 +130,10 @@
         >
           <a-button @click="search">
             <template #icon> <icon-refresh /> </template>
-            {{ $t('eventTable.actions.refresh') }}
+            {{ $t('manageEventTable.actions.refresh') }}
           </a-button>
           <a-dropdown @select="handleSelectDensity">
-            <a-tooltip :content="$t('eventTable.actions.density')">
+            <a-tooltip :content="$t('manageEventTable.actions.density')">
               <div class="action-icon"><icon-line-height size="18" /></div>
             </a-tooltip>
             <template #content>
@@ -147,7 +147,7 @@
               </a-doption>
             </template>
           </a-dropdown>
-          <a-tooltip :content="$t('eventTable.actions.columnSetting')">
+          <a-tooltip :content="$t('manageEventTable.actions.columnSetting')">
             <a-popover
               trigger="click"
               position="bl"
@@ -224,23 +224,23 @@
                 src="//p3-armor.byteimg.com/tos-cn-i-49unhts6dw/ea8b09190046da0ea7e070d83c5d1731.svg~tplv-49unhts6dw-image.image"
               />
             </a-avatar>
-            {{ $t(`eventTable.form.contentType.${record.contentType}`) }}
+            {{ $t(`manageEventTable.form.contentType.${record.contentType}`) }}
           </a-space>
         </template>
         <template #filterType="{ record }">
-          {{ $t(`eventTable.form.filterType.${record.filterType}`) }}
+          {{ $t(`manageEventTable.form.filterType.${record.filterType}`) }}
         </template>
         <template #status="{ record }">
           <span v-if="record.status === 'offline'" class="circle"></span>
           <span v-else class="circle pass"></span>
-          {{ $t(`eventTable.form.status.${record.status}`) }}
+          {{ $t(`manageEventTable.form.status.${record.status}`) }}
         </template>
         <template #operations>
           <a-button v-permission="['admin']" type="text" size="small">
-            {{ $t('eventTable.columns.operations.view') }}
+            {{ $t('manageEventTable.columns.operations.view') }}
           </a-button>
           <a-button v-permission="['admin']" type="text" size="small">
-            {{ $t('eventTable.columns.operations.edit') }}
+            {{ $t('manageEventTable.columns.operations.edit') }}
           </a-button>
         </template>
       </a-table>
@@ -253,7 +253,7 @@
   import { computed, ref, reactive, watch, nextTick } from 'vue';
   import { useI18n } from 'vue-i18n';
   import useLoading from '@/hooks/loading';
-  import { queryPolicyList, PolicyRecord, PolicyParams } from '@/api/event';
+  import { queryPolicyList, EventRecord, EventParams } from '@/api/event';
   import { Pagination } from '@/types/global';
   import type { SelectOptionData } from '@arco-design/web-vue/es/select/interface';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
@@ -276,7 +276,7 @@
   };
   const { loading, setLoading } = useLoading(true);
   const { t } = useI18n();
-  const renderData = ref<PolicyRecord[]>([]);
+  const renderData = ref<EventRecord[]>([]);
   const formModel = ref(generateFormModel());
   const cloneColumns = ref<Column[]>([]);
   const showColumns = ref<Column[]>([]);
@@ -292,60 +292,60 @@
   });
   const densityList = computed(() => [
     {
-      name: t('eventTable.size.mini'),
+      name: t('manageEventTable.size.mini'),
       value: 'mini',
     },
     {
-      name: t('eventTable.size.small'),
+      name: t('manageEventTable.size.small'),
       value: 'small',
     },
     {
-      name: t('eventTable.size.medium'),
+      name: t('manageEventTable.size.medium'),
       value: 'medium',
     },
     {
-      name: t('eventTable.size.large'),
+      name: t('manageEventTable.size.large'),
       value: 'large',
     },
   ]);
   const columns = computed<TableColumnData[]>(() => [
     {
-      title: t('eventTable.columns.index'),
+      title: t('manageEventTable.columns.index'),
       dataIndex: 'index',
       slotName: 'index',
     },
     {
-      title: t('eventTable.columns.number'),
+      title: t('manageEventTable.columns.number'),
       dataIndex: 'number',
     },
     {
-      title: t('eventTable.columns.name'),
+      title: t('manageEventTable.columns.name'),
       dataIndex: 'name',
     },
     {
-      title: t('eventTable.columns.contentType'),
+      title: t('manageEventTable.columns.contentType'),
       dataIndex: 'contentType',
       slotName: 'contentType',
     },
     // {
-    //   title: t('eventTable.columns.supervisor'),
+    //   title: t('manageEventTable.columns.supervisor'),
     //   dataIndex: 'supervisor',
     // },
     {
-      title: t('eventTable.columns.startTime'),
+      title: t('manageEventTable.columns.startTime'),
       dataIndex: 'startTime',
     },
     {
-      title: t('eventTable.columns.endTime'),
+      title: t('manageEventTable.columns.endTime'),
       dataIndex: 'endTime',
     },
     {
-      title: t('eventTable.columns.status'),
+      title: t('manageEventTable.columns.status'),
       dataIndex: 'status',
       slotName: 'status',
     },
     {
-      title: t('eventTable.columns.operations'),
+      title: t('manageEventTable.columns.operations'),
       dataIndex: 'operations',
       slotName: 'operations',
       align: 'center',
@@ -354,40 +354,40 @@
 
   const contentTypeOptions = computed<SelectOptionData[]>(() => [
     {
-      label: t('eventTable.form.contentType.img'),
+      label: t('manageEventTable.form.contentType.img'),
       value: 'img',
     },
     {
-      label: t('eventTable.form.contentType.horizontalVideo'),
+      label: t('manageEventTable.form.contentType.horizontalVideo'),
       value: 'horizontalVideo',
     },
     {
-      label: t('eventTable.form.contentType.verticalVideo'),
+      label: t('manageEventTable.form.contentType.verticalVideo'),
       value: 'verticalVideo',
     },
   ]);
   const filterTypeOptions = computed<SelectOptionData[]>(() => [
     {
-      label: t('eventTable.form.filterType.artificial'),
+      label: t('manageEventTable.form.filterType.artificial'),
       value: 'artificial',
     },
     {
-      label: t('eventTable.form.filterType.rules'),
+      label: t('manageEventTable.form.filterType.rules'),
       value: 'rules',
     },
   ]);
   const statusOptions = computed<SelectOptionData[]>(() => [
     {
-      label: t('eventTable.form.status.online'),
+      label: t('manageEventTable.form.status.online'),
       value: 'online',
     },
     {
-      label: t('eventTable.form.status.offline'),
+      label: t('manageEventTable.form.status.offline'),
       value: 'offline',
     },
   ]);
   const fetchData = async (
-    params: PolicyParams = { current: 1, pageSize: 20 }
+    params: EventParams = { current: 1, pageSize: 20 }
   ) => {
     setLoading(true);
     try {
@@ -406,7 +406,7 @@
     fetchData({
       ...basePagination,
       ...formModel.value,
-    } as unknown as PolicyParams);
+    } as unknown as EventParams);
   };
 
   const create = () => {
