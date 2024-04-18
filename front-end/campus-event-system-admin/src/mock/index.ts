@@ -14,6 +14,7 @@ import '@/views/event/settings/mock';
 
 import '@/views/users/manage/mock';
 import '@/views/users/create/mock';
+import '@/views/users/settings/mock';
 
 import '@/views/list/card/mock';
 import '@/views/list/search-table/mock';

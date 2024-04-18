@@ -22,16 +22,16 @@ const USERS: AppRouteRecordRaw = {
         roles: ['admin'],
       },
     },
-    // {
-    //   path: 'create',
-    //   name: 'create',
-    //   component: () => import('@/views/users/create/index.vue'),
-    //   meta: {
-    //     locale: 'menu.users.create',
-    //     requiresAuth: true,
-    //     roles: ['admin'],
-    //   },
-    // },
+    {
+      path: 'settings',
+      name: 'usersSettings',
+      component: () => import('@/views/users/settings/index.vue'),
+      meta: {
+        locale: 'menu.users.settings',
+        requiresAuth: true,
+        roles: ['admin'],
+      },
+    },
   ],
 };
 

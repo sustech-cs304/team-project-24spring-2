@@ -8,15 +8,14 @@
             <a-col :span="24">
               <a-tabs :default-active-tab="1" type="rounded">
                 <a-tab-pane key="1" :title="$t('usersSettings.tab.title.all')">
-                  <QualityInspection />
-                  <TheService />
-                  <RulesPreset />
+                  <ManagerSettings />
                 </a-tab-pane>
                 <a-tab-pane
                   key="2"
                   :title="$t('usersSettings.tab.title.content')"
                 >
                   <QualityInspection />
+                  <ManagerSettings />
                 </a-tab-pane>
                 <a-tab-pane
                   key="3"
@@ -31,6 +30,7 @@
                   <RulesPreset />
                 </a-tab-pane>
               </a-tabs>
+              
             </a-col>
             <a-input-search
               :placeholder="$t('usersSettings.searchInput.placeholder')"
@@ -47,6 +47,7 @@
   import QualityInspection from './components/quality-inspection.vue';
   import TheService from './components/the-service.vue';
   import RulesPreset from './components/rules-preset.vue';
+  import ManagerSettings from './components/manager-settings.vue';
 </script>
 
 <script lang="ts">

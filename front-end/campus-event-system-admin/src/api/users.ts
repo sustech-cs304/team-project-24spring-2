@@ -27,8 +27,8 @@ export interface PolicyListRes {
   total: number;
 }
 
-export function queryPolicyList(params: UsersParams) {
-  return axios.get<PolicyListRes>('/api/users/query', {
+export function queryUsersGroupList(params: UsersParams) {
+  return axios.get<PolicyListRes>('/api/users/query_group', {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -36,29 +36,19 @@ export function queryPolicyList(params: UsersParams) {
   });
 }
 
-export interface ServiceRecord {
+export interface UsersGroup {
   id: number;
   title: string;
+  name: string;
   description: string;
-  name?: string;
-  actionType?: string;
   icon?: string;
-  data?: DescData[];
-  enable?: boolean;
-  expires?: boolean;
 }
 
-export function queryInspectionList() {
-  return axios.get('/api/list/quality-inspection');
+
+export function queryPermissionGroup() {
+  return axios.get('/api/users/permission-group');
 }
 
-export function queryTheServiceList() {
-  return axios.get('/api/list/the-service');
-}
-
-export function queryRulesPresetList() {
-  return axios.get('/api/list/rules-preset');
-}
 
 // CREATE API
 
