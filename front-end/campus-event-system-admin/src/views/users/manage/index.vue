@@ -258,7 +258,7 @@
   import { computed, ref, reactive, watch, nextTick } from 'vue';
   import { useI18n } from 'vue-i18n';
   import useLoading from '@/hooks/loading';
-  import { queryPolicyList, usersRecord, usersParams } from '@/api/users';
+  import { queryUsersList, UsersRecord, UsersParams } from '@/api/users';
 
   import { Pagination } from '@/types/global';
   import type { SelectOptionData } from '@arco-design/web-vue/es/select/interface';
@@ -282,7 +282,7 @@
   };
   const { loading, setLoading } = useLoading(true);
   const { t } = useI18n();
-  const renderData = ref<usersRecord[]>([]);
+  const renderData = ref<UsersRecord[]>([]);
   const formModel = ref(generateFormModel());
   const cloneColumns = ref<Column[]>([]);
   const showColumns = ref<Column[]>([]);
@@ -393,11 +393,11 @@
     },
   ]);
   const fetchData = async (
-    params: usersParams = { current: 1, pageSize: 20 }
+    params: UsersParams = { current: 1, pageSize: 20 }
   ) => {
     setLoading(true);
     try {
-      const { data } = await queryPolicyList(params);
+      const { data } = await queryUsersList(params);
       renderData.value = data.list;
       pagination.current = params.current;
       pagination.total = data.total;
@@ -412,7 +412,7 @@
     fetchData({
       ...basePagination,
       ...formModel.value,
-    } as unknown as usersParams);
+    } as unknown as UsersParams);
   };
 
   const create = () => {

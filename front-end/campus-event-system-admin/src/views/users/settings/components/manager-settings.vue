@@ -1,8 +1,8 @@
 <template>
   <div class="list-wrap" >
-    <a-typography-title class="block-title" :heading="6">
+    <!-- <a-typography-title class="block-title" :heading="6">
       {{ $t('cardList.tab.title.service') }}
-    </a-typography-title>
+    </a-typography-title> -->
     <a-row
       v-for="item in renderData"
       :key="item.id"

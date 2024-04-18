@@ -6,36 +6,8 @@
         <a-card class="general-card" :title="$t('menu.users.settings')">
           <a-row justify="space-between">
             <a-col :span="24">
-              <a-tabs :default-active-tab="1" type="rounded">
-                <a-tab-pane key="1" :title="$t('usersSettings.tab.title.all')">
-                  <ManagerSettings />
-                </a-tab-pane>
-                <a-tab-pane
-                  key="2"
-                  :title="$t('usersSettings.tab.title.content')"
-                >
-                  <QualityInspection />
-                  <ManagerSettings />
-                </a-tab-pane>
-                <a-tab-pane
-                  key="3"
-                  :title="$t('usersSettings.tab.title.service')"
-                >
-                  <TheService />
-                </a-tab-pane>
-                <a-tab-pane
-                  key="4"
-                  :title="$t('usersSettings.tab.title.preset')"
-                >
-                  <RulesPreset />
-                </a-tab-pane>
-              </a-tabs>
-              
+              <ManagerSettings />
             </a-col>
-            <a-input-search
-              :placeholder="$t('usersSettings.searchInput.placeholder')"
-              style="width: 240px; position: absolute; top: 60px; right: 20px"
-            />
           </a-row>
         </a-card>
       </a-col>
@@ -44,9 +16,6 @@
 </template>
 
 <script lang="ts" setup>
-  import QualityInspection from './components/quality-inspection.vue';
-  import TheService from './components/the-service.vue';
-  import RulesPreset from './components/rules-preset.vue';
   import ManagerSettings from './components/manager-settings.vue';
 </script>
 

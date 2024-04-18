@@ -27,8 +27,8 @@ export interface PolicyListRes {
   total: number;
 }
 
-export function queryUsersGroupList(params: UsersParams) {
-  return axios.get<PolicyListRes>('/api/users/query_group', {
+export function queryUsersList(params: UsersParams) {
+  return axios.get<PolicyListRes>('/api/users/query_users', {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
