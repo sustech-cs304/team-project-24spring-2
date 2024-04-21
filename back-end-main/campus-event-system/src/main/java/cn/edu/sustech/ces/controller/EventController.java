@@ -142,9 +142,9 @@ public class EventController {
         return ResponseEntity.ok(eventList);
     }
 
-    @PostMapping("/audit-event")
+    @PostMapping("/delete-event")
     @PreAuthorize("hasAnyRole('INSTITUTE_ADMIN', 'DEPARTMENT_ADMIN', 'SUPER_ADMIN')")
-    public ResponseEntity<Event> auditEvent(@RequestParam UUID eventId, @RequestParam EventStatus status) {
+    public ResponseEntity<Event> deleteEvent(@RequestParam UUID eventId) {
 
         CESUserDetails userDetails = (CESUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userDetails.getUser();
@@ -157,6 +157,22 @@ public class EventController {
 
         if (user.getPermissionGroup() == PermissionGroup.DEPARTMENT_ADMIN && !event.getPublisher().equals(user.getId())) {
             return ResponseEntity.badRequest().build();
+        }
+
+        eventService.deleteEvent(event);
+
+        return ResponseEntity.ok(event);
+
+    }
+
+    @PostMapping("/audit-event")
+    @PreAuthorize("hasAnyRole('INSTITUTE_ADMIN', 'SUPER_ADMIN')")
+    public ResponseEntity<Event> auditEvent(@RequestParam UUID eventId, @RequestParam EventStatus status) {
+
+        Event event = eventService.getEventById(eventId);
+
+        if (event == null) {
+            return ResponseEntity.notFound().build();
         }
 
         event.setStatus(status);

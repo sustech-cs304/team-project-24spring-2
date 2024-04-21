@@ -69,4 +69,9 @@ public class EventService {
     public long countPendingAndInProgressEvent() {
         return eventRepository.countByStatusIn(Set.of(EventStatus.PENDING, EventStatus.IN_PROGRESS));
     }
+
+    public void deleteEvent(Event event) {
+        eventRepository.delete(event);
+    }
+
 }
