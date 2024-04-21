@@ -99,9 +99,14 @@ public class EventController {
 
     }
 
+    @PostMapping("/explore-events-size")
+    public ResponseEntity<Long> exploreEventsSize() {
+        return ResponseEntity.ok(eventService.countPendingAndInProgressEvent());
+    }
+
     @PostMapping("/explore-events")
-    public ResponseEntity<List<Event>> exploreEvents(@RequestParam int page) {
-        Pageable pageable = PageRequest.of(page, 10);
+    public ResponseEntity<List<Event>> exploreEvents(@RequestParam int page, @RequestParam(required = false, defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
         Page<Event> events = eventService.getPendingAndInProgressEvent(pageable);
         List<Event> eventList = events.getContent();
         return ResponseEntity.ok(eventList);

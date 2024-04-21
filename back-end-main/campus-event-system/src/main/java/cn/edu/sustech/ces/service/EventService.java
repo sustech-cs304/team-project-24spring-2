@@ -66,4 +66,7 @@ public class EventService {
         return eventRepository.findAllByPublisher(pageable, user.getId());
     }
 
+    public long countPendingAndInProgressEvent() {
+        return eventRepository.countByStatusIn(Set.of(EventStatus.PENDING, EventStatus.IN_PROGRESS));
+    }
 }

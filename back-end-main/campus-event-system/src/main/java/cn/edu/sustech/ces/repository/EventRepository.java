@@ -22,7 +22,9 @@ public interface EventRepository extends ListCrudRepository<Event, UUID> {
     List<Event> findAllByPublisher(UUID publisher);
     List<Event> findAllByStatus(EventStatus status);
 
-    Page<Event> findAllByStatusIn(Pageable pageable, Set<EventStatus> pending);
+    Page<Event> findAllByStatusIn(Pageable pageable, Set<EventStatus> statusSet);
+
+    long countByStatusIn(Set<EventStatus> statusSet);
 
     Page<Event> findAll(Pageable pageable);
 
