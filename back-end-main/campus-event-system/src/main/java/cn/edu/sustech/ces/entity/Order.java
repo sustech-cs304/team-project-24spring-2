@@ -25,13 +25,11 @@ public class Order {
 
     private String name;
 
-    private String description;
+    private UUID ticketId;
 
     private Double price;
 
     private UUID payerId;
-
-    private UUID eventId;
 
     @Enumerated(EnumType.ORDINAL)
     private OrderStatus status;

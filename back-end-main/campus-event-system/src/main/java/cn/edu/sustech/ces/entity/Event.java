@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -31,8 +32,10 @@ public class Event {
     @Enumerated(EnumType.ORDINAL)
     private EventStatus status;
 
+    @Column(nullable = false)
     private Long startTime;
 
+    @Column(nullable = false)
     private Long endTime;
 
     @Column(nullable = false)
@@ -40,16 +43,19 @@ public class Event {
 
     private String imageUrl;
 
-    @Column(nullable = false)
-    private Integer availableCapacity;
+    @ElementCollection
+    private List<UUID> tickets;
 
     private Integer altitude;
 
     private Integer longitude;
 
-    public void setLocation(Integer altitude, Integer longitude) {
+    private String locationName;
+
+    public void setLocation(Integer altitude, Integer longitude, String locationName) {
         this.altitude = altitude;
         this.longitude = longitude;
+        this.locationName = locationName;
     }
 
 }

@@ -1,16 +1,19 @@
 package cn.edu.sustech.ces.service;
 
 import cn.edu.sustech.ces.entity.Event;
-import cn.edu.sustech.ces.entity.UserEvent;
+import cn.edu.sustech.ces.entity.Ticket;
+import cn.edu.sustech.ces.entity.User;
 import cn.edu.sustech.ces.enums.EventStatus;
 import cn.edu.sustech.ces.repository.EventRepository;
-import cn.edu.sustech.ces.repository.UserEventRepository;
 import cn.edu.sustech.ces.repository.UserRepository;
 import com.alibaba.fastjson.JSONObject;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -18,12 +21,6 @@ import java.util.UUID;
 public class EventService {
 
     private final EventRepository eventRepository;
-    private final UserEventRepository userEventRepository;
-
-    public List<UUID> getParticipants(UUID eventId) {
-        List<UserEvent> userEvents = userEventRepository.findAllByEventId(eventId);
-        return userEvents.stream().map(UserEvent::getUserId).toList();
-    }
 
     public Event getEventById(UUID eventId) {
         return eventRepository.findById(eventId).orElse(null);
@@ -33,18 +30,7 @@ public class EventService {
         return eventRepository.findAllByTitle(title);
     }
 
-    public Event createEvent(String title, UUID publisher, Long publishTime, Long startTime, Long endTime, String documentUrl, String imageUrl, Integer availableCapacity, Integer altitude, Integer longitude) {
-        Event event = new Event();
-        event.setTitle(title);
-        event.setPublisher(publisher);
-        event.setPublishTime(publishTime);
-        event.setStartTime(startTime);
-        event.setEndTime(endTime);
-        event.setDocumentUrl(documentUrl);
-        event.setImageUrl(imageUrl);
-        event.setAvailableCapacity(availableCapacity);
-        event.setLocation(altitude, longitude);
-        event.setStatus(EventStatus.AUDITING);
+    public Event saveEvent(Event event) {
         eventRepository.save(event);
         return event;
     }
@@ -58,12 +44,26 @@ public class EventService {
         return event;
     }
 
-    public Event updateEvent(Event event) {
-        eventRepository.save(event);
-        return event;
+    public Page<Event> getPendingAndInProgressEvent(Pageable pageable) {
+
+        return eventRepository.findAllByStatusIn(pageable, Set.of(EventStatus.PENDING, EventStatus.IN_PROGRESS));
+
     }
 
     public List<Event> getEvents() {
         return eventRepository.findAll();
     }
+
+    public Page<Event> getEvents(Pageable pageable) {
+        return eventRepository.findAll(pageable);
+    }
+
+    public List<Event> getEventsByPublisher(User user) {
+        return eventRepository.findAllByPublisher(user.getId());
+    }
+
+    public Page<Event> getEventsByPublisher(Pageable pageable, User user) {
+        return eventRepository.findAllByPublisher(pageable, user.getId());
+    }
+
 }

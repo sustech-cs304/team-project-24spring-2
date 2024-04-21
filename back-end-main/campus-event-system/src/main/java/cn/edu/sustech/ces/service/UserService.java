@@ -2,7 +2,6 @@ package cn.edu.sustech.ces.service;
 
 import cn.edu.sustech.ces.entity.*;
 import cn.edu.sustech.ces.enums.PermissionGroup;
-import cn.edu.sustech.ces.repository.UserEventRepository;
 import cn.edu.sustech.ces.repository.UserRepository;
 import cn.edu.sustech.ces.security.CESUserDetails;
 import jakarta.transaction.Transactional;
@@ -20,7 +19,6 @@ import java.util.*;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private final UserEventRepository userEventRepository;
 
 
     public User registerUser(String nickname, String realName, String description,
@@ -38,10 +36,6 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-    public List<UUID> getUserEvents(UUID userId) {
-        List<UserEvent> userEvents = userEventRepository.findAllByUserId(userId);
-        return userEvents.stream().map(UserEvent::getEventId).toList();
-    }
 
     public User updateUser(User user) {
         userRepository.save(user);
