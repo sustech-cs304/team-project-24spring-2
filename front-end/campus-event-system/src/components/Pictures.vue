@@ -52,7 +52,6 @@ defineExpose({ images })
   transform: scale(1.05); /* Slightly enlarges the image on hover */
 }
 
-/* Additional styles for the carousel itself */
 .a-carousel {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* Adds a shadow for depth */
   border-radius: 10px; /* Rounds the corners of the carousel container */
