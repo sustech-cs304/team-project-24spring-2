@@ -15,6 +15,8 @@ const data = Mock.mock({
       'supervisor|1': ['致新书院', '数学系', '个人-冯泽欣', '招生办'],
       'status|1': ['online', 'offline'],
       'filterType|1': ['artificial', 'rules'],
+      'count': Random.integer(10, 100),
+      'capacity': Random.integer(100, 200),
       'startTime': Random.date(),
       'endTime': Random.date(),
     },

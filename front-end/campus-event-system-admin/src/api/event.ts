@@ -9,10 +9,8 @@ export interface EventRecord {
   number: number;
   name: string;
   contentType: 'show' | 'callingImg' | 'callingText' | 'socialMeeting';
-  filterType: 'artificial' | 'rules';
   count: number;
   capacity: number;
-  status: 'online' | 'offline';
   startTime: string;
   endTime: string;
 }

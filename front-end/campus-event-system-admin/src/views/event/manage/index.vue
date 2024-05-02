@@ -18,12 +18,17 @@
                 >
                   <a-input
                     v-model="formModel.number"
-                    :placeholder="$t('manageEventTable.form.number.placeholder')"
+                    :placeholder="
+                      $t('manageEventTable.form.number.placeholder')
+                    "
                   />
                 </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-item field="name" :label="$t('manageEventTable.form.name')">
+                <a-form-item
+                  field="name"
+                  :label="$t('manageEventTable.form.name')"
+                >
                   <a-input
                     v-model="formModel.name"
                     :placeholder="$t('manageEventTable.form.name.placeholder')"
@@ -227,9 +232,17 @@
             {{ $t(`manageEventTable.form.contentType.${record.contentType}`) }}
           </a-space>
         </template>
-        <template #filterType="{ record }">
-          {{ $t(`manageEventTable.form.filterType.${record.filterType}`) }}
+        <template #count="{ record }">
+          {{ record.count + ' / ' + record.capacity }}
         </template>
+
+        <template #startTime="{ record }">
+          {{ record.startTime }}
+        </template>
+        <template #endTime="{ record }">
+          {{ record.endTime }}
+        </template>
+
         <template #status="{ record }">
           <span v-if="record.status === 'offline'" class="circle"></span>
           <span v-else class="circle pass"></span>
@@ -249,7 +262,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { useRoute, useRouter, RouteRecordRaw } from 'vue-router';
+  import { useRouter } from 'vue-router';
   import { computed, ref, reactive, watch, nextTick } from 'vue';
   import { useI18n } from 'vue-i18n';
   import useLoading from '@/hooks/loading';
@@ -327,10 +340,7 @@
       dataIndex: 'contentType',
       slotName: 'contentType',
     },
-    // {
-    //   title: t('manageEventTable.columns.supervisor'),
-    //   dataIndex: 'supervisor',
-    // },
+
     {
       title: t('manageEventTable.columns.startTime'),
       dataIndex: 'startTime',
@@ -338,6 +348,11 @@
     {
       title: t('manageEventTable.columns.endTime'),
       dataIndex: 'endTime',
+    },
+    {
+      title: t('manageEventTable.columns.count'),
+      dataIndex: 'count',
+      slotName: 'count',
     },
     {
       title: t('manageEventTable.columns.status'),
@@ -492,7 +507,7 @@
 
 <script lang="ts">
   export default {
-    name: 'eventTable',
+    name: 'EventTable',
   };
 </script>
 
@@ -500,6 +515,7 @@
   .container {
     padding: 0 20px 20px 20px;
   }
+
   :deep(.arco-table-th) {
     &:last-child {
       .arco-table-th-item-title {
@@ -507,18 +523,22 @@
       }
     }
   }
+
   .action-icon {
     margin-left: 12px;
     cursor: pointer;
   }
+
   .active {
     color: #0960bd;
     background-color: #e3f4fc;
   }
+
   .setting {
     display: flex;
     align-items: center;
     width: 200px;
+
     .title {
       margin-left: 12px;
       cursor: pointer;

@@ -30,7 +30,7 @@ export default {
   'manageEventTable.columns.contentType': '内容体裁',
   'manageEventTable.columns.supervisor': '承办方',
   'manageEventTable.columns.filterType': '筛选方式',
-  'manageEventTable.columns.count': '内容量',
+  'manageEventTable.columns.count': '人数',
   'manageEventTable.columns.createdTime': '创建时间',
   'manageEventTable.columns.startTime': '开始时间',
   'manageEventTable.columns.endTime': '结束时间',
