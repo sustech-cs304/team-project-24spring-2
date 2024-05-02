@@ -14,50 +14,53 @@
               <a-col :span="8">
                 <a-form-item
                   field="number"
-                  :label="$t('manageEventTable.form.number')"
+                  :label="$t('auditEventTable.form.number')"
                 >
                   <a-input
                     v-model="formModel.number"
-                    :placeholder="$t('manageEventTable.form.number.placeholder')"
+                    :placeholder="$t('auditEventTable.form.number.placeholder')"
                   />
                 </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-item field="name" :label="$t('manageEventTable.form.name')">
+                <a-form-item
+                  field="name"
+                  :label="$t('auditEventTable.form.name')"
+                >
                   <a-input
                     v-model="formModel.name"
-                    :placeholder="$t('manageEventTable.form.name.placeholder')"
+                    :placeholder="$t('auditEventTable.form.name.placeholder')"
                   />
                 </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item
                   field="contentType"
-                  :label="$t('manageEventTable.form.contentType')"
+                  :label="$t('auditEventTable.form.contentType')"
                 >
                   <a-select
                     v-model="formModel.contentType"
                     :options="contentTypeOptions"
-                    :placeholder="$t('manageEventTable.form.selectDefault')"
+                    :placeholder="$t('auditEventTable.form.selectDefault')"
                   />
                 </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item
                   field="filterType"
-                  :label="$t('manageEventTable.form.filterType')"
+                  :label="$t('auditEventTable.form.filterType')"
                 >
                   <a-select
                     v-model="formModel.filterType"
                     :options="filterTypeOptions"
-                    :placeholder="$t('manageEventTable.form.selectDefault')"
+                    :placeholder="$t('auditEventTable.form.selectDefault')"
                   />
                 </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item
                   field="createdTime"
-                  :label="$t('manageEventTable.form.createdTime')"
+                  :label="$t('auditEventTable.form.createdTime')"
                 >
                   <a-range-picker
                     v-model="formModel.createdTime"
@@ -68,12 +71,12 @@
               <a-col :span="8">
                 <a-form-item
                   field="status"
-                  :label="$t('manageEventTable.form.status')"
+                  :label="$t('auditEventTable.form.status')"
                 >
                   <a-select
                     v-model="formModel.status"
                     :options="statusOptions"
-                    :placeholder="$t('manageEventTable.form.selectDefault')"
+                    :placeholder="$t('auditEventTable.form.selectDefault')"
                   />
                 </a-form-item>
               </a-col>
@@ -87,13 +90,13 @@
               <template #icon>
                 <icon-search />
               </template>
-              {{ $t('manageEventTable.form.search') }}
+              {{ $t('auditEventTable.form.search') }}
             </a-button>
             <a-button @click="reset">
               <template #icon>
                 <icon-refresh />
               </template>
-              {{ $t('manageEventTable.form.reset') }}
+              {{ $t('auditEventTable.form.reset') }}
             </a-button>
           </a-space>
         </a-col>
@@ -107,7 +110,7 @@
               <template #icon>
                 <icon-download />
               </template>
-              {{ $t('manageEventTable.operation.download') }}
+              {{ $t('auditEventTable.operation.download') }}
             </a-button>
             <!-- </a-space> -->
           </a-space>
@@ -118,10 +121,10 @@
         >
           <a-button @click="search">
             <template #icon> <icon-refresh /> </template>
-            {{ $t('manageEventTable.actions.refresh') }}
+            {{ $t('auditEventTable.actions.refresh') }}
           </a-button>
           <a-dropdown @select="handleSelectDensity">
-            <a-tooltip :content="$t('manageEventTable.actions.density')">
+            <a-tooltip :content="$t('auditEventTable.actions.density')">
               <div class="action-icon"><icon-line-height size="18" /></div>
             </a-tooltip>
             <template #content>
@@ -135,7 +138,7 @@
               </a-doption>
             </template>
           </a-dropdown>
-          <a-tooltip :content="$t('manageEventTable.actions.columnSetting')">
+          <a-tooltip :content="$t('auditEventTable.actions.columnSetting')">
             <a-popover
               trigger="click"
               position="bl"
@@ -212,20 +215,20 @@
                 src="//p3-armor.byteimg.com/tos-cn-i-49unhts6dw/ea8b09190046da0ea7e070d83c5d1731.svg~tplv-49unhts6dw-image.image"
               />
             </a-avatar>
-            {{ $t(`manageEventTable.form.contentType.${record.contentType}`) }}
+            {{ $t(`auditEventTable.form.contentType.${record.contentType}`) }}
           </a-space>
         </template>
         <template #filterType="{ record }">
-          {{ $t(`manageEventTable.form.filterType.${record.filterType}`) }}
+          {{ $t(`auditEventTable.form.filterType.${record.filterType}`) }}
         </template>
         <template #status="{ record }">
           <span v-if="record.status === 'offline'" class="circle"></span>
           <span v-else class="circle pass"></span>
-          {{ $t(`manageEventTable.form.status.${record.status}`) }}
+          {{ $t(`auditEventTable.form.status.${record.status}`) }}
         </template>
         <template #operations>
           <a-button v-permission="['admin']" type="text" size="small">
-            {{ $t('manageEventTable.columns.operations.audit') }}
+            {{ $t('auditEventTable.columns.operations.audit') }}
           </a-button>
         </template>
       </a-table>
@@ -234,7 +237,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { useRoute, useRouter, RouteRecordRaw } from 'vue-router';
+  import { useRouter } from 'vue-router';
   import { computed, ref, reactive, watch, nextTick } from 'vue';
   import { useI18n } from 'vue-i18n';
   import useLoading from '@/hooks/loading';
@@ -277,60 +280,60 @@
   });
   const densityList = computed(() => [
     {
-      name: t('manageEventTable.size.mini'),
+      name: t('auditEventTable.size.mini'),
       value: 'mini',
     },
     {
-      name: t('manageEventTable.size.small'),
+      name: t('auditEventTable.size.small'),
       value: 'small',
     },
     {
-      name: t('manageEventTable.size.medium'),
+      name: t('auditEventTable.size.medium'),
       value: 'medium',
     },
     {
-      name: t('manageEventTable.size.large'),
+      name: t('auditEventTable.size.large'),
       value: 'large',
     },
   ]);
   const columns = computed<TableColumnData[]>(() => [
     {
-      title: t('manageEventTable.columns.index'),
+      title: t('auditEventTable.columns.index'),
       dataIndex: 'index',
       slotName: 'index',
     },
     {
-      title: t('manageEventTable.columns.number'),
+      title: t('auditEventTable.columns.number'),
       dataIndex: 'number',
     },
     {
-      title: t('manageEventTable.columns.name'),
+      title: t('auditEventTable.columns.name'),
       dataIndex: 'name',
     },
     {
-      title: t('manageEventTable.columns.contentType'),
+      title: t('auditEventTable.columns.contentType'),
       dataIndex: 'contentType',
       slotName: 'contentType',
     },
     {
-      title: t('manageEventTable.columns.supervisor'),
+      title: t('auditEventTable.columns.supervisor'),
       dataIndex: 'supervisor',
     },
     {
-      title: t('manageEventTable.columns.startTime'),
+      title: t('auditEventTable.columns.startTime'),
       dataIndex: 'startTime',
     },
     {
-      title: t('manageEventTable.columns.endTime'),
+      title: t('auditEventTable.columns.endTime'),
       dataIndex: 'endTime',
     },
     {
-      title: t('manageEventTable.columns.status'),
+      title: t('auditEventTable.columns.status'),
       dataIndex: 'status',
       slotName: 'status',
     },
     {
-      title: t('manageEventTable.columns.operations'),
+      title: t('auditEventTable.columns.operations'),
       dataIndex: 'operations',
       slotName: 'operations',
       align: 'center',
@@ -339,35 +342,35 @@
 
   const contentTypeOptions = computed<SelectOptionData[]>(() => [
     {
-      label: t('manageEventTable.form.contentType.img'),
+      label: t('auditEventTable.form.contentType.img'),
       value: 'img',
     },
     {
-      label: t('manageEventTable.form.contentType.horizontalVideo'),
+      label: t('auditEventTable.form.contentType.horizontalVideo'),
       value: 'horizontalVideo',
     },
     {
-      label: t('manageEventTable.form.contentType.verticalVideo'),
+      label: t('auditEventTable.form.contentType.verticalVideo'),
       value: 'verticalVideo',
     },
   ]);
   const filterTypeOptions = computed<SelectOptionData[]>(() => [
     {
-      label: t('manageEventTable.form.filterType.artificial'),
+      label: t('auditEventTable.form.filterType.artificial'),
       value: 'artificial',
     },
     {
-      label: t('manageEventTable.form.filterType.rules'),
+      label: t('auditEventTable.form.filterType.rules'),
       value: 'rules',
     },
   ]);
   const statusOptions = computed<SelectOptionData[]>(() => [
     {
-      label: t('manageEventTable.form.status.online'),
+      label: t('auditEventTable.form.status.online'),
       value: 'online',
     },
     {
-      label: t('manageEventTable.form.status.offline'),
+      label: t('auditEventTable.form.status.offline'),
       value: 'offline',
     },
   ]);
@@ -477,7 +480,7 @@
 
 <script lang="ts">
   export default {
-    name: 'eventTable',
+    name: 'EventTable',
   };
 </script>
 
