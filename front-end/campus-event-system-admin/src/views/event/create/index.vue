@@ -39,9 +39,10 @@
   import useLoading from '@/hooks/loading';
   import {
     submiteventForm,
-    BaseInfoModel,
-    AdvanceInfoModel,
-    UnitChannelModel,
+    EventBaseInfoModel,
+    EventTicketsInfoModel,
+    // originalEventModel,
+    UnitEventModel,
   } from '@/api/event';
   import BaseInfo from './components/base-info.vue';
   import ChannelInfo from './components/advance-info.vue';
@@ -49,13 +50,13 @@
 
   const { loading, setLoading } = useLoading(false);
   const step = ref(1);
-  const submitModel = ref<UnitChannelModel>({} as UnitChannelModel);
+  const submitModel = ref<UnitEventModel>({} as UnitEventModel);
   const submitForm = async () => {
     setLoading(true);
     try {
       await submiteventForm(submitModel.value); // The mock api default success
       step.value = 3;
-      submitModel.value = {} as UnitChannelModel; // init
+      submitModel.value = {} as UnitEventModel; // init
     } catch (err) {
       // you can report use errorHandler or other
     } finally {
@@ -64,7 +65,7 @@
   };
   const changeStep = (
     direction: string | number,
-    model: BaseInfoModel | AdvanceInfoModel
+    model: EventBaseInfoModel | EventTicketsInfoModel
   ) => {
     if (typeof direction === 'number') {
       step.value = direction;

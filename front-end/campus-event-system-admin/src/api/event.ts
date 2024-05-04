@@ -60,22 +60,44 @@ export function queryRulesPresetList() {
 
 // CREATE API
 
-export interface BaseInfoModel {
-  eventName: string;
-  eventType: string;
-  eventTime: string[];
-  eventAddress: string;
-}
-export interface AdvanceInfoModel {
-  advertisingSource: string;
-  advertisingMedia: string;
-  keyword: string[];
-  pushNotify: boolean;
-  advertisingContent: string;
+export interface Tickets {
+  id?: number;
+  description: string;
+  price: string;
+  total_amount: string;
+  sold_amount?: string;
 }
 
-export type UnitChannelModel = BaseInfoModel & AdvanceInfoModel;
+export interface EventBaseInfoModel {
+  title: string;
+  category_id: 0;
+  time_range: Date[];
+  address: string;
+}
 
-export function submiteventForm(data: UnitChannelModel) {
+export interface EventTicketsInfoModel {
+  tickets : Tickets[];
+  document_url?: string;
+  image_url?: string;
+}
+
+export type originalEventModel = (EventBaseInfoModel & EventTicketsInfoModel);
+
+export interface UnitEventModel {
+    title: string;
+    category_id: 0;
+    start_time: number;
+    end_time: number;
+    latitude: number;
+    longitude: number;
+    location_name: string;
+
+    tickets : Tickets[];
+    document_url: string;
+    image_url: string;
+}
+
+
+export function submiteventForm(data: UnitEventModel) {
   return axios.post('/api/event/create', { data });
 }

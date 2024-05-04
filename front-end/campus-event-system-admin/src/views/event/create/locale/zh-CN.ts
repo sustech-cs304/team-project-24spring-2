@@ -17,8 +17,7 @@ export default {
   'event.form.label.eventName': '活动名称',
   'event.placeholder.eventName': '输入汉字、字母或数字，最多20字符',
   'event.form.error.eventName.required': '请输入活动名称',
-  'event.form.error.eventName.pattern':
-    '输入汉字、字母或数字，最多20字符',
+  'event.form.error.eventName.pattern': '输入汉字、字母或数字，最多20字符',
   'event.form.label.eventType': '活动类型',
   'event.placeholder.eventType': '请选择活动类型',
   'event.form.error.eventType.required': '请选择活动类型',
@@ -26,10 +25,8 @@ export default {
   'event.form.error.eventTime.required': '请选择活动地点',
   'event.form.label.eventAddress': '活动地点',
   'event.form.error.eventAddress.required': '请输入活动地点',
-  'event.form.error.eventAddress.pattern':
-    '请选定活动地点，校内可自动识别',
-  'event.form.tip.eventAddress':
-    '请选定活动地点，校内可自动识别',
+  'event.form.error.eventAddress.pattern': '请选定活动地点，校内可自动识别',
+  'event.form.tip.eventAddress': '请选定活动地点，校内可自动识别',
   'event.placeholder.eventAddress': '请输入推广页面地址',
   'event.form.label.advertisingSource': '广告来源',
   'event.placeholder.advertisingSource': '引荐来源地址：sohu、sina',
@@ -49,4 +46,18 @@ export default {
   'event.form.description.title': '渠道表单说明',
   'event.form.description.text':
     '广告商渠道推广支持追踪在第三方广告商投放广告下载App用户的场景，例如在今日头条渠道投放下载App广告，追踪通过在渠道下载激活App的用户。',
+  'tickets.columns.description': '票种描述',
+  'tickets.columns.price': '票价',
+  'tickets.columns.total_amount': '总票数',
+  'tickets.columns.operation': '操作',
+  'tickets.operation.delete': '删除',
+  'tickets.button.createTicket': '创建票种',
+  'ticket.description': '票种描述',
+  'ticket.description.required': '需要票种描述',
+  'ticket.price': '票价',
+  'ticket.price.required': '需要票价',
+  'ticket.price.pattern': '票价需要是大于等于零的数字',
+  'ticket.total_amount': '总票数',
+  'ticket.total_amount.required': '需要总票数',
+  'ticket.total_amount.pattern': '总票数需要是大于等于零的数字',
 };

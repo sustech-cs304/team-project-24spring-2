@@ -10,3 +10,4 @@ dist-ssr
 *.local
 example/
 .vscode/
+api_keys.json

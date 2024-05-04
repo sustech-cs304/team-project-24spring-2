@@ -6,83 +6,41 @@
     :label-col-props="{ span: 6 }"
     :wrapper-col-props="{ span: 18 }"
   >
-    <a-form-item
-      field="advertisingSource"
-      :label="$t('stepForm.form.label.advertisingSource')"
-      :rules="[
-        {
-          required: true,
-          message: $t('stepForm.form.error.advertisingSource.required'),
-        },
-      ]"
+    <!-- <a-button type="primary" @click="onCreateTicketClick">
+      {{ $t('tickets.button.createTicket') }}
+    </a-button> -->
+
+    <createTicketButton ref="child" @editConfirm="onAddTicket"/>
+
+    <a-divider style="margin-top: 0" />
+
+    <a-table
+      row-key="id"
+      :columns="(cloneColumns as TableColumnData[])"
+      :data="renderData"
+      :bordered="false"
+      :size="size"
     >
-      <a-input
-        v-model="formData.advertisingSource"
-        :placeholder="$t('stepForm.placeholder.advertisingSource')"
-      />
-    </a-form-item>
-    <a-form-item
-      field="advertisingMedia"
-      :label="$t('stepForm.form.label.advertisingMedia')"
-      :rules="[
-        {
-          required: true,
-          message: $t('stepForm.form.error.advertisingMedia.required'),
-        },
-      ]"
-    >
-      <a-input
-        v-model="formData.advertisingMedia"
-        :placeholder="$t('stepForm.placeholder.advertisingMedia')"
-      />
-    </a-form-item>
-    <a-form-item
-      field="keyword"
-      :label="$t('stepForm.form.label.keyword')"
-      :rules="[
-        { required: true, message: $t('stepForm.form.error.keyword.required') },
-      ]"
-    >
-      <a-select
-        v-model="formData.keyword"
-        :placeholder="$t('stepForm.placeholder.keyword')"
-        multiple
-      >
-        <a-option>今日头条</a-option>
-        <a-option>火山</a-option>
-      </a-select>
-    </a-form-item>
-    <a-form-item
-      field="pushNotify"
-      :label="$t('stepForm.form.label.pushNotify')"
-      :rules="[{ required: true }]"
-    >
-      <a-switch v-model="formData.pushNotify" />
-    </a-form-item>
-    <a-form-item
-      field="advertisingContent"
-      :label="$t('stepForm.form.label.advertisingContent')"
-      :rules="[
-        {
-          required: true,
-          message: $t('stepForm.form.error.advertisingContent.required'),
-        },
-        {
-          maxLength: 200,
-          message: $t('stepForm.form.error.advertisingContent.maxLength'),
-        },
-      ]"
-      row-class="keep-margin"
-    >
-      <a-textarea
-        v-model="formData.advertisingContent"
-        :placeholder="$t('stepForm.placeholder.advertisingContent')"
-      />
-    </a-form-item>
+      <template #count="{ record }">
+        {{ record.discription }}
+      </template>
+
+      <template #endTime="{ record }">
+        {{ record.price }}
+      </template>
+
+      <template #operations="{ record }">
+        <a-button
+          v-permission="['admin']"
+          type="text"
+          size="small"
+          @click.prevent="onDeleteTicket(record.id)"
+        >
+          {{ $t('tickets.operation.delete') }}
+        </a-button>
+      </template>
+    </a-table>
     <a-form-item>
-      <!-- <a-button type="primary" @click="onNextClick">
-        {{ $t('stepForm.button.next') }}
-      </a-button> -->
       <a-space>
         <a-button type="secondary" @click="goPrev">
           {{ $t('stepForm.button.prev') }}
@@ -96,20 +54,67 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref } from 'vue';
+  import { ref, watch, computed } from 'vue';
+  import { useI18n } from 'vue-i18n';
   import { FormInstance } from '@arco-design/web-vue/es/form';
-  import { AdvanceInfoModel } from '@/api/event';
+  import { EventTicketsInfoModel } from '@/api/event';
+
+  import cloneDeep from 'lodash/cloneDeep';
+  import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
+  import { Tickets } from '@/api/event';
+  import createTicketButton from './create-ticket.vue';
 
   const emits = defineEmits(['changeStep']);
+  type SizeProps = 'mini' | 'small' | 'medium' | 'large';
+
+  type Column = TableColumnData & { checked?: true };
+  let cnt = 0;
+  const cloneColumns = ref<Column[]>([]);
+  const showColumns = ref<Column[]>([]);
+
+  const renderData = ref<Tickets[]>([]);
+
+  const { t } = useI18n();
+
+  const size = ref<SizeProps>('medium');
 
   const formRef = ref<FormInstance>();
-  const formData = ref<AdvanceInfoModel>({
-    advertisingSource: '',
-    advertisingMedia: '',
-    keyword: [],
-    pushNotify: true,
-    advertisingContent: '',
+
+  const formData = ref<EventTicketsInfoModel>({
+    tickets: [],
+    document_url: '',
+    image_url: '',
   });
+
+  const columns = computed<TableColumnData[]>(() => [
+    {
+      title: t('tickets.columns.discription'),
+      dataIndex: 'discription',
+      slotName: 'discription',
+    },
+    {
+      title: t('tickets.columns.price'),
+      dataIndex: 'price',
+      slotName: 'price',
+    },
+    {
+      title: t('tickets.columns.total_amount'),
+      dataIndex: 'total_amount',
+      slotName: 'total_amount',
+      align: 'center',
+    },
+    {
+      title: t('tickets.columns.operation'),
+      dataIndex: 'operations',
+      slotName: 'operations',
+      align: 'center',
+    },
+  ]);
+  const onAddTicket = (Ticket: Tickets) => {
+    cnt+=1;
+    Ticket.id = cnt;
+    renderData.value.push(Ticket);
+  };
 
   const onNextClick = async () => {
     const res = await formRef.value?.validate();
@@ -120,6 +125,32 @@
   const goPrev = () => {
     emits('changeStep', 'backward');
   };
+
+  const onDeleteTicket = (id: number) => {
+    for (let i = 0; i < renderData.value.length; i += 1) {
+      if (renderData.value[i].id === id) {
+        renderData.value.splice(i, 1);
+        break;
+      }
+    }
+    console.log('data', renderData.value);
+    console.log('delete', id);
+  };
+
+  watch(
+    () => columns.value,
+    (val) => {
+      cloneColumns.value = cloneDeep(val);
+      cloneColumns.value.forEach((item, index) => {
+        item.checked = true;
+      });
+      showColumns.value = cloneDeep(cloneColumns.value);
+    },
+    { deep: true, immediate: true }
+  );
+
+
+
 </script>
 
 <style scoped lang="less">
@@ -147,5 +178,13 @@
 
   .form-content {
     padding: 8px 50px 0 30px;
+  }
+
+  :deep(.arco-table-th) {
+    &:last-child {
+      .arco-table-th-item-title {
+        margin-left: 16px;
+      }
+    }
   }
 </style>

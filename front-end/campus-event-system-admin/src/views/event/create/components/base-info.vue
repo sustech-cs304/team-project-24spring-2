@@ -7,7 +7,7 @@
     :wrapper-col-props="{ span: 18 }"
   >
     <a-form-item
-      field="eventName"
+      field="title"
       :label="$t('event.form.label.eventName')"
       :rules="[
         {
@@ -21,12 +21,12 @@
       ]"
     >
       <a-input
-        v-model="formData.eventName"
+        v-model="formData.title"
         :placeholder="$t('event.placeholder.eventName')"
       />
     </a-form-item>
     <a-form-item
-      field="eventType"
+      field="category_id"
       :label="$t('event.form.label.eventType')"
       :rules="[
         {
@@ -36,19 +36,17 @@
       ]"
     >
       <a-select
-        v-model="formData.eventType"
+        v-model="formData.category_id"
         :placeholder="$t('event.placeholder.eventType')"
       >
-        <a-option>社交</a-option>
-        <a-option>兴趣交流</a-option>
-        <a-option>体育运动</a-option>
-        <a-option>学习分享</a-option>
-        <a-option>党政学习</a-option>
-        <a-option>其他</a-option>
+        <a-option :value="0">社交</a-option>
+        <a-option :value="1">演唱会</a-option>
+        <a-option :value="2">体育运动</a-option>
+        <a-option :value="3">其他</a-option>
       </a-select>
     </a-form-item>
     <a-form-item
-      field="eventTime"
+      field="time_range"
       :label="$t('event.form.label.eventTime')"
       :rules="[
         {
@@ -57,10 +55,14 @@
         },
       ]"
     >
-      <a-range-picker v-model="formData.eventTime" />
+      <a-range-picker
+        show-time
+        format="YYYY-MM-DD HH:mm"
+        v-model="formData.time_range"
+      />
     </a-form-item>
     <a-form-item
-      field="eventAddress"
+      field="address"
       :label="$t('event.form.label.eventAddress')"
       :rules="[
         {
@@ -75,9 +77,10 @@
       row-class="keep-margin"
     >
       <a-input
-        v-model="formData.eventAddress"
-        :placeholder="$t('event.placeholder.eventAddress')"
+        v-model="formData.address"
+        :placeholder="$t('event.form.placeholder.address')"
       />
+
       <template #help>
         <span>{{ $t('event.form.tip.eventAddress') }}</span>
       </template>
@@ -88,20 +91,24 @@
       </a-button>
     </a-form-item>
   </a-form>
+  <!-- <div>
+    <mymap style="height: auto; width: auto" />
+  </div> -->
 </template>
 
 <script lang="ts" setup>
   import { ref } from 'vue';
   import { FormInstance } from '@arco-design/web-vue/es/form';
-  import { BaseInfoModel } from '@/api/event';
+  import { EventBaseInfoModel } from '@/api/event';
+  import mymap from './map.vue';
 
   const emits = defineEmits(['changeStep']);
   const formRef = ref<FormInstance>();
-  const formData = ref<BaseInfoModel>({
-    eventName: '',
-    eventType: '',
-    eventTime: [],
-    eventAddress: 'https://arco.design',
+  const formData = ref<EventBaseInfoModel>({
+    title: '',
+    category_id: 0,
+    time_range: [],
+    address: 'https://arco.design',
   });
 
   const onNextClick = async () => {

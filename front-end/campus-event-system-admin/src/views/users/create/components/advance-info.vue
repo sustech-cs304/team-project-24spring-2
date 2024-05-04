@@ -98,12 +98,12 @@
 <script lang="ts" setup>
   import { ref } from 'vue';
   import { FormInstance } from '@arco-design/web-vue/es/form';
-  import { AdvanceInfoModel } from '@/api/event';
+  import { EventTicketsInfoModel } from '@/api/event';
 
   const emits = defineEmits(['changeStep']);
 
   const formRef = ref<FormInstance>();
-  const formData = ref<AdvanceInfoModel>({
+  const formData = ref<EventTicketsInfoModel>({
     advertisingSource: '',
     advertisingMedia: '',
     keyword: [],
