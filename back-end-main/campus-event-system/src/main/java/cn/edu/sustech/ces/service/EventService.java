@@ -74,4 +74,7 @@ public class EventService {
         eventRepository.delete(event);
     }
 
+    public Long countEvents() {
+        return eventRepository.count();
+    }
 }

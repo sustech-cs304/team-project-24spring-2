@@ -22,4 +22,7 @@ public class TicketService {
         return ticketRepository.findById(ticketId).orElse(null);
     }
 
+    public void deleteTicket(UUID uuid) {
+        ticketRepository.deleteById(uuid);
+    }
 }

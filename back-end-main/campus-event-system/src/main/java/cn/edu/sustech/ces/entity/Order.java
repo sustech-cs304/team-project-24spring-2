@@ -23,6 +23,8 @@ public class Order {
     @UuidGenerator
     private UUID id;
 
+    private UUID platformId;
+
     private String name;
 
     private UUID ticketId;
