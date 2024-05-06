@@ -22,7 +22,7 @@
       :size="size"
     >
       <template #count="{ record }">
-        {{ record.discription }}
+        {{ record.description }}
       </template>
 
       <template #endTime="{ record }">
@@ -88,9 +88,9 @@
 
   const columns = computed<TableColumnData[]>(() => [
     {
-      title: t('tickets.columns.discription'),
-      dataIndex: 'discription',
-      slotName: 'discription',
+      title: t('tickets.columns.description'),
+      dataIndex: 'description',
+      slotName: 'description',
     },
     {
       title: t('tickets.columns.price'),

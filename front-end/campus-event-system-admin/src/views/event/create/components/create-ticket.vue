@@ -77,6 +77,11 @@
 
   const handleClick = () => {
     visible.value = true;
+    form.value = {
+      description: '',
+      price: '',
+      total_amount: '',
+    };
   };
 
   const handleBeforeOk = async (done: any) => {
