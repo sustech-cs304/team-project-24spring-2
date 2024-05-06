@@ -4,6 +4,7 @@ import cn.edu.sustech.ces.entity.Order;
 import cn.edu.sustech.ces.entity.User;
 import cn.edu.sustech.ces.enums.OrderStatus;
 import cn.edu.sustech.ces.enums.PurchaseMethod;
+import cn.edu.sustech.ces.security.CESUserDetails;
 import cn.edu.sustech.ces.service.OrderService;
 import cn.edu.sustech.ces.service.alipay.AlipayConfig;
 import com.alibaba.fastjson.JSONObject;
@@ -16,6 +17,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,18 +39,15 @@ public class PayController {
 
     private final AlipayConfig alipayConfig;
 
+    /*
+        TODO:
+            refine the class
+     */
+
     @Autowired
     public PayController(OrderService orderService, AlipayConfig alipayConfig) {
         this.orderService = orderService;
         this.alipayConfig = alipayConfig;
-    }
-
-    @GetMapping("/test-create-order")
-    public String testCreateOrder() {
-        User user = new User();
-        user.setId(UUID.randomUUID());
-        Order order = orderService.makeOrder("test", "test", 1.0, user);
-        return order.getId().toString() + " created.";
     }
 
     @PostMapping("/alipay-notify")
@@ -58,7 +59,6 @@ public class PayController {
             String sign = params.get("sign");
             String content = AlipaySignature.getSignCheckContentV1(params);
             boolean signVerified = AlipaySignature.rsa256CheckContent(content, sign, alipayConfig.getAlipayPublicKey(), alipayConfig.getCharset());
-
             if (signVerified) {
                 String orderId = params.get("out_trade_no");
                 Order order = orderService.getOrder(UUID.fromString(orderId));
@@ -83,6 +83,7 @@ public class PayController {
     }
 
     @GetMapping("/cancel")
+    @PreAuthorize("isAuthenticated()")
     public void cancelOrder(@NotNull String orderId, HttpServletResponse response) {
 
         // TODO: user verification
@@ -103,13 +104,18 @@ public class PayController {
 
 
     @GetMapping("/alipay")
+    @PreAuthorize("isAuthenticated()")
     public void payOrderByAlipay(@NotNull String orderId, HttpServletResponse response) throws Exception {
 
-        // TODO: user verification
-
+        CESUserDetails userDetails = (CESUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userDetails.getUser();
 
         Order order = orderService.getOrder(UUID.fromString(orderId));
         if (order == null) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+        if (!order.getPayerId().equals(user.getId())) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
@@ -138,7 +144,9 @@ public class PayController {
         jsonObject.put("product_code", "FAST_INSTANT_TRADE_PAY");
         jsonObject.put("total_amount", order.getPrice());
         jsonObject.put("subject", order.getName());
-        jsonObject.put("body", order.getDescription());
+        jsonObject.put("body", order.getTicketId());
+
+        // TODO: set return url, order body
 
         AlipayTradePagePayRequest alipayRequest = new AlipayTradePagePayRequest();
         alipayRequest.setNotifyUrl(alipayConfig.getAlipayNotifyUrl());

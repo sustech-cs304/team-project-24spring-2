@@ -1,10 +1,12 @@
 package cn.edu.sustech.ces.entity;
 
+import cn.edu.sustech.ces.enums.EventStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -27,22 +29,35 @@ public class Event {
 
     private Long publishTime;
 
-    private Long startTime;
-
-    private Long endTime;
-
-    private String description;
+    @Enumerated(EnumType.ORDINAL)
+    private EventStatus status;
 
     @Column(nullable = false)
-    private Integer availableCapacity;
+    private Long startTime;
 
-    private Integer altitude;
+    @Column(nullable = false)
+    private Long endTime;
+
+    @Column(nullable = false)
+    private String documentUrl;
+
+    private String imageUrl;
+
+    @ElementCollection
+    private List<UUID> tickets;
+
+    private Integer latitude;
 
     private Integer longitude;
 
-    public void setLocation(int altitude, int longitude) {
-        this.altitude = altitude;
+    private Integer categoryId;
+
+    private String locationName;
+
+    public void setLocation(Integer latitude, Integer longitude, String locationName) {
+        this.latitude = latitude;
         this.longitude = longitude;
+        this.locationName = locationName;
     }
 
 }

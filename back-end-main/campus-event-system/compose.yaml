@@ -9,3 +9,14 @@ services:
       - '15432:5432'
     volumes:
       - './pgData:/var/lib/postgresql/data'
+  minio:
+    image: 'minio/minio'
+    environment:
+      - 'MINIO_ROOT_USER=admin'
+      - 'MINIO_ROOT_PASSWORD=admin123'
+    ports:
+      - '19000:9000'
+      - '19001:9001'
+    volumes:
+      - './minioData:/data'
+    command: server /data --console-address ":9001"

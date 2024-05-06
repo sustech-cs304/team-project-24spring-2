@@ -36,6 +36,26 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
+
+    public User updateUser(User user) {
+        userRepository.save(user);
+        return user;
+    }
+
+    public User changeUserPassword(UUID userId, String newPassword) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user != null) {
+            return changeUserPassword(user, newPassword);
+        }
+        return null;
+    }
+
+    public User changeUserPassword(User user, String newPassword) {
+        user.setPassword(newPassword);
+        userRepository.save(user);
+        return user;
+    }
+
     public User getUserById(UUID userId) {
         return userRepository.findById(userId).orElse(null);
     }

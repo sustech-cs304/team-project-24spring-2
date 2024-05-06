@@ -1,5 +1,6 @@
-package cn.edu.sustech.ces.security;
+package cn.edu.sustech.ces.configuration;
 
+import cn.edu.sustech.ces.security.JwtAuthenticationFilter;
 import cn.edu.sustech.ces.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

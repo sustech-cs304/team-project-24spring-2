@@ -1,6 +1,7 @@
 package cn.edu.sustech.ces.service;
 
 import cn.edu.sustech.ces.entity.Order;
+import cn.edu.sustech.ces.entity.Ticket;
 import cn.edu.sustech.ces.entity.User;
 import cn.edu.sustech.ces.enums.OrderStatus;
 import cn.edu.sustech.ces.repository.OrderRepository;
@@ -19,11 +20,11 @@ public class OrderService {
         this.orderRepository = orderRepository;
     }
 
-    public Order makeOrder(String name, String description, double price, User payer) {
+    public Order makeOrder(String name, Ticket ticket, double price, User payer) {
         Order order = new Order();
         order.setPayerId(payer.getId());
+        order.setTicketId(ticket.getId());
         order.setName(name);
-        order.setDescription(description);
         order.setPrice(price);
         order.setStatus(OrderStatus.UNPAID);
         orderRepository.save(order);
