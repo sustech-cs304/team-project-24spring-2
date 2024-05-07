@@ -12,3 +12,5 @@ example/
 .vscode/
 api_keys.json
 .idea
+.env.development
+.env.production

@@ -99,6 +99,7 @@
   };
 
   const initMap = () => {
+    console.log(process.env)
     AMapLoader.load({
       key: process.env.AMAP_API_KEY as string, //  申请好的Web端开发者Key，首次调用 load 时必填
       version: '2.0', //  指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
