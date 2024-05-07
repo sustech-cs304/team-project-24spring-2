@@ -57,8 +57,9 @@
     >
       <a-range-picker
         show-time
-        format="YYYY-MM-DD HH:mm"
         v-model="formData.time_range"
+        format="YYYY-MM-DD HH:mm"
+        type="datetime"
       />
     </a-form-item>
     <a-form-item
@@ -100,7 +101,7 @@
   import { ref } from 'vue';
   import { FormInstance } from '@arco-design/web-vue/es/form';
   import { EventBaseInfoModel } from '@/api/event';
-  import mymap from './map.vue';
+  //   import mymap from './map.vue';
 
   const emits = defineEmits(['changeStep']);
   const formRef = ref<FormInstance>();

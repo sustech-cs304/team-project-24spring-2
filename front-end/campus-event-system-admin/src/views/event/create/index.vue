@@ -38,26 +38,47 @@
   import { ref } from 'vue';
   import useLoading from '@/hooks/loading';
   import {
-    submiteventForm,
+    CreateEventApi,
     EventBaseInfoModel,
     EventTicketsInfoModel,
-    // originalEventModel,
+    originalEventModel,
     UnitEventModel,
   } from '@/api/event';
   import BaseInfo from './components/base-info.vue';
   import ChannelInfo from './components/advance-info.vue';
   import Success from './components/success.vue';
+//   import { start } from 'nprogress';
 
   const { loading, setLoading } = useLoading(false);
   const step = ref(1);
-  const submitModel = ref<UnitEventModel>({} as UnitEventModel);
+  const submitModel = ref<originalEventModel>({} as originalEventModel);
   const submitForm = async () => {
     setLoading(true);
+    const Dates: Date[] = submitModel.value.time_range;
+
+    const startDate = new Date(Dates[0]).getTime();
+    const endDate = new Date(Dates[1]).getTime();
+    console.log(startDate);
     try {
-      await submiteventForm(submitModel.value); // The mock api default success
+      const sendData = ref<UnitEventModel>();
+      sendData.value = {
+        title: submitModel.value.title,
+        category_id: 0,
+        start_time: startDate,
+        end_time: endDate,
+        latitude: 0,
+        longitude: 0,
+        location_name: submitModel.value.address,
+        tickets: submitModel.value.tickets,
+        document_url: '',
+        image_url: '',
+      };
+      await CreateEventApi(sendData.value); // The mock api default success
       step.value = 3;
-      submitModel.value = {} as UnitEventModel; // init
+      submitModel.value = {} as originalEventModel; // init
     } catch (err) {
+      console.log(submitModel.value);
+      console.log(err);
       // you can report use errorHandler or other
     } finally {
       setLoading(false);

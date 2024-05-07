@@ -55,6 +55,7 @@ export default {
   'ticket.description': '票种描述',
   'ticket.description.required': '需要票种描述',
   'ticket.price': '票价',
+  'ticket.create': '创建票种',
   'ticket.price.required': '需要票价',
   'ticket.price.pattern': '票价需要是大于等于零的数字',
   'ticket.total_amount': '总票数',

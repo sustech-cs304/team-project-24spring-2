@@ -266,7 +266,7 @@
   import { computed, ref, reactive, watch, nextTick } from 'vue';
   import { useI18n } from 'vue-i18n';
   import useLoading from '@/hooks/loading';
-  import { queryPolicyList, EventRecord, EventParams } from '@/api/event';
+  import { listEvent, EventRecord, EventParams } from '@/api/event';
   import { Pagination } from '@/types/global';
   import type { SelectOptionData } from '@arco-design/web-vue/es/select/interface';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
@@ -406,7 +406,7 @@
   ) => {
     setLoading(true);
     try {
-      const { data } = await queryPolicyList(params);
+      const { data } = await listEvent(params);
       renderData.value = data.list;
       pagination.current = params.current;
       pagination.total = data.total;
