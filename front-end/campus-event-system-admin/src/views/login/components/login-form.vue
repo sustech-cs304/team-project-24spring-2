@@ -12,13 +12,15 @@
     >
       <a-form-item
         field="username"
-        :rules="[{ required: true, message: $t('login.form.userName.errMsg') }]"
+        :rules="[
+          { required: true, message: $t('login.form.username.errMsg') },
+        ]"
         :validate-trigger="['change', 'blur']"
         hide-label
       >
         <a-input
           v-model="userInfo.username"
-          :placeholder="$t('login.form.userName.placeholder')"
+          :placeholder="$t('login.form.username.placeholder')"
         >
           <template #prefix>
             <icon-user />

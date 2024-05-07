@@ -22,12 +22,14 @@ axios.interceptors.request.use(
     // Authorization is a custom headers key
     // please modify it according to the actual situation
     const token = getToken();
+    if (!config.headers) {
+      config.headers = {};
+    }
     if (token) {
-      if (!config.headers) {
-        config.headers = {};
-      }
       config.headers.Authorization = `Bearer ${token}`;
     }
+    // config.headers['Access-Control-Allow-Origin'] = '*';
+    console.log(config);
     return config;
   },
   (error) => {
