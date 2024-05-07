@@ -4,7 +4,6 @@
   <a-modal
     class="dialog companygoodsLog"
     v-model:visible="visible"
-    unmount-on-close
     title="位置选择"
     style="border-radius: 4px"
     top="100px"
@@ -17,7 +16,6 @@
         filter-option
         style="width: 350px"
         remote
-        
         reserve-keyword
         placeholder="请输入关键词"
         :loading="loading"
@@ -65,7 +63,7 @@
 
   (window as any)._AMapSecurityConfig = {
     //  安全密钥
-    securityJsCode: process.env.AMAP_API_CODE as string,
+    securityJsCode: import.meta.env.VITE_AMAP_API_CODE as string,
   };
   const emits = defineEmits(['confirm']);
   const visible: any = ref(false);
@@ -99,9 +97,8 @@
   };
 
   const initMap = () => {
-    console.log(process.env)
     AMapLoader.load({
-      key: process.env.AMAP_API_KEY as string, //  申请好的Web端开发者Key，首次调用 load 时必填
+      key: import.meta.env.VITE_AMAP_API_KEY as string, //  申请好的Web端开发者Key，首次调用 load 时必填
       version: '2.0', //  指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
       plugins: ['AMap.Geocoder', 'AMap.AutoComplete'], //  需要使用的的插件列表，如比例尺'AMap.Scale'等
     })
@@ -109,7 +106,6 @@
         aMap = AMap;
         map = new AMap.Map('selectPointMap', {
           //  设置地图容器id
-          viewMode: '2D', //  是否为3D地图模式
           zoom: 11, //  初始化地图级别
           center: [116.397428, 39.90923], //  初始化地图中心点位置
         });
@@ -127,6 +123,7 @@
       .catch((e) => {
         console.log(e);
       });
+
   };
 
   const remoteMethod = (searchValue: any) => {
@@ -173,9 +170,7 @@
   defineExpose({
     open,
   });
-  onMounted(() => {
-    
-  });
+  onMounted(() => {});
   onUnmounted(() => {
     map?.destroy();
   });
