@@ -58,7 +58,6 @@
 
     const startDate = new Date(Dates[0]).getTime();
     const endDate = new Date(Dates[1]).getTime();
-    console.log(startDate);
     try {
       const sendData = ref<UnitEventModel>();
       sendData.value = {
@@ -73,7 +72,8 @@
         document_url: '',
         image_url: '',
       };
-      await CreateEventApi(sendData.value); // The mock api default success
+      const res = await CreateEventApi(sendData.value); // The mock api default success
+      console.log(res);
       step.value = 3;
       submitModel.value = {} as originalEventModel; // init
     } catch (err) {

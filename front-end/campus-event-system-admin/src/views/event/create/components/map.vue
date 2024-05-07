@@ -62,11 +62,10 @@
 
   import AMapLoader from '@amap/amap-jsapi-loader';
   import { Notification } from '@arco-design/web-vue';
-  import apiKey from '../../../../../api_keys.json';
 
   (window as any)._AMapSecurityConfig = {
     //  安全密钥
-    securityJsCode: apiKey.code,
+    securityJsCode: process.env.AMAP_API_CODE as string,
   };
   const emits = defineEmits(['confirm']);
   const visible: any = ref(false);
@@ -101,7 +100,7 @@
 
   const initMap = () => {
     AMapLoader.load({
-      key: apiKey.key, //  申请好的Web端开发者Key，首次调用 load 时必填
+      key: process.env.AMAP_API_KEY as string, //  申请好的Web端开发者Key，首次调用 load 时必填
       version: '2.0', //  指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
       plugins: ['AMap.Geocoder', 'AMap.AutoComplete'], //  需要使用的的插件列表，如比例尺'AMap.Scale'等
     })

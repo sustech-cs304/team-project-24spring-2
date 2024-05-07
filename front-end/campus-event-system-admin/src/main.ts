@@ -2,8 +2,6 @@ import { createApp } from 'vue';
 import ArcoVue from '@arco-design/web-vue';
 import ArcoVueIcon from '@arco-design/web-vue/es/icon';
 import globalComponents from '@/components';
-import VueAMap, { initAMapApiLoader } from '@vuemap/vue-amap';
-import apikey from '../api_keys.json';
 import router from './router';
 import store from './store';
 import i18n from './locale';
@@ -17,20 +15,13 @@ import App from './App.vue';
 import '@/assets/style/global.less';
 import '@/api/interceptor';
 
-initAMapApiLoader({
-  key: apikey.key,
-  securityJsCode: apikey.code, // 新版key需要配合安全密钥使用
-  // Loca:{
-  //  version: '2.0.0'
-  // } // 如果需要使用loca组件库，需要加载Loca
-});
+
 
 const app = createApp(App);
 
 app.use(ArcoVue, {});
 app.use(ArcoVueIcon);
 
-app.use(VueAMap);
 app.use(router);
 app.use(store);
 app.use(i18n);

@@ -12,22 +12,14 @@ import useAppStore from '../app';
 
 const useUserStore = defineStore('user', {
   state: (): UserState => ({
-    name: undefined,
-    avatar: undefined,
-    job: undefined,
-    organization: undefined,
-    location: undefined,
-    email: undefined,
-    introduction: undefined,
-    personalWebsite: undefined,
-    jobName: undefined,
-    organizationName: undefined,
-    locationName: undefined,
-    phone: undefined,
-    registrationDate: undefined,
-    accountId: undefined,
-    certification: undefined,
-    role: '',
+    id: "",
+    nickname: "",
+    real_name: "",
+    description: "",
+    email: "",
+    phone: "",
+    gender: "",
+    permission_group: ""
   }),
 
   getters: {
@@ -39,8 +31,10 @@ const useUserStore = defineStore('user', {
   actions: {
     switchRoles() {
       return new Promise((resolve) => {
-        this.role = this.role === 'user' ? 'admin' : 'user';
-        resolve(this.role);
+
+        console.log(this.permission_group)
+        this.permission_group = this.permission_group === 'USER' ? 'ADMIN' : 'USER';
+        resolve(this.permission_group);
       });
     },
     // Set user's information
@@ -64,9 +58,11 @@ const useUserStore = defineStore('user', {
     async login(loginForm: LoginData) {
       try {
         const res = await userLogin(loginForm);
-        setToken(res.data.token);
+
+        setToken(res.data.access_token);
       } catch (err) {
         clearToken();
+        console.log(err)
         throw err;
       }
     },

@@ -33,15 +33,18 @@ export default defineConfig({
     ],
     extensions: ['.ts', '.js'],
   },
+
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8080',
+        target: 'http://localhost:8080/api/',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),
-      },
+        rewrite: (path) => path.replace(/^\/api/, '/'),
+    },
+
     },
   },
+
   define: {
     'process.env': {},
   },
