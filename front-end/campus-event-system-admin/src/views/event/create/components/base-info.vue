@@ -81,6 +81,8 @@
         v-model="formData.address"
         :placeholder="$t('event.form.placeholder.address')"
       />
+    <MyMAP/>
+
 
       <template #help>
         <span>{{ $t('event.form.tip.eventAddress') }}</span>
@@ -92,16 +94,14 @@
       </a-button>
     </a-form-item>
   </a-form>
-  <!-- <div>
-    <mymap style="height: auto; width: auto" />
-  </div> -->
+
 </template>
 
 <script lang="ts" setup>
   import { ref } from 'vue';
   import { FormInstance } from '@arco-design/web-vue/es/form';
   import { EventBaseInfoModel } from '@/api/event';
-  //   import mymap from './map.vue';
+    import MyMAP from './map.vue';
 
   const emits = defineEmits(['changeStep']);
   const formRef = ref<FormInstance>();

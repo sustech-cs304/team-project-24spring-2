@@ -6,10 +6,6 @@
     :label-col-props="{ span: 6 }"
     :wrapper-col-props="{ span: 18 }"
   >
-    <!-- <a-button type="primary" @click="onCreateTicketClick">
-      {{ $t('tickets.button.createTicket') }}
-    </a-button> -->
-
     <createTicketButton ref="child" @editConfirm="onAddTicket" />
 
     <a-divider style="margin-top: 0" />
