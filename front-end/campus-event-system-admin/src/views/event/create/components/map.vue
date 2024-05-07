@@ -1,5 +1,5 @@
 <template>
-  <a-button type="primary" @click="open">{{ $t('ticket.create') }}</a-button>
+  <a-button type="primary" @click="open">{{ $t('选择地点') }}</a-button>
 
   <a-modal
     class="dialog companygoodsLog"
@@ -7,7 +7,7 @@
     title="位置选择"
     style="border-radius: 4px"
     top="100px"
-    width="80%"
+    width="50%"
   >
     <div style="height: 40px; width: 100%; display: flex; align-items: center">
       <a-select
@@ -63,17 +63,23 @@
 
   (window as any)._AMapSecurityConfig = {
     //  安全密钥
+    // securityJsCode: "123",
     securityJsCode: import.meta.env.VITE_AMAP_API_CODE as string,
   };
+
   const emits = defineEmits(['confirm']);
   const visible: any = ref(false);
   const areaList: any = ref([]);
   const areaValue = ref('');
+  const selectedValue: any = ref();
+
   let map: any = null;
   const loading: any = ref(false);
   const checkedForm: any = ref();
   let AutoComplete: any = null;
   let aMap: any = null;
+  let toolbar: any = null;
+  let scaler: any = null;
   let geoCoder: any = null;
 
   let marker: any = null;
@@ -81,41 +87,63 @@
     map.remove(marker);
   };
 
-  const addmark = (lat: any, lng: any, AMap: any) => {
+  const addmark = (lng: any, lat: any, AMap: any) => {
     const reuslt = marker && removeMarker();
     marker = new AMap.Marker({
-      position: new AMap.LngLat(lat, lng),
-      title: '北京',
+      position: new AMap.LngLat(lng, lat),
+      title: '活动地点',
       zoom: 13,
     });
     checkedForm.value = {
-      lat: lng,
-      lng: lat,
+      lng,
+      lat,
     };
+    const lnglat = [lng, lat];
+    geoCoder.getAddress(lnglat, function (status: any, result: any) {
+      if (status === 'complete' && result.info === 'OK') {
+        const { province, city, district } = result.regeocode.addressComponent;
+        const { formattedAddress: formated } = result.regeocode;
+        const clean = formated.replace(province, '').replace(city, '').replace(district, '');
+        areaValue.value = clean;
+        checkedForm.value = {
+          ...checkedForm.value,
+          address: clean,
+        };
+      }
+    });
     map.add(marker);
-    map.setCenter([lat, lng], '', 500);
+    map.setCenter(lnglat, '', 500);
   };
 
   const initMap = () => {
     AMapLoader.load({
       key: import.meta.env.VITE_AMAP_API_KEY as string, //  申请好的Web端开发者Key，首次调用 load 时必填
       version: '2.0', //  指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
-      plugins: ['AMap.Geocoder', 'AMap.AutoComplete'], //  需要使用的的插件列表，如比例尺'AMap.Scale'等
+      plugins: [
+        'AMap.Geocoder',
+        'AMap.AutoComplete',
+        'AMap.ToolBar',
+        'AMap.Scale',
+      ], //  需要使用的的插件列表，如比例尺'AMap.Scale'等
     })
       .then((AMap: any) => {
         aMap = AMap;
         map = new AMap.Map('selectPointMap', {
           //  设置地图容器id
-          zoom: 11, //  初始化地图级别
-          center: [116.397428, 39.90923], //  初始化地图中心点位置
+          zoom: 16, //  初始化地图级别
+          center: [113.99986, 22.598965], //  初始化地图中心点位置
         });
         AutoComplete = new AMap.AutoComplete({
-          city: '全国',
+          city: '深圳',
         });
         geoCoder = new AMap.Geocoder({
-          city: '010', // 城市设为北京，默认：“全国”
+          city: '深圳', // 城市设为北京，默认：“全国”
           radius: 1000, // 范围，默认：500
         });
+        toolbar = new AMap.ToolBar();
+        scaler = new AMap.Scale();
+        map.addControl(scaler);
+        map.addControl(toolbar);
         map.on('click', (e: any) => {
           addmark(e.lnglat.getLng(), e.lnglat.getLat(), AMap);
         });
@@ -123,7 +151,6 @@
       .catch((e) => {
         console.log(e);
       });
-
   };
 
   const remoteMethod = (searchValue: any) => {
@@ -170,7 +197,8 @@
   defineExpose({
     open,
   });
-  onMounted(() => {});
+  onMounted(() => {
+  });
   onUnmounted(() => {
     map?.destroy();
   });

@@ -117,6 +117,7 @@
 
   const onNextClick = async () => {
     const res = await formRef.value?.validate();
+    formData.value.tickets = renderData.value;
     if (!res) {
       emits('changeStep', 'submit', { ...formData.value });
     }

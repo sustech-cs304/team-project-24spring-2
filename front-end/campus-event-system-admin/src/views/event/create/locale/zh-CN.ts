@@ -27,7 +27,7 @@ export default {
   'event.form.error.eventAddress.required': '请输入活动地点',
   'event.form.error.eventAddress.pattern': '请选定活动地点，校内可自动识别',
   'event.form.tip.eventAddress': '请选定活动地点，校内可自动识别',
-  'event.placeholder.eventAddress': '请输入推广页面地址',
+  'event.form.placeholder.address': '请选择活动地点',
   'event.form.label.advertisingSource': '广告来源',
   'event.placeholder.advertisingSource': '引荐来源地址：sohu、sina',
   'event.form.error.advertisingSource.required': '请输入广告来源',

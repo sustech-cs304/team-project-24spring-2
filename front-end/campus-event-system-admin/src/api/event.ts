@@ -62,6 +62,8 @@ export interface EventBaseInfoModel {
   category_id: 0;
   time_range: Date[];
   address: string;
+  lng: number;
+  lat: number;
 }
 
 export interface EventTicketsInfoModel {
@@ -80,8 +82,7 @@ export interface UnitEventModel {
   latitude: number;
   longitude: number;
   location_name: string;
-
-  tickets: Tickets[];
+  tickets: any[];
   document_url: string;
   image_url: string;
 }
@@ -98,5 +99,5 @@ export function queryRulesPresetList() {
   return axios.get('/api/list/rules-preset');
 }
 export function CreateEventApi(data: UnitEventModel) {
-  return axios.post('/api/event/create-event', { data });
+  return axios.post('/api/event/create-event',  data);
 }

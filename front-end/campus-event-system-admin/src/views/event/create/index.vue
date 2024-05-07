@@ -44,10 +44,12 @@
     originalEventModel,
     UnitEventModel,
   } from '@/api/event';
+  import { Notification } from '@arco-design/web-vue';
   import BaseInfo from './components/base-info.vue';
   import ChannelInfo from './components/advance-info.vue';
   import Success from './components/success.vue';
-//   import { start } from 'nprogress';
+
+  //   import { start } from 'nprogress';
 
   const { loading, setLoading } = useLoading(false);
   const step = ref(1);
@@ -60,20 +62,34 @@
     const endDate = new Date(Dates[1]).getTime();
     try {
       const sendData = ref<UnitEventModel>();
+      const jsonTickets = [];
+      for (let i = 0; i < submitModel.value.tickets.length; i += 1) {
+        jsonTickets.push({
+          description: submitModel.value.tickets[i].description,
+          price: submitModel.value.tickets[i].price,
+          total_amount: submitModel.value.tickets[i].total_amount,
+        });
+      }
       sendData.value = {
         title: submitModel.value.title,
-        category_id: 0,
         start_time: startDate,
         end_time: endDate,
+        document_url: '',
+        image_url: '',
         latitude: 0,
         longitude: 0,
         location_name: submitModel.value.address,
-        tickets: submitModel.value.tickets,
-        document_url: '',
-        image_url: '',
+        category_id: 0,
+        // tickets: submitModel.value.tickets,
+        tickets: jsonTickets,
       };
+      console.log(sendData.value);
       const res = await CreateEventApi(sendData.value); // The mock api default success
       console.log(res);
+      Notification.success({
+        title: 'Success',
+        content: '创建成功！',
+      });
       step.value = 3;
       submitModel.value = {} as originalEventModel; // init
     } catch (err) {
