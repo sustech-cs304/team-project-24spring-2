@@ -5,10 +5,18 @@ import localeWorkplace from '@/views/dashboard/workplace/locale/zh-CN';
 
 import localeMonitor from '@/views/dashboard/monitor/locale/zh-CN';
 
-import localeActivitTable from '@/views/activity/manage/locale/zh-CN';
-import localACtivityCreate from '@/views/activity/create/locale/zh-CN';
+import localeEventTable from '@/views/event/manage/locale/zh-CN';
+import localeEventCreate from '@/views/event/create/locale/zh-CN';
+import localeEventAudit from '@/views/event/audit/locale/zh-CN';
+import localeEventSettings from '@/views/event/settings/locale/zh-CN';
 
 import localeSearchTable from '@/views/list/search-table/locale/zh-CN';
+
+import localeUsersManage from '@/views/users/manage/locale/zh-CN';
+import localeUsersSettings    from '@/views/users/settings/locale/zh-CN';
+
+
+
 import localeCardList from '@/views/list/card/locale/zh-CN';
 
 import localeStepForm from '@/views/form/step/locale/zh-CN';
@@ -42,7 +50,8 @@ export default {
   'menu.form': '表单页',
   'menu.profile': '详情页',
   'menu.visualization': '数据可视化',
-  'menu.activity': '活动页',
+  'menu.event': '活动管理页',
+  'menu.users': '用户管理页',
   'menu.user': '个人中心',
   'menu.arcoWebsite': 'Arco Design',
   'menu.faq': '常见问题',
@@ -52,8 +61,8 @@ export default {
   ...localeMessageBox,
   ...localeLogin,
   ...localeWorkplace,
-  ...localeActivitTable,
-  ...localACtivityCreate,
+  ...localeEventTable,
+  ...localeEventCreate,
   ...localeMonitor,
   ...localeSearchTable,
   ...localeCardList,
@@ -69,4 +78,8 @@ export default {
   ...locale500,
   ...localeUserInfo,
   ...localeUserSetting,
+  ...localeEventAudit,
+  ...localeEventSettings,
+  ...localeUsersManage,
+  ...localeUsersSettings
 };

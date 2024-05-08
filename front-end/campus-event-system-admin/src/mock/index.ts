@@ -7,8 +7,14 @@ import '@/views/dashboard/workplace/mock';
 
 import '@/views/dashboard/monitor/mock';
 
-import '@/views/activity/manage/mock';
-import '@/views/activity/create/mock';
+import '@/views/event/manage/mock';
+import '@/views/event/create/mock';
+import '@/views/event/audit/mock';
+import '@/views/event/settings/mock';
+
+import '@/views/users/manage/mock';
+import '@/views/users/create/mock';
+import '@/views/users/settings/mock';
 
 import '@/views/list/card/mock';
 import '@/views/list/search-table/mock';
