@@ -36,7 +36,7 @@ public class EventController {
 
     @PostMapping("/create-event")
     @PreAuthorize("hasAnyRole('INSTITUTE_ADMIN', 'DEPARTMENT_ADMIN', 'SUPER_ADMIN')")
-    public ResponseEntity<Event> createEvent(@RequestBody JSONObject request) {
+    public ResponseEntity<?> createEvent(@RequestBody JSONObject request) {
 
         User user = CESUtils.getAuthorizedUser();
 
