@@ -1,8 +1,11 @@
 package cn.edu.sustech.ces.controller;
 
 import cn.edu.sustech.ces.entity.Comment;
+import cn.edu.sustech.ces.entity.Event;
 import cn.edu.sustech.ces.entity.User;
+import cn.edu.sustech.ces.enums.PermissionGroup;
 import cn.edu.sustech.ces.service.CommentService;
+import cn.edu.sustech.ces.service.EventService;
 import cn.edu.sustech.ces.service.GlobalSettingService;
 import cn.edu.sustech.ces.service.minio.MinioService;
 import cn.edu.sustech.ces.utils.CESUtils;
@@ -29,6 +32,7 @@ public class FileController {
     private final MinioService minioService;
     private final CommentService commentService;
     private final GlobalSettingService globalSettingService;
+    private final EventService eventService;
 
     //TODO: add user upload file management
 
@@ -79,15 +83,49 @@ public class FileController {
                 return ResponseEntity.badRequest().body("Comment attachment exceeds limit");
             }
             String fileName = commentId.toString() + "/" + UUID.randomUUID().toString() + "." + suffix.get();
-            minioService.uploadFile(minioService.getCommentsBucket(), fileName, file);
+            minioService.uploadFile(minioService.getCommentBucket(), fileName, file);
             return ResponseEntity.ok(fileName);
         }
+
+        if (usage.equalsIgnoreCase("event")) {
+            if (user.getPermissionGroup() == PermissionGroup.USER) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Permission denied");
+            }
+            String eventIdParam = request.getParameter("eventId");
+            if (eventIdParam == null) {
+                return ResponseEntity.badRequest().body("Event id is required");
+            }
+            UUID eventId = UUID.fromString(eventIdParam);
+            Event event = eventService.getEventById(eventId);
+            if (event == null) {
+                return ResponseEntity.badRequest().body("Event not found");
+            }
+            if (user.getPermissionGroup().ordinal() <= PermissionGroup.DEPARTMENT_ADMIN.ordinal() && !event.getPublisher().equals(user.getId())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Permission denied");
+            }
+            String type = file.getContentType();
+            String fileName = file.getOriginalFilename();
+
+            Optional<String> suffix = Optional.ofNullable(fileName)
+                    .filter(f -> f.contains("."))
+                    .map(f -> f.substring(fileName.lastIndexOf(".") + 1));
+
+            if (type == null || suffix.isEmpty() || (!type.startsWith("image") && !type.startsWith("text"))) {
+                return ResponseEntity.badRequest().body("File type not supported");
+            }
+
+            String uploadFileName = "event/" + eventId.toString() + "/" + UUID.randomUUID().toString() + "." + suffix.get();
+            String bucket = (type.startsWith("image") ? minioService.getImageBucket() : minioService.getDocumentBucket());
+            minioService.uploadFile(bucket, uploadFileName, file);
+            return ResponseEntity.ok(uploadFileName);
+        }
+
         return ResponseEntity.badRequest().body("Usage not supported");
     }
 
 
     public int countCommentWeight(UUID commentId) {
-        List<Item> items = minioService.getItems(minioService.getCommentsBucket(), commentId.toString());
+        List<Item> items = minioService.getItems(minioService.getCommentBucket(), commentId.toString());
         int weight = 0;
         for (Item item : items) {
             if (item.objectName().endsWith(".jpg") || item.objectName().endsWith(".jpeg") || item.objectName().endsWith(".png")) {

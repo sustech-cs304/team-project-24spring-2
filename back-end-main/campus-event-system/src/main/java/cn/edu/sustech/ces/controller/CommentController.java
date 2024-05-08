@@ -70,7 +70,7 @@ public class CommentController {
         }
 
         commentService.deleteComment(comment);
-        minioService.deleteDirectory(minioService.getCommentsBucket(), commentId.toString());
+        minioService.deleteDirectory(minioService.getCommentBucket(), commentId.toString());
 
         return ResponseEntity.ok("Comment deleted");
     }
@@ -104,7 +104,7 @@ public class CommentController {
         if (comment == null) {
             return ResponseEntity.badRequest().body("Comment not found");
         }
-        List<Item> items = minioService.getItems(minioService.getCommentsBucket(), commentId.toString());
+        List<Item> items = minioService.getItems(minioService.getCommentBucket(), commentId.toString());
         List<String> urls = items.stream().filter(item -> {
             Optional<String> suffix = Optional.ofNullable(item.objectName())
                     .filter(f -> f.contains("."))

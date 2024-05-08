@@ -74,7 +74,7 @@ public class MinioService {
         return minioRegistry.getVideoBucket();
     }
 
-    public String getCommentsBucket() {
+    public String getCommentBucket() {
         return minioRegistry.getCommentsBucket();
     }
 
