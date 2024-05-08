@@ -358,6 +358,29 @@ public class EventController {
 
     }
 
+    @PostMapping("/get-event")
+    public ResponseEntity<?> getEvent(@RequestParam UUID eventId) {
+
+        Event event = eventService.getEventById(eventId);
+
+        if (event == null) {
+            return ResponseEntity.badRequest().body("Event Not Found");
+        }
+
+        if (event.getStatus() == EventStatus.AUDITING || event.getStatus() == EventStatus.EDITING) {
+            User user = CESUtils.getAuthorizedUser();
+            if (user == null || user.getPermissionGroup() == PermissionGroup.USER) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+            if (user.getPermissionGroup() == PermissionGroup.DEPARTMENT_ADMIN && !event.getPublisher().equals(user.getId())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        }
+
+        return ResponseEntity.ok(event);
+
+    }
+
     @PostMapping("/audit-event")
     @PreAuthorize("hasAnyRole('INSTITUTE_ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<Event> auditEvent(@RequestParam UUID eventId) {
