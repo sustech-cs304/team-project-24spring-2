@@ -5,26 +5,23 @@ import cn.edu.sustech.ces.entity.Ticket;
 import cn.edu.sustech.ces.entity.User;
 import cn.edu.sustech.ces.enums.EventStatus;
 import cn.edu.sustech.ces.enums.PermissionGroup;
-import cn.edu.sustech.ces.security.CESUserDetails;
 import cn.edu.sustech.ces.service.GlobalSettingService;
 import cn.edu.sustech.ces.service.TicketService;
 import cn.edu.sustech.ces.service.minio.MinioService;
 import cn.edu.sustech.ces.utils.CESUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import cn.edu.sustech.ces.service.EventService;
 
-import javax.swing.text.html.Option;
 import java.util.*;
 
 @RestController
@@ -61,7 +58,7 @@ public class EventController {
         event.setEndTime(endTime);
         event.setStartTime(startTime);
         event.setTitle(title);
-        event.setStatus(EventStatus.AUDITING);
+        event.setStatus(EventStatus.EDITING);
         event.setPublisher(user.getId());
         event.setTickets(new ArrayList<>());
         event.setCategoryId(categoryId);
@@ -87,6 +84,7 @@ public class EventController {
             ticket.setPrice(price);
             ticket.setTotalAmount(totalAmount);
             ticket.setSoldAmount(soldAmount);
+            ticket.setLockAmount(soldAmount);
 
             tickets.add(ticket);
 
@@ -100,7 +98,7 @@ public class EventController {
 
         for (Ticket ticket : tickets) {
             ticket.setEventId(event.getId());
-            ticket = ticketService.createTicket(ticket);
+            ticket = ticketService.saveTicket(ticket);
             event.getTickets().add(ticket.getId());
         }
 
@@ -110,55 +108,204 @@ public class EventController {
 
     }
 
+    @PostMapping("/update-event")
+    @PreAuthorize("hasAnyRole('INSTITUTE_ADMIN', 'DEPARTMENT_ADMIN', 'SUPER_ADMIN')")
+    public ResponseEntity<?> updateEvent(@RequestParam UUID eventId, @RequestBody JSONObject eventJsonObject) {
+
+        User user = CESUtils.getAuthorizedUser();
+        Event event = eventService.getEventById(eventId);
+
+        if (event == null) {
+            return ResponseEntity.badRequest().body("Event Not Found");
+        }
+
+        if (user.getPermissionGroup() == PermissionGroup.DEPARTMENT_ADMIN && !event.getPublisher().equals(user.getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        if (event.getStatus() == EventStatus.PENDING || event.getStatus() == EventStatus.IN_PROGRESS || event.getStatus() == EventStatus.FINISHED) {
+            return ResponseEntity.badRequest().body("Event is not editable");
+        }
+
+        if (eventJsonObject.containsKey("title")) {
+            event.setTitle(eventJsonObject.getString("title"));
+        }
+
+        if (eventJsonObject.containsKey("start_time")) {
+            event.setStartTime(eventJsonObject.getLong("start_time"));
+        }
+
+        if (eventJsonObject.containsKey("end_time")) {
+            event.setEndTime(eventJsonObject.getLong("end_time"));
+        }
+
+        if (eventJsonObject.containsKey("document_url")) {
+            event.setDocumentUrl(eventJsonObject.getString("document_url"));
+        }
+
+        if (eventJsonObject.containsKey("image_url")) {
+            event.setImageUrl(eventJsonObject.getString("image_url"));
+        }
+
+        if (eventJsonObject.containsKey("latitude")) {
+            event.setLatitude(eventJsonObject.getInteger("latitude"));
+        }
+
+        if (eventJsonObject.containsKey("longitude")) {
+            event.setLongitude(eventJsonObject.getInteger("longitude"));
+        }
+
+        if (eventJsonObject.containsKey("location_name")) {
+            event.setLocationName(eventJsonObject.getString("location_name"));
+        }
+
+        if (eventJsonObject.containsKey("category_id")) {
+            event.setCategoryId(eventJsonObject.getInteger("category_id"));
+        }
+
+        if (eventJsonObject.containsKey("tickets")) {
+            List<Ticket> tickets = new ArrayList<>();
+            JSONArray ticketsJson = eventJsonObject.getJSONArray("tickets");
+            for (int i = 0; i < ticketsJson.size(); i++) {
+                JSONObject ticketJson = ticketsJson.getJSONObject(i);
+                String description = ticketJson.getString("description");
+                Double price = ticketJson.getDouble("price");
+                Integer totalAmount = ticketJson.getInteger("total_amount");
+                Integer soldAmount = 0;
+                if (ticketJson.get("sold_amount") != null) {
+                    soldAmount = ticketJson.getInteger("sold_amount");
+                }
+                Ticket ticket = new Ticket();
+                ticket.setDescription(description);
+                ticket.setPrice(price);
+                ticket.setTotalAmount(totalAmount);
+                ticket.setSoldAmount(soldAmount);
+                ticket.setLockAmount(soldAmount);
+                tickets.add(ticket);
+            }
+            if (tickets.isEmpty()) {
+                return ResponseEntity.badRequest().body("No Tickets");
+            }
+            event.getTickets().forEach(ticketService::deleteTicket);
+            event.getTickets().clear();
+            for (Ticket ticket : tickets) {
+                ticket.setEventId(event.getId());
+                ticket = ticketService.saveTicket(ticket);
+                event.getTickets().add(ticket.getId());
+            }
+        }
+
+        event.setStatus(EventStatus.EDITING);
+        event = eventService.saveEvent(event);
+
+        return ResponseEntity.ok(event);
+
+    }
+
     @PostMapping("/explore-events-size")
-    public ResponseEntity<Long> exploreEventsSize() {
-        return ResponseEntity.ok(eventService.countPendingAndInProgressEvent());
+    public ResponseEntity<Long> exploreEventsSize(HttpServletRequest request) {
+        Set<EventStatus> statuses = Set.of(EventStatus.PENDING, EventStatus.IN_PROGRESS);
+        String title = null;
+        Integer categoryId = null;
+        if (request.getParameter("title") != null) {
+            title = request.getParameter("title");
+        }
+        if (request.getParameter("category_id") != null) {
+            categoryId = Integer.parseInt(request.getParameter("category_id"));
+        }
+        return ResponseEntity.ok(eventService.countEventsByFilter(title, categoryId, statuses, null));
     }
 
     @PostMapping("/explore-events")
-    public ResponseEntity<?> exploreEvents(@RequestParam int page, @RequestParam(required = false, defaultValue = "10") int size) {
-        if (page < 0 || size < 0) {
+    public ResponseEntity<?> exploreEvents(@RequestParam int page, HttpServletRequest request, @RequestParam(required = false, defaultValue = "10") int size) {
+        if (size < 0 || page < 0) {
             return ResponseEntity.badRequest().body("Invalid page or size");
         }
-        if (size > Integer.parseInt(globalSettingService.getSetting(GlobalSettingService.MAX_PAGE_SIZE))) {
-            return ResponseEntity.badRequest().body("Size too large");
-        }
+        Set<EventStatus> statuses = Set.of(EventStatus.PENDING, EventStatus.IN_PROGRESS);
         Pageable pageable = PageRequest.of(page, size);
-        Page<Event> events = eventService.getPendingAndInProgressEvent(pageable);
+        String title = null;
+        Integer categoryId = null;
+        if (request.getParameter("title") != null) {
+            title = request.getParameter("title");
+        }
+        if (request.getParameter("category_id") != null) {
+            categoryId = Integer.parseInt(request.getParameter("category_id"));
+        }
+        Page<Event> events = eventService.getEventsByFilter(pageable, title, categoryId, statuses, null);
         List<Event> eventList = events.getContent();
         return ResponseEntity.ok(eventList);
     }
 
+
     @PostMapping("/list-events-size")
-    public ResponseEntity<Long> listEventsSize() {
-        return ResponseEntity.ok(eventService.countEvents());
+    @PreAuthorize("hasAnyRole('INSTITUTE_ADMIN', 'DEPARTMENT_ADMIN', 'SUPER_ADMIN')")
+    public ResponseEntity<Long> listEventsSize(HttpServletRequest request) {
+
+        User user = CESUtils.getAuthorizedUser();
+
+        String title = null;
+        Integer categoryId = null;
+        UUID publisher = null;
+        Set<EventStatus> statuses = null;
+        if (request.getParameter("title") != null) {
+            title = request.getParameter("title");
+        }
+        if (request.getParameter("category_id") != null) {
+            categoryId = Integer.parseInt(request.getParameter("category_id"));
+        }
+
+        if (user.getPermissionGroup() == PermissionGroup.DEPARTMENT_ADMIN) {
+            publisher = user.getId();
+        } else {
+            if (request.getParameter("publisher") != null) {
+                publisher = UUID.fromString(request.getParameter("publisher"));
+            }
+        }
+
+        if (request.getParameter("status") != null) {
+            statuses = new HashSet<>();
+            String[] statusStrings = request.getParameter("status").split(",");
+            for (String statusString : statusStrings) {
+                statuses.add(EventStatus.valueOf(statusString));
+            }
+        }
+        return ResponseEntity.ok(eventService.countEventsByFilter(title, categoryId, statuses, publisher));
     }
 
     @PostMapping("/list-events")
     @PreAuthorize("hasAnyRole('INSTITUTE_ADMIN', 'DEPARTMENT_ADMIN', 'SUPER_ADMIN')")
-    public ResponseEntity<?> listEvents(@RequestParam(required = false, defaultValue = "-1") int page, @RequestParam(required = false, defaultValue = "10") int size) {
-
-        User user = CESUtils.getAuthorizedUser();
-
-        if (page == -1) {
-            if (user.getPermissionGroup() == PermissionGroup.DEPARTMENT_ADMIN) {
-                List<Event> events = eventService.getEventsByPublisher(user);
-                return ResponseEntity.ok(events);
-            }
-            List<Event> events = eventService.getEvents();
-            return ResponseEntity.ok(events);
-        }
+    public ResponseEntity<?> listEvents(@RequestParam int page, @RequestParam(required = false, defaultValue = "10") int size, HttpServletRequest request) {
         if (size < 0 || page < 0) {
             return ResponseEntity.badRequest().body("Invalid page or size");
         }
+        User user = CESUtils.getAuthorizedUser();
+        String title = null;
+        Integer categoryId = null;
+        UUID publisher = null;
+        Set<EventStatus> statuses = null;
+        if (request.getParameter("title") != null) {
+            title = request.getParameter("title");
+        }
+        if (request.getParameter("category_id") != null) {
+            categoryId = Integer.parseInt(request.getParameter("category_id"));
+        }
         if (user.getPermissionGroup() == PermissionGroup.DEPARTMENT_ADMIN) {
-            Pageable pageable = PageRequest.of(page, size);
-            Page<Event> events = eventService.getEventsByPublisher(pageable, user);
-            List<Event> eventList = events.getContent();
-            return ResponseEntity.ok(eventList);
+            publisher = user.getId();
+        } else {
+            if (request.getParameter("publisher") != null) {
+                publisher = UUID.fromString(request.getParameter("publisher"));
+            }
+        }
+
+        if (request.getParameter("status") != null) {
+            statuses = new HashSet<>();
+            String[] statusStrings = request.getParameter("status").split(",");
+            for (String statusString : statusStrings) {
+                statuses.add(EventStatus.valueOf(statusString));
+            }
         }
         Pageable pageable = PageRequest.of(page, size);
-        Page<Event> events = eventService.getEvents(pageable);
+        Page<Event> events = eventService.getEventsByFilter(pageable, title, categoryId, statuses, publisher);
         List<Event> eventList = events.getContent();
         return ResponseEntity.ok(eventList);
     }
@@ -185,6 +332,28 @@ public class EventController {
 
         eventService.deleteEvent(event);
 
+        return ResponseEntity.ok(event);
+
+    }
+
+    @PostMapping("/publish-event")
+    @PreAuthorize("hasAnyRole('INSTITUTE_ADMIN', 'DEPARTMENT_ADMIN', 'SUPER_ADMIN')")
+    public ResponseEntity<?> publishEvent(@RequestParam UUID eventId) {
+
+        User user = CESUtils.getAuthorizedUser();
+
+        Event event = eventService.getEventById(eventId);
+
+        if (event == null) {
+            return ResponseEntity.badRequest().body("Event Not Found");
+        }
+
+        if (user.getPermissionGroup() == PermissionGroup.DEPARTMENT_ADMIN && !event.getPublisher().equals(user.getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        event.setStatus(EventStatus.AUDITING);
+        event = eventService.saveEvent(event);
         return ResponseEntity.ok(event);
 
     }

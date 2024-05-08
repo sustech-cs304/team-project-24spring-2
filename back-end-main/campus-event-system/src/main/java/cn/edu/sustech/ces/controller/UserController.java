@@ -6,6 +6,7 @@ import cn.edu.sustech.ces.security.LoginRequest;
 import cn.edu.sustech.ces.entity.User;
 import cn.edu.sustech.ces.security.RegisterRequest;
 import cn.edu.sustech.ces.service.AuthService;
+import cn.edu.sustech.ces.service.OrderService;
 import cn.edu.sustech.ces.service.UserService;
 import cn.edu.sustech.ces.utils.CESUtils;
 import com.alibaba.fastjson.JSONObject;
@@ -30,6 +31,7 @@ public class UserController {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final AuthService authService;
+    private final OrderService orderService;
 
     //TODO: selectively expose user information
 
@@ -83,7 +85,7 @@ public class UserController {
         CESUserDetails userDetails = (CESUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userDetails.getUser();
 
-        //TODO: list all user's orders
+
 
         return ResponseEntity.ok(null);
     }

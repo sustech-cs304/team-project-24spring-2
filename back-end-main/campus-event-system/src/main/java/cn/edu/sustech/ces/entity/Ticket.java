@@ -1,9 +1,6 @@
 package cn.edu.sustech.ces.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
@@ -35,5 +32,11 @@ public class Ticket {
 
     @Column(nullable = false)
     private Integer soldAmount;
+
+    @Column(nullable = false)
+    private Integer lockAmount;
+
+    @Version
+    private Long version;
 
 }
