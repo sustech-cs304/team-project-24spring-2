@@ -19,7 +19,7 @@ const EVENTS: AppRouteRecordRaw = {
       meta: {
         locale: 'menu.event.manage',
         requiresAuth: true,
-        roles: ['USER', 'ADMIN', 'SUPER_ADMIN'],
+        roles: ['ADMIN', 'SUPER_ADMIN'],
       },
     },
     {
@@ -29,7 +29,7 @@ const EVENTS: AppRouteRecordRaw = {
       meta: {
         locale: 'menu.event.create',
         requiresAuth: true,
-        roles: ['USER', 'ADMIN', 'SUPER_ADMIN'],
+        roles: [ 'ADMIN', 'SUPER_ADMIN'],
       },
     },
     {
