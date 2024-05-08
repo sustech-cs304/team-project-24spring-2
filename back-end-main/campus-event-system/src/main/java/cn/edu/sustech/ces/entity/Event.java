@@ -43,7 +43,7 @@ public class Event {
 
     private String imageUrl;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<UUID> tickets;
 
     private Integer latitude;

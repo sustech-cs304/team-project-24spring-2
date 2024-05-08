@@ -10,7 +10,10 @@ public final class CESUtils {
     }
 
     public static User getAuthorizedUser() {
-        CESUserDetails userDetails = (CESUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Object object =  SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!(object instanceof CESUserDetails userDetails)) {
+            return null;
+        }
         return userDetails.getUser();
     }
 

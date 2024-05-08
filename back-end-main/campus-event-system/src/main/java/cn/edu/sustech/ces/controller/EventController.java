@@ -36,7 +36,7 @@ public class EventController {
 
     @PostMapping("/create-event")
     @PreAuthorize("hasAnyRole('INSTITUTE_ADMIN', 'DEPARTMENT_ADMIN', 'SUPER_ADMIN')")
-    public ResponseEntity<Event> createEvent(@RequestBody JSONObject request) {
+    public ResponseEntity<?> createEvent(@RequestBody JSONObject request) {
 
         User user = CESUtils.getAuthorizedUser();
 
@@ -262,9 +262,9 @@ public class EventController {
             }
         }
 
-        if (request.getParameter("status") != null) {
+        if (request.getParameter("statuses") != null) {
             statuses = new HashSet<>();
-            String[] statusStrings = request.getParameter("status").split(",");
+            String[] statusStrings = request.getParameter("statuses").split(",");
             for (String statusString : statusStrings) {
                 statuses.add(EventStatus.valueOf(statusString));
             }
@@ -297,9 +297,9 @@ public class EventController {
             }
         }
 
-        if (request.getParameter("status") != null) {
+        if (request.getParameter("statuses") != null) {
             statuses = new HashSet<>();
-            String[] statusStrings = request.getParameter("status").split(",");
+            String[] statusStrings = request.getParameter("statuses").split(",");
             for (String statusString : statusStrings) {
                 statuses.add(EventStatus.valueOf(statusString));
             }

@@ -43,7 +43,7 @@ public class User {
 
     private String avatarUrl;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<UUID> userTickets;
 
 
