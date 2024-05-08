@@ -83,7 +83,6 @@ public class PayController {
             AlipayTradePagePayRequest alipayRequest = new AlipayTradePagePayRequest();
             alipayRequest.setNotifyUrl(alipayConfig.getAlipayNotifyUrl());
 
-            alipayRequest.setReturnUrl(alipayConfig.getAlipayReturnUrl());
             alipayRequest.setBizContent(jsonObject.toString());
 
             String form = "";
