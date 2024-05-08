@@ -32,25 +32,27 @@ defineExpose({ images })
 </template>
 <style scoped>
 .image-container {
-  width: 100%; /* Viewport width */
-  height: 100%; /* Viewport height */
-  display: flex;
+  width: 100%; 
+  height: auto; 
+  /* display: flex; */
   justify-content: center;
   align-items: center;
-  overflow: hidden; /* Ensures no part of the image spills out */
+  overflow: hidden; 
 }
 
 .carousel-image {
-  max-width: 100%;
-  max-height: 100%;
+  /* max-width: 100%;
+  max-height: 100%; */
+  width: 100%;
+  height: auto;
   object-fit: cover; /* Ensures the image covers the area without distortion */
-  border-radius: 10px; /* Adds rounded corners to the images */
+  border-radius: 0px; /* Adds rounded corners to the images */
   transition: transform 0.5s ease; /* Smooth transition for hover effects */
 }
 
-.image-container:hover .carousel-image {
-  transform: scale(1.05); /* Slightly enlarges the image on hover */
-}
+/* .image-container:hover .carousel-image {
+  transform: scale(1.05); 
+} */
 
 .a-carousel {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* Adds a shadow for depth */

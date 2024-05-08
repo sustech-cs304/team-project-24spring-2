@@ -3,6 +3,7 @@ import {ref} from 'vue';
 import TopNav from "@/components/TopNav.vue";
 import {Message} from '@arco-design/web-vue';
 import {useRouter} from 'vue-router';
+import BottomNav from "@/components/BottomNav.vue";
 
 const router = useRouter();
 
@@ -28,14 +29,21 @@ function navigateToUserInfo() {
     </div>
     <div class="white-box">
       <router-view/>
+
     </div>
+    <div class="bottom-nav">
+      <BottomNav/>
+    </div>
+
   </div>
+
 </template>
 
 
 <style scoped>
 .main {
   height: 100vh;
+  
 }
 
 .top-nav {
@@ -55,10 +63,14 @@ function navigateToUserInfo() {
   background-color: "--color-background";
   flex-grow: 1;
   margin: 0.1%;
-  padding: 10px; /* 添加一些内边距 */
+
   height: auto;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 轻微的阴影效果 */
   transition: box-shadow 0.3s ease; /* 鼠标悬停时阴影效果的平滑过渡 */
+}
+.bottom-nav {
+  margin: 15px;
+  /* border-top: ghostwhite 2px solid; */
 }
 
 </style>

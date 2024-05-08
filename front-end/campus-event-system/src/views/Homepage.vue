@@ -63,7 +63,7 @@ export default {
     <div class="picture">
       <Pictures/>
     </div>
-    <a-divider/>
+    <!-- <a-divider/> -->
     <a-typography-title class="title">
       HOT EVENTS
     </a-typography-title>
@@ -75,19 +75,24 @@ export default {
       />
     </div>
     <a-divider/>
-    <BottomNav/>
+    <!-- <BottomNav/> -->
   </div>
 </template>
 
 <style scoped>
 .container {
-  width: 100%;
+  width: 88vw;
   height: auto;
+  margin: auto; 
+  display: block; 
 }
 .picture {
-  height: 80vh;
-  width: 100vw;
+  height: 40vh;
+  width: 80vw;
+  margin: auto; /* 将图片水平和垂直居中 */
+  display: block; /* 确保图片的显示类型为块级元素 */
 }
+
 .cards-container {
   display: flex;
   flex-wrap: wrap;

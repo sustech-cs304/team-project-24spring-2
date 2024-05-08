@@ -10,6 +10,7 @@ export default {
   components: {
     EventCard,
   },
+
   setup() {
     const eventsData = ref([]);
     const totalEvents = ref(0);
