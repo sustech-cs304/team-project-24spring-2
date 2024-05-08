@@ -18,6 +18,8 @@ public class AlipayConfig {
     private String alipayGatewayUrl;
     @Value("${alipay.notifyUrl}")
     private String alipayNotifyUrl;
+    @Value("${alipay.returnUrl}")
+    private String alipayReturnUrl;
 
     private final String format="json";
     private final String charset="UTF-8";

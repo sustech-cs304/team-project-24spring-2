@@ -42,6 +42,8 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
+    // TODO: encrypt password
+
     public User changeUserPassword(UUID userId, String newPassword) {
         User user = userRepository.findById(userId).orElse(null);
         if (user != null) {
@@ -51,6 +53,7 @@ public class UserService implements UserDetailsService {
     }
 
     public User changeUserPassword(User user, String newPassword) {
+
         user.setPassword(newPassword);
         userRepository.save(user);
         return user;

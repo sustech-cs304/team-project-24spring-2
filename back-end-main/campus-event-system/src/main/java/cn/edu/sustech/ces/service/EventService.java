@@ -8,6 +8,7 @@ import cn.edu.sustech.ces.repository.EventRepository;
 import cn.edu.sustech.ces.repository.UserRepository;
 import com.alibaba.fastjson.JSONObject;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -35,27 +36,32 @@ public class EventService {
         return event;
     }
 
-    public Event setEventStatus(UUID eventId, EventStatus status) {
-        Event event = eventRepository.findById(eventId).orElse(null);
-        if (event != null) {
-            event.setStatus(status);
-            eventRepository.save(event);
-        }
-        return event;
-    }
-
-    public Page<Event> getPendingAndInProgressEvent(Pageable pageable) {
-
-        return eventRepository.findAllByStatusIn(pageable, Set.of(EventStatus.PENDING, EventStatus.IN_PROGRESS));
-
-    }
-
     public List<Event> getEvents() {
         return eventRepository.findAll();
     }
 
     public Page<Event> getEvents(Pageable pageable) {
         return eventRepository.findAll(pageable);
+    }
+
+    public Page<Event> getEventsByFilter(Pageable pageable, String title, Integer categoryId, Set<EventStatus> statuses, UUID publisher) {
+        if (title == null && categoryId == null && publisher == null) {
+            return eventRepository.findAllByStatusIn(pageable, statuses);
+        } else if (title == null && categoryId == null) {
+            return eventRepository.findAllByPublisher(pageable, publisher);
+        } else if (title == null && publisher == null) {
+            return eventRepository.findAllByCategoryIdAndStatusIn(pageable, categoryId, statuses);
+        } else if (categoryId == null && publisher == null) {
+            return eventRepository.findAllByTitleContainingAndStatusIn(pageable, title, statuses);
+        } else if (title == null) {
+            return eventRepository.findAllByCategoryIdAndPublisherAndStatusIn(pageable, categoryId, publisher, statuses);
+        } else if (categoryId == null) {
+            return eventRepository.findAllByTitleContainingAndPublisherAndStatusIn(pageable, title, publisher, statuses);
+        } else if (publisher == null) {
+            return eventRepository.findAllByTitleContainingAndCategoryIdAndStatusIn(pageable, title, categoryId, statuses);
+        } else {
+            return eventRepository.findAllByTitleContainingAndCategoryIdAndPublisherAndStatusIn(pageable, title, categoryId, publisher, statuses);
+        }
     }
 
     public List<Event> getEventsByPublisher(User user) {
@@ -66,12 +72,39 @@ public class EventService {
         return eventRepository.findAllByPublisher(pageable, user.getId());
     }
 
-    public long countPendingAndInProgressEvent() {
-        return eventRepository.countByStatusIn(Set.of(EventStatus.PENDING, EventStatus.IN_PROGRESS));
-    }
-
     public void deleteEvent(Event event) {
         eventRepository.delete(event);
     }
+
+    public Long countEvents() {
+        return eventRepository.count();
+    }
+
+    public long countEventsByPublisher(User user) {
+        return eventRepository.countByPublisher(user.getId());
+    }
+
+    public long countEventsByFilter(String title, Integer categoryId, Set<EventStatus> statuses, UUID publisher) {
+        if (title == null && categoryId == null && publisher == null) {
+            return eventRepository.countByStatusIn(statuses);
+        } else if (title == null && categoryId == null) {
+            return eventRepository.countByPublisher(publisher);
+        } else if (title == null && publisher == null) {
+            return eventRepository.countByCategoryIdAndStatusIn(categoryId, statuses);
+        } else if (categoryId == null && publisher == null) {
+            return eventRepository.countByTitleContainingAndStatusIn(title, statuses);
+        } else if (title == null) {
+            return eventRepository.countByCategoryIdAndPublisherAndStatusIn(categoryId, publisher, statuses);
+        } else if (categoryId == null) {
+            return eventRepository.countByTitleContainingAndPublisherAndStatusIn(title, publisher, statuses);
+        } else if (publisher == null) {
+            return eventRepository.countByTitleContainingAndCategoryIdAndStatusIn(title, categoryId, statuses);
+        } else {
+            return eventRepository.countByTitleContainingAndCategoryIdAndPublisherAndStatusIn(title, categoryId, publisher, statuses);
+        }
+    }
+
+
+
 
 }

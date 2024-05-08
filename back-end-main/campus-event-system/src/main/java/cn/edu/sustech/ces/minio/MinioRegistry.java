@@ -34,6 +34,9 @@ public class MinioRegistry {
     @Value("${minio.documentBucket}")
     private String documentBucket;
 
+    @Value("${minio.commentBucket}")
+    private String commentsBucket;
+
     @Bean
     public MinioClient minioClient() {
         MinioClient client = MinioClient.builder()

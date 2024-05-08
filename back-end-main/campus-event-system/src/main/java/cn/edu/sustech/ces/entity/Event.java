@@ -46,14 +46,16 @@ public class Event {
     @ElementCollection
     private List<UUID> tickets;
 
-    private Integer altitude;
+    private Integer latitude;
 
     private Integer longitude;
 
+    private Integer categoryId;
+
     private String locationName;
 
-    public void setLocation(Integer altitude, Integer longitude, String locationName) {
-        this.altitude = altitude;
+    public void setLocation(Integer latitude, Integer longitude, String locationName) {
+        this.latitude = latitude;
         this.longitude = longitude;
         this.locationName = locationName;
     }

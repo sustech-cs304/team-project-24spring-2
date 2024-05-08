@@ -43,5 +43,8 @@ public class User {
 
     private String avatarUrl;
 
+    @ElementCollection
+    private List<UUID> userTickets;
+
 
 }

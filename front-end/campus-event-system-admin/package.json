@@ -11,18 +11,15 @@
     "report": "cross-env REPORT=true npm run build",
     "preview": "npm run build && vite preview --host",
     "type:check": "vue-tsc --noEmit --skipLibCheck",
-    "lint-staged": "npx lint-staged",
-    "prepare": "husky install"
+    "lint-staged": "npx lint-staged"
   },
   "lint-staged": {
     "*.{js,ts,jsx,tsx}": [
-      "prettier --write",
+      "prettier --write  --fix",
       "eslint --fix"
     ],
     "*.vue": [
-      "stylelint --fix",
-      "prettier --write",
-      "eslint --fix"
+      "stylelint --fix"
     ],
     "*.{less,css}": [
       "stylelint --fix",
@@ -30,7 +27,9 @@
     ]
   },
   "dependencies": {
+    "@amap/amap-jsapi-loader": "^1.0.1",
     "@arco-design/web-vue": "^2.44.7",
+    "@vuemap/vue-amap": "^1.1.21",
     "@vueuse/core": "^9.3.0",
     "arco-design-pro-vue": "^2.7.2",
     "axios": "^0.24.0",
