@@ -1,39 +1,8 @@
 import axios from 'axios';
 import qs from 'query-string';
 import type { DescData } from '@arco-design/web-vue/es/descriptions/interface';
-import { ref } from 'vue';
 
 // MANAGE API
-
-export interface EventRecord {
-  id: string;
-  number: number;
-  name: string;
-  contentType: 'show' | 'callingImg' | 'callingText' | 'socialMeeting';
-  count: number;
-  capacity: number;
-  startTime: string;
-  endTime: string;
-}
-
-export interface EventParams extends Partial<EventRecord> {
-  current: number;
-  pageSize: number;
-}
-
-export interface PolicyListRes {
-  list: EventRecord[];
-  total: number;
-}
-
-export function listEvent(params: EventParams) {
-  return axios.get<PolicyListRes>('/api/event/list-events', {
-    params,
-    paramsSerializer: (obj) => {
-      return qs.stringify(obj);
-    },
-  });
-}
 
 export interface ServiceRecord {
   id: number;
@@ -72,11 +41,12 @@ export interface EventTicketsInfoModel {
   image_url?: string;
 }
 
-export type originalEventModel = EventBaseInfoModel & EventTicketsInfoModel;
+export type originalEventCreationModel = EventBaseInfoModel &
+  EventTicketsInfoModel;
 
-export interface UnitEventModel {
+export interface EventCreationModel {
   title: string;
-  category_id: 0;
+  category_id: number;
   start_time: number;
   end_time: number;
   latitude: number;
@@ -85,6 +55,25 @@ export interface UnitEventModel {
   tickets: any[];
   document_url: string;
   image_url: string;
+}
+
+export interface ExtraEventRecord {
+  id: string;
+  publisher: string;
+  publish_time: string;
+  status: string;
+}
+
+export type EventRecord = EventCreationModel & ExtraEventRecord;
+
+export interface EventParams extends Partial<EventRecord> {
+  current: number;
+  pageSize: number;
+}
+
+export interface PolicyListRes {
+  list: EventRecord[];
+  total: number;
 }
 
 export function queryInspectionList() {
@@ -98,6 +87,24 @@ export function queryTheServiceList() {
 export function queryRulesPresetList() {
   return axios.get('/api/list/rules-preset');
 }
-export function CreateEventApi(data: UnitEventModel) {
-  return axios.post('/api/event/create-event',  data);
+export function CreateEventApi(data: EventCreationModel) {
+  return axios.post('/api/event/create-event', data);
+}
+
+export function listEventSize(params: EventParams) {
+  return axios.post<number>('/api/event/list-events-size', {
+    params,
+    paramsSerializer: (obj: any) => {
+      return qs.stringify(obj);
+    },
+  });
+}
+
+export function listEvent(params: EventParams) {
+  return axios.post<EventRecord[]>('/api/event/list-events', {
+    params,
+    paramsSerializer: (obj: any) => {
+      return qs.stringify(obj);
+    },
+  });
 }

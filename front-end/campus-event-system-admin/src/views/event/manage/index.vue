@@ -201,7 +201,7 @@
         <template #index="{ rowIndex }">
           {{ rowIndex + 1 + (pagination.current - 1) * pagination.pageSize }}
         </template>
-        <template #contentType="{ record }">
+        <!-- <template #contentType="{ record }">
           <a-space>
             <a-avatar
               v-if="record.contentType === 'img'"
@@ -231,30 +231,59 @@
             </a-avatar>
             {{ $t(`manageEventTable.form.contentType.${record.contentType}`) }}
           </a-space>
+        </template> -->
+
+        <template #title="{ record }">
+          {{ record.title }}
         </template>
+
+        <template #start_time="{ record }">
+          {{ longTime2String(record.start_time) }}
+        </template>
+
+        <template #end_time="{ record }">
+          {{ longTime2String(record.end_time) }}
+        </template>
+
+        <template #location_name="{ record }">
+          {{ record.location_name }}
+        </template>
+
         <template #count="{ record }">
           {{ record.count + ' / ' + record.capacity }}
         </template>
 
-        <template #startTime="{ record }">
-          {{ record.startTime }}
-        </template>
-        <template #endTime="{ record }">
-          {{ record.endTime }}
-        </template>
-
         <template #status="{ record }">
-          <span v-if="record.status === 'offline'" class="circle"></span>
-          <span v-else class="circle pass"></span>
+          <span v-if="record.status === 'EDITING'">
+            <icon-edit />
+          </span>
+          <span v-else-if="record.status === 'AUDITING'">
+            <icon-clock-circle />
+          </span>
+          <span v-else-if="record.status === 'ONLINE'">
+            <icon-check-circle />
+          </span>
+          <span v-else-if="record.status === 'OFFLINE'">
+            <icon-close-circle />
+          </span>
+
           {{ $t(`manageEventTable.form.status.${record.status}`) }}
         </template>
+
         <template #operations>
-          <a-button v-permission="['admin']" type="text" size="small">
-            {{ $t('manageEventTable.columns.operations.view') }}
-          </a-button>
-          <a-button v-permission="['admin']" type="text" size="small">
-            {{ $t('manageEventTable.columns.operations.edit') }}
-          </a-button>
+          <space>
+            <a-button :v-permission="['ADMIN', 'SUPER_ADMIN']" size="small">
+              {{ $t('manageEventTable.columns.operations.view') }}
+            </a-button>
+            <a-button
+              :v-permission="['ADMIN', 'SUPER_ADMIN']"
+              size="small"
+              type="primary"
+              style="margin-left: 8px"
+            >
+              {{ $t('manageEventTable.columns.operations.edit') }}
+            </a-button>
+          </space>
         </template>
       </a-table>
     </a-card>
@@ -266,7 +295,12 @@
   import { computed, ref, reactive, watch, nextTick } from 'vue';
   import { useI18n } from 'vue-i18n';
   import useLoading from '@/hooks/loading';
-  import { listEvent, EventRecord, EventParams } from '@/api/event';
+  import {
+    listEvent,
+    listEventSize,
+    EventRecord,
+    EventParams,
+  } from '@/api/event';
   import { Pagination } from '@/types/global';
   import type { SelectOptionData } from '@arco-design/web-vue/es/select/interface';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
@@ -328,31 +362,25 @@
       slotName: 'index',
     },
     {
-      title: t('manageEventTable.columns.number'),
-      dataIndex: 'number',
-    },
-    {
       title: t('manageEventTable.columns.name'),
-      dataIndex: 'name',
-    },
-    {
-      title: t('manageEventTable.columns.contentType'),
-      dataIndex: 'contentType',
-      slotName: 'contentType',
+      dataIndex: 'title',
     },
 
     {
       title: t('manageEventTable.columns.startTime'),
-      dataIndex: 'startTime',
+      dataIndex: 'start_time',
+      slotName: 'start_time',
     },
     {
       title: t('manageEventTable.columns.endTime'),
-      dataIndex: 'endTime',
+      dataIndex: 'end_time',
+      slotName: 'end_time',
     },
+
     {
-      title: t('manageEventTable.columns.count'),
-      dataIndex: 'count',
-      slotName: 'count',
+      title: t('manageEventTable.columns.location'),
+      dataIndex: 'location_name',
+      slotName: 'location_name',
     },
     {
       title: t('manageEventTable.columns.status'),
@@ -406,10 +434,11 @@
   ) => {
     setLoading(true);
     try {
-      const { data } = await listEvent(params);
-      renderData.value = data.list;
+      const resLen = await listEventSize(params);
+      const res = await listEvent(params);
+      renderData.value = res.data;
       pagination.current = params.current;
-      pagination.total = data.total;
+      pagination.total = resLen.data;
     } catch (err) {
       // you can report use errorHandler or other
     } finally {
@@ -425,7 +454,6 @@
   };
 
   const create = () => {
-    // openWindow('/event/create');
     router.push('/event/create');
   };
 
@@ -475,6 +503,15 @@
       );
     }
     return newArray;
+  };
+
+  const longTime2String = (time: number) => {
+    const date = new Date(time);
+    const dateStr = `${date.getFullYear()}-${
+      date.getMonth() + 1
+    }-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    console.log(dateStr);
+    return dateStr;
   };
 
   const popupVisibleChange = (val: boolean) => {

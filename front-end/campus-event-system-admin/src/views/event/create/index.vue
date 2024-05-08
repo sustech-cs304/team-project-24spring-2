@@ -41,8 +41,8 @@
     CreateEventApi,
     EventBaseInfoModel,
     EventTicketsInfoModel,
-    originalEventModel,
-    UnitEventModel,
+    originalEventCreationModel,
+    EventCreationModel,
   } from '@/api/event';
   import { Notification } from '@arco-design/web-vue';
   import BaseInfo from './components/base-info.vue';
@@ -53,7 +53,7 @@
 
   const { loading, setLoading } = useLoading(false);
   const step = ref(1);
-  const submitModel = ref<originalEventModel>({} as originalEventModel);
+  const submitModel = ref<originalEventCreationModel>({} as originalEventCreationModel);
   const submitForm = async () => {
     setLoading(true);
     const Dates: Date[] = submitModel.value.time_range;
@@ -61,7 +61,7 @@
     const startDate = new Date(Dates[0]).getTime();
     const endDate = new Date(Dates[1]).getTime();
     try {
-      const sendData = ref<UnitEventModel>();
+      const sendData = ref<EventCreationModel>();
       const jsonTickets = [];
       for (let i = 0; i < submitModel.value.tickets.length; i += 1) {
         jsonTickets.push({
@@ -91,7 +91,7 @@
         content: '创建成功！',
       });
       step.value = 3;
-      submitModel.value = {} as originalEventModel; // init
+      submitModel.value = {} as originalEventCreationModel; // init
     } catch (err) {
       console.log(submitModel.value);
       console.log(err);
