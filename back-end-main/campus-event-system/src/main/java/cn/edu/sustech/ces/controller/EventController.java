@@ -262,9 +262,9 @@ public class EventController {
             }
         }
 
-        if (request.getParameter("status") != null) {
+        if (request.getParameter("statuses") != null) {
             statuses = new HashSet<>();
-            String[] statusStrings = request.getParameter("status").split(",");
+            String[] statusStrings = request.getParameter("statuses").split(",");
             for (String statusString : statusStrings) {
                 statuses.add(EventStatus.valueOf(statusString));
             }
@@ -297,9 +297,9 @@ public class EventController {
             }
         }
 
-        if (request.getParameter("status") != null) {
+        if (request.getParameter("statuses") != null) {
             statuses = new HashSet<>();
-            String[] statusStrings = request.getParameter("status").split(",");
+            String[] statusStrings = request.getParameter("statuses").split(",");
             for (String statusString : statusStrings) {
                 statuses.add(EventStatus.valueOf(statusString));
             }
