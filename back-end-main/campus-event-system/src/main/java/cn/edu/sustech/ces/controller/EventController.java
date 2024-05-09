@@ -217,7 +217,7 @@ public class EventController {
     }
 
     @PostMapping("/explore-events")
-    public ResponseEntity<?> exploreEvents(@RequestParam int page, HttpServletRequest request, @RequestParam(required = false, defaultValue = "10") int size) {
+    public ResponseEntity<?> exploreEvents(@RequestParam(required = false, defaultValue = "0") int page, HttpServletRequest request, @RequestParam(required = false, defaultValue = "10") int size) {
         if (size < 0 || page < 0) {
             return ResponseEntity.badRequest().body("Invalid page or size");
         }
@@ -274,7 +274,7 @@ public class EventController {
 
     @PostMapping("/list-events")
     @PreAuthorize("hasAnyRole('INSTITUTE_ADMIN', 'DEPARTMENT_ADMIN', 'SUPER_ADMIN')")
-    public ResponseEntity<?> listEvents(@RequestParam int page, @RequestParam(required = false, defaultValue = "10") int size, HttpServletRequest request) {
+    public ResponseEntity<?> listEvents(@RequestParam(required = false, defaultValue = "0") int page, @RequestParam(required = false, defaultValue = "10") int size, HttpServletRequest request) {
         if (size < 0 || page < 0) {
             return ResponseEntity.badRequest().body("Invalid page or size");
         }

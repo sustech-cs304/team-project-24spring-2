@@ -35,12 +35,6 @@ public class PayController {
 
     private final AlipayConfig alipayConfig;
 
-
-    /*
-        TODO:
-            refine the class
-     */
-
     @Autowired
     public PayController(OrderService orderService, AlipayConfig alipayConfig) {
         this.orderService = orderService;

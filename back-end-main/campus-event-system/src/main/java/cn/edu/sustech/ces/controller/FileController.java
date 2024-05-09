@@ -84,7 +84,7 @@ public class FileController {
             }
             String fileName = commentId.toString() + "/" + UUID.randomUUID().toString() + "." + suffix.get();
             minioService.uploadFile(minioService.getCommentBucket(), fileName, file);
-            return ResponseEntity.ok(fileName);
+            return ResponseEntity.ok("/" + minioService.getCommentBucket() + "/" + fileName);
         }
 
         if (usage.equalsIgnoreCase("event")) {
@@ -117,7 +117,32 @@ public class FileController {
             String uploadFileName = "event/" + eventId.toString() + "/" + UUID.randomUUID().toString() + "." + suffix.get();
             String bucket = (type.startsWith("image") ? minioService.getImageBucket() : minioService.getDocumentBucket());
             minioService.uploadFile(bucket, uploadFileName, file);
-            return ResponseEntity.ok(uploadFileName);
+            return ResponseEntity.ok("/" + bucket + "/" + uploadFileName);
+        }
+
+        if (usage.equalsIgnoreCase("user")) {
+            if (user.getPermissionGroup() == PermissionGroup.USER) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Permission denied");
+            }
+
+            String type = file.getContentType();
+            // only allow image
+            if (type == null || !type.startsWith("image")) {
+                return ResponseEntity.badRequest().body("File type not supported");
+            }
+            Optional<String> suffix = Optional.ofNullable(file.getOriginalFilename())
+                    .filter(f -> f.contains("."))
+                    .map(f -> f.substring(file.getOriginalFilename().lastIndexOf(".") + 1));
+            if (suffix.isEmpty()) {
+                return ResponseEntity.badRequest().body("File type not supported");
+            }
+            suffix = Optional.of(suffix.get().toLowerCase());
+            if (!suffix.get().equalsIgnoreCase("jpg") && !suffix.get().equalsIgnoreCase("jpeg") && !suffix.get().equalsIgnoreCase("png")) {
+                return ResponseEntity.badRequest().body("File type not supported");
+            }
+            String fileName = "user/" + user.getId().toString() + "/" + UUID.randomUUID().toString() + "." + suffix.get();
+            minioService.uploadFile(minioService.getImageBucket(), fileName, file);
+            return ResponseEntity.ok("/" + minioService.getImageBucket() + "/" + fileName);
         }
 
         return ResponseEntity.badRequest().body("Usage not supported");

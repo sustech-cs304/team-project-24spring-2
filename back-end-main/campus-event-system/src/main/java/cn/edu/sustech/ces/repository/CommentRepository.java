@@ -11,4 +11,6 @@ import java.util.UUID;
 @Repository
 public interface CommentRepository extends ListCrudRepository<Comment, UUID> {
     List<Comment> findByEventId(Pageable pageable, UUID eventId);
+
+    long countByEventId(UUID eventId);
 }

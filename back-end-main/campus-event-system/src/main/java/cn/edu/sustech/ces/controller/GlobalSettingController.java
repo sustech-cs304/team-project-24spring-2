@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -17,7 +18,7 @@ public class GlobalSettingController {
 
     @PostMapping("/get-setting")
     @PreAuthorize("hasAnyRole('INSTITUTE_ADMIN', 'SUPER_ADMIN')")
-    public ResponseEntity<String> getSetting(String key) {
+    public ResponseEntity<String> getSetting(@RequestParam  String key) {
         String setting = globalSettingService.getSetting(key);
         if (setting == null) {
             return ResponseEntity.badRequest().body("Setting not found");
@@ -27,7 +28,7 @@ public class GlobalSettingController {
 
     @PostMapping("/set-setting")
     @PreAuthorize("hasAnyRole('INSTITUTE_ADMIN', 'SUPER_ADMIN')")
-    public ResponseEntity<String> setSetting(String key, String value) {
+    public ResponseEntity<String> setSetting(@RequestParam String key, @RequestParam String value) {
         return ResponseEntity.ok(globalSettingService.setSetting(key, value));
     }
 

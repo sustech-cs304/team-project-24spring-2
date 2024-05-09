@@ -8,6 +8,7 @@ import cn.edu.sustech.ces.security.RegisterRequest;
 import cn.edu.sustech.ces.service.AuthService;
 import cn.edu.sustech.ces.service.OrderService;
 import cn.edu.sustech.ces.service.UserService;
+import cn.edu.sustech.ces.service.minio.MinioService;
 import cn.edu.sustech.ces.utils.CESUtils;
 import com.alibaba.fastjson.JSONObject;
 import lombok.AllArgsConstructor;
@@ -20,7 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 
-
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -32,6 +33,7 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
     private final AuthService authService;
     private final OrderService orderService;
+    private final MinioService minioService;
 
     //TODO: selectively expose user information
 
@@ -115,6 +117,17 @@ public class UserController {
         user.setPermissionGroup(PermissionGroup.values()[permissionGroup]);
         userService.updateUser(user);
         return ResponseEntity.ok(user);
+    }
+
+    @PostMapping("/get-upload-images")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> getUploadImages() {
+        User user = CESUtils.getAuthorizedUser();
+        List<String> urls = minioService.getItems(minioService.getImageBucket(), user.getId().toString())
+                .stream()
+                .map(item -> "/" + minioService.getImageBucket() + "/" + item.objectName())
+                .toList();
+        return ResponseEntity.ok(urls);
     }
 
 }

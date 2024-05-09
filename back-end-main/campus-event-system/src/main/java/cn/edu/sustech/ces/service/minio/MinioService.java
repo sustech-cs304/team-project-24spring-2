@@ -160,12 +160,12 @@ public class MinioService {
     }
 
     @SneakyThrows
-    public List<Item> getItems(String commentsBucket, String prefix) {
-        if (!checkBucketExists(commentsBucket)) {
+    public List<Item> getItems(String bucket, String prefix) {
+        if (!checkBucketExists(bucket)) {
             throw new RuntimeException("Bucket Not Found");
         }
         Iterable<Result<Item>> results = minioClient.listObjects(ListObjectsArgs.builder()
-                .bucket(commentsBucket)
+                .bucket(bucket)
                 .prefix(prefix)
                 .recursive(true)
                 .build());

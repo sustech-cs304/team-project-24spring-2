@@ -42,7 +42,7 @@ public class CommentController {
 
         User user = CESUtils.getAuthorizedUser();
 
-        UUID eventId = UUID.fromString(commentRequest.getString("eventId"));
+        UUID eventId = UUID.fromString(commentRequest.getString("event_id"));
         Event event = eventService.getEventById(eventId);
         if (event == null || event.getStatus() == EventStatus.AUDITING) {
             return ResponseEntity.badRequest().body("Event not found or not commentable");
@@ -57,10 +57,9 @@ public class CommentController {
 
     @PostMapping("/delete-comment")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> deleteComment(@RequestBody JSONObject commentRequest) {
+    public ResponseEntity<?> deleteComment(@RequestParam UUID commentId) {
 
         User user = CESUtils.getAuthorizedUser();
-        UUID commentId = UUID.fromString(commentRequest.getString("commentId"));
         Comment comment = commentService.getCommentById(commentId);
         if (comment == null) {
             return ResponseEntity.badRequest().body("Comment not found");
@@ -96,6 +95,11 @@ public class CommentController {
         }
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(commentService.getCommentsByEventId(eventId, pageable));
+    }
+
+    @PostMapping("/get-comments-size")
+    public ResponseEntity<Long> getComments(@RequestParam UUID eventId) {
+        return ResponseEntity.ok(commentService.countCommentsByEventId(eventId));
     }
 
     @PostMapping("/get-comment-attachments")

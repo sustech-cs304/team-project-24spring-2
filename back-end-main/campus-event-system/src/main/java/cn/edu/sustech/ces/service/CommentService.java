@@ -31,4 +31,7 @@ public class CommentService {
         return commentRepository.findByEventId(pageable, eventId);
     }
 
+    public long countCommentsByEventId(UUID eventId) {
+        return commentRepository.countByEventId(eventId);
+    }
 }
