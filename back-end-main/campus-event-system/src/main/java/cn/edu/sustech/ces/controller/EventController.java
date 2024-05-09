@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import cn.edu.sustech.ces.service.EventService;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/event")
@@ -246,7 +247,7 @@ public class EventController {
         String title = null;
         Integer categoryId = null;
         UUID publisher = null;
-        Set<EventStatus> statuses = null;
+        Set<EventStatus> statuses = Arrays.stream(EventStatus.values()).collect(Collectors.toSet());
         if (request.getParameter("title") != null) {
             title = request.getParameter("title");
         }
@@ -282,7 +283,7 @@ public class EventController {
         String title = null;
         Integer categoryId = null;
         UUID publisher = null;
-        Set<EventStatus> statuses = null;
+        Set<EventStatus> statuses = Arrays.stream(EventStatus.values()).collect(Collectors.toSet());
         if (request.getParameter("title") != null) {
             title = request.getParameter("title");
         }
