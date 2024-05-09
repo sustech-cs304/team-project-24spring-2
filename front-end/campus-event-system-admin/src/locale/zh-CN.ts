@@ -9,6 +9,7 @@ import localeEventTable from '@/views/event/manage/locale/zh-CN';
 import localeEventCreate from '@/views/event/create/locale/zh-CN';
 import localeEventAudit from '@/views/event/audit/locale/zh-CN';
 import localeEventSettings from '@/views/event/settings/locale/zh-CN';
+import localeEventEdit from '@/views/event/edit/locale/zh-CN';
 
 import localeSearchTable from '@/views/list/search-table/locale/zh-CN';
 
@@ -80,4 +81,5 @@ export default {
   ...localeEventSettings,
   ...localeUsersManage,
   ...localeUsersSettings,
+  ...localeEventEdit
 };

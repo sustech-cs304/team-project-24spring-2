@@ -28,7 +28,7 @@ export interface Tickets {
 
 export interface EventBaseInfoModel {
   title: string;
-  category_id: 0;
+  category_id: string;
   time_range: Date[];
   address: string;
   lng: number;
@@ -46,7 +46,7 @@ export type originalEventCreationModel = EventBaseInfoModel &
 
 export interface EventCreationModel {
   title: string;
-  category_id: number;
+  category_id: string;
   start_time: number;
   end_time: number;
   latitude: number;
@@ -98,6 +98,10 @@ export function listEventSize(params: EventParams) {
       return qs.stringify(obj);
     },
   });
+}
+
+export function getEventInfo(uuid: string) {
+    return axios.post<EventRecord>(`/api/event/get-event?eventId=${uuid}`);
 }
 
 export function listEvent(params: EventParams) {

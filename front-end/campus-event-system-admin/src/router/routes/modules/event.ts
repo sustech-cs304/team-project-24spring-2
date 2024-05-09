@@ -52,6 +52,17 @@ const EVENTS: AppRouteRecordRaw = {
         roles: ['SUPER_ADMIN'],
       },
     },
+    {
+        path: 'edit',
+        name: 'EventEdit',
+        component: () => import('@/views/event/edit/index.vue'),
+        meta: {
+          locale: 'menu.event.edit',
+          requiresAuth: true,
+          hideInMenu: true,
+          roles: ['ADMIN', 'SUPER_ADMIN'],
+        },
+      },
   ],
 };
 

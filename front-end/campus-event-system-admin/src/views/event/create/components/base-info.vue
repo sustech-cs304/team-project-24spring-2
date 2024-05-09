@@ -78,7 +78,12 @@
         disabled
         :placeholder="$t('event.form.placeholder.address')"
       />
-      <MyMAP @confirm="onSelectedAddress" />
+      <MyMAP
+        @confirm="onSelectedAddress"
+        :address="formData.address"
+        :lat="formData.lat"
+        :lng="formData.lng"
+      />
 
       <template #help>
         <span>{{ $t('event.form.tip.eventAddress') }}</span>

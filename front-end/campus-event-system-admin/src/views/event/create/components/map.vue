@@ -67,6 +67,21 @@
     securityJsCode: import.meta.env.VITE_AMAP_API_CODE as string,
   };
 
+  const props = defineProps({
+    lng: {
+      type: Number,
+      default: 113.99986,
+      readonly: false,
+    },
+    lat: {
+      type: Number,
+      default: 22.598965,
+    },
+    address: {
+      type: String,
+      default: '',
+    },
+  });
   const emits = defineEmits(['confirm']);
   const visible: any = ref(false);
   const areaList: any = ref([]);
@@ -75,7 +90,7 @@
 
   let map: any = null;
   const loading: any = ref(false);
-  const checkedForm: any = ref();
+  const checkedForm: any = ref({});
   let AutoComplete: any = null;
   let aMap: any = null;
   let toolbar: any = null;
@@ -88,7 +103,7 @@
   };
 
   const addmark = (lng: any, lat: any, AMap: any) => {
-    const reuslt = marker && removeMarker();
+    if (marker) removeMarker();
     marker = new AMap.Marker({
       position: new AMap.LngLat(lng, lat),
       title: '活动地点',
@@ -98,12 +113,16 @@
       lng,
       lat,
     };
+
     const lnglat = [lng, lat];
     geoCoder.getAddress(lnglat, function (status: any, result: any) {
       if (status === 'complete' && result.info === 'OK') {
         const { province, city, district } = result.regeocode.addressComponent;
         const { formattedAddress: formated } = result.regeocode;
-        const clean = formated.replace(province, '').replace(city, '').replace(district, '');
+        const clean = formated
+          .replace(province, '')
+          .replace(city, '')
+          .replace(district, '');
         areaValue.value = clean;
         checkedForm.value = {
           ...checkedForm.value,
@@ -113,6 +132,14 @@
     });
     map.add(marker);
     map.setCenter(lnglat, '', 500);
+  };
+  const currentSelect = (val: any) => {
+    checkedForm.value = {
+      lat: val.location?.lat,
+      lng: val.location?.lng,
+    };
+    addmark(val.location?.lng, val.location?.lat, aMap);
+    map.setCenter([val.location?.lng, val.location?.lat], '', 500);
   };
 
   const initMap = () => {
@@ -147,6 +174,15 @@
         map.on('click', (e: any) => {
           addmark(e.lnglat.getLng(), e.lnglat.getLat(), AMap);
         });
+
+        if (props.address) {
+          currentSelect({
+            location: {
+              lat: props.lat,
+              lng: props.lng,
+            },
+          });
+        }
       })
       .catch((e) => {
         console.log(e);
@@ -164,16 +200,6 @@
         });
       }, 200);
     }
-  };
-
-  const currentSelect = (val: any) => {
-    checkedForm.value = {
-      lat: val.location?.lat,
-      lng: val.location?.lng,
-    };
-    console.log(val);
-    addmark(val.location?.lng, val.location?.lat, aMap);
-    map.setCenter([val.location?.lng, val.location?.lat], '', 500);
   };
 
   const confirmData = () => {
@@ -197,8 +223,7 @@
   defineExpose({
     open,
   });
-  onMounted(() => {
-  });
+  onMounted(() => {});
   onUnmounted(() => {
     map?.destroy();
   });

@@ -201,37 +201,6 @@
         <template #index="{ rowIndex }">
           {{ rowIndex + 1 + (pagination.current - 1) * pagination.pageSize }}
         </template>
-        <!-- <template #contentType="{ record }">
-          <a-space>
-            <a-avatar
-              v-if="record.contentType === 'img'"
-              :size="16"
-              shape="square"
-            >
-              <img
-                alt="avatar"
-                src="//p3-armor.byteimg.com/tos-cn-i-49unhts6dw/581b17753093199839f2e327e726b157.svg~tplv-49unhts6dw-image.image"
-              />
-            </a-avatar>
-            <a-avatar
-              v-else-if="record.contentType === 'horizontalVideo'"
-              :size="16"
-              shape="square"
-            >
-              <img
-                alt="avatar"
-                src="//p3-armor.byteimg.com/tos-cn-i-49unhts6dw/77721e365eb2ab786c889682cbc721c1.svg~tplv-49unhts6dw-image.image"
-              />
-            </a-avatar>
-            <a-avatar v-else :size="16" shape="square">
-              <img
-                alt="avatar"
-                src="//p3-armor.byteimg.com/tos-cn-i-49unhts6dw/ea8b09190046da0ea7e070d83c5d1731.svg~tplv-49unhts6dw-image.image"
-              />
-            </a-avatar>
-            {{ $t(`manageEventTable.form.contentType.${record.contentType}`) }}
-          </a-space>
-        </template> -->
 
         <template #title="{ record }">
           {{ record.title }}
@@ -270,7 +239,7 @@
           {{ $t(`manageEventTable.form.status.${record.status}`) }}
         </template>
 
-        <template #operations>
+        <template #operations="{ record }">
           <space>
             <a-button :v-permission="['ADMIN', 'SUPER_ADMIN']" size="small">
               {{ $t('manageEventTable.columns.operations.view') }}
@@ -280,6 +249,7 @@
               size="small"
               type="primary"
               style="margin-left: 8px"
+              @click.prevent="onEventEditClicked(record.id)"
             >
               {{ $t('manageEventTable.columns.operations.edit') }}
             </a-button>
@@ -292,7 +262,7 @@
 
 <script lang="ts" setup>
   import { useRouter } from 'vue-router';
-  import { computed, ref, reactive, watch, nextTick } from 'vue';
+  import { computed, ref, reactive, watch, nextTick, onBeforeMount } from 'vue';
   import { useI18n } from 'vue-i18n';
   import useLoading from '@/hooks/loading';
   import {
@@ -461,7 +431,6 @@
     fetchData({ ...basePagination, current });
   };
 
-  fetchData();
   const reset = () => {
     formModel.value = generateFormModel();
   };
@@ -505,12 +474,15 @@
     return newArray;
   };
 
+  const onEventEditClicked = (uuid: string) => {
+    router.push(`/event/edit?uuid=${uuid}`);
+  };
+
   const longTime2String = (time: number) => {
     const date = new Date(time);
     const dateStr = `${date.getFullYear()}-${
       date.getMonth() + 1
     }-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
-    console.log(dateStr);
     return dateStr;
   };
 
@@ -540,6 +512,9 @@
     },
     { deep: true, immediate: true }
   );
+  onBeforeMount(() => {
+    fetchData();
+  });
 </script>
 
 <script lang="ts">
