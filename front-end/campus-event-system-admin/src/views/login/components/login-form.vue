@@ -12,7 +12,9 @@
     >
       <a-form-item
         field="username"
-        :rules="[{ required: true, message: $t('login.form.userName.errMsg') }]"
+        :rules="[
+          { required: true, message: $t('login.form.userName.errMsg') },
+        ]"
         :validate-trigger="['change', 'blur']"
         hide-label
       >

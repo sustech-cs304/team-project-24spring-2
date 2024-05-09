@@ -9,13 +9,12 @@ import localeEventTable from '@/views/event/manage/locale/zh-CN';
 import localeEventCreate from '@/views/event/create/locale/zh-CN';
 import localeEventAudit from '@/views/event/audit/locale/zh-CN';
 import localeEventSettings from '@/views/event/settings/locale/zh-CN';
+import localeEventEdit from '@/views/event/edit/locale/zh-CN';
 
 import localeSearchTable from '@/views/list/search-table/locale/zh-CN';
 
 import localeUsersManage from '@/views/users/manage/locale/zh-CN';
-import localeUsersSettings    from '@/views/users/settings/locale/zh-CN';
-
-
+import localeUsersSettings from '@/views/users/settings/locale/zh-CN';
 
 import localeCardList from '@/views/list/card/locale/zh-CN';
 
@@ -81,5 +80,6 @@ export default {
   ...localeEventAudit,
   ...localeEventSettings,
   ...localeUsersManage,
-  ...localeUsersSettings
+  ...localeUsersSettings,
+  ...localeEventEdit
 };
