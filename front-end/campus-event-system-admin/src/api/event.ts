@@ -92,12 +92,7 @@ export function CreateEventApi(data: EventCreationModel) {
 }
 
 export function listEventSize(params: EventParams) {
-  return axios.post<number>('/api/event/list-events-size', {
-    params,
-    paramsSerializer: (obj: any) => {
-      return qs.stringify(obj);
-    },
-  });
+  return axios.post<number>('/api/event/list-events-size');
 }
 
 export function getEventInfo(uuid: string) {
@@ -105,10 +100,5 @@ export function getEventInfo(uuid: string) {
 }
 
 export function listEvent(params: EventParams) {
-  return axios.post<EventRecord[]>('/api/event/list-events', {
-    params,
-    paramsSerializer: (obj: any) => {
-      return qs.stringify(obj);
-    },
-  });
+  return axios.post<EventRecord[]>(`/api/event/list-events?page=${params.current}&size=${params.pageSize}`, {});
 }

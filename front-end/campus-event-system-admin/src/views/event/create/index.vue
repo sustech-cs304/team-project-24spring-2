@@ -79,7 +79,7 @@
         latitude: 0,
         longitude: 0,
         location_name: submitModel.value.address,
-        category_id: 0,
+        category_id: '',
         // tickets: submitModel.value.tickets,
         tickets: jsonTickets,
       };

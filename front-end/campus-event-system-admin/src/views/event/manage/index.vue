@@ -406,6 +406,7 @@
     try {
       const resLen = await listEventSize(params);
       const res = await listEvent(params);
+      console.log(res);
       renderData.value = res.data;
       pagination.current = params.current;
       pagination.total = resLen.data;

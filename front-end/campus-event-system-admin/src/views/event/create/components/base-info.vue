@@ -107,7 +107,7 @@
   const formRef = ref<FormInstance>();
   const formData = ref<EventBaseInfoModel>({
     title: '',
-    category_id: 0,
+    category_id: '',
     time_range: [],
     address: '',
     lng: 0,
