@@ -6,11 +6,7 @@
     :label-col-props="{ span: 6 }"
     :wrapper-col-props="{ span: 18 }"
   >
-    <!-- <a-button type="primary" @click="onCreateTicketClick">
-      {{ $t('tickets.button.createTicket') }}
-    </a-button> -->
-
-    <createTicketButton ref="child" @editConfirm="onAddTicket"/>
+    <createTicketButton ref="child" @editConfirm="onAddTicket" />
 
     <a-divider style="margin-top: 0" />
 
@@ -21,12 +17,12 @@
       :bordered="false"
       :size="size"
     >
-      <template #count="{ record }">
+      <template #description="{ record }">
         {{ record.description }}
       </template>
 
-      <template #endTime="{ record }">
-        {{ record.price }}
+      <template #price="{ record }">
+        {{ inputNumberF(record.price) }}
       </template>
 
       <template #operations="{ record }">
@@ -69,10 +65,13 @@
 
   type Column = TableColumnData & { checked?: true };
   let cnt = 0;
+  const integralDigits = 6;
+  const decimalPlaces = 2;
+  const symbol = '¥';
   const cloneColumns = ref<Column[]>([]);
   const showColumns = ref<Column[]>([]);
-
   const renderData = ref<Tickets[]>([]);
+  //   const renderData = ref;
 
   const { t } = useI18n();
 
@@ -111,13 +110,14 @@
     },
   ]);
   const onAddTicket = (Ticket: Tickets) => {
-    cnt+=1;
+    cnt += 1;
     Ticket.id = cnt;
     renderData.value.push(Ticket);
   };
 
   const onNextClick = async () => {
     const res = await formRef.value?.validate();
+    formData.value.tickets = renderData.value;
     if (!res) {
       emits('changeStep', 'submit', { ...formData.value });
     }
@@ -137,6 +137,43 @@
     console.log('delete', id);
   };
 
+  const regHandel = (value: any) => {
+    let reg = null;
+    let gs = null;
+    const dIndex = value.toString().indexOf('.');
+    // 点开头处理为 0.
+    if (dIndex === 0) {
+      value = '0.';
+    } else {
+      // 连续点转为一个点
+      const dIndex2 = value.toString().indexOf('..');
+      if (dIndex2 !== -1) {
+        value = value.replace(/\.\./, '.');
+      }
+    }
+    value = value.replace(/[^0-9.]/g, '');
+    const arr = value.split('.');
+    if (arr.length === 2 && arr[1] !== '') {
+      reg = new RegExp(
+        `^(-)*(\\d{0,${integralDigits}})\\d*\\.(\\d{0,${decimalPlaces}}).*$`
+      );
+      gs = '$1$2.$3';
+    } else {
+      reg = new RegExp(`^(-)*(\\d{0,${integralDigits}}).*$`);
+      if (dIndex !== -1) {
+        gs = '$1$2.';
+      } else {
+        gs = '$1$2';
+      }
+    }
+    return { reg, gs };
+  };
+  const inputNumberF = (value: any) => {
+    const strValue = value.toString();
+    const res = regHandel(strValue);
+    const val = strValue.replace(res.reg, res.gs);
+    return `${symbol} ${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  };
   watch(
     () => columns.value,
     (val) => {
@@ -148,9 +185,6 @@
     },
     { deep: true, immediate: true }
   );
-
-
-
 </script>
 
 <style scoped lang="less">

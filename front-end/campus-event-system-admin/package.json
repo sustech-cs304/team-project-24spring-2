@@ -29,7 +29,6 @@
   "dependencies": {
     "@amap/amap-jsapi-loader": "^1.0.1",
     "@arco-design/web-vue": "^2.44.7",
-    "@vuemap/vue-amap": "^1.1.21",
     "@vueuse/core": "^9.3.0",
     "arco-design-pro-vue": "^2.7.2",
     "axios": "^0.24.0",

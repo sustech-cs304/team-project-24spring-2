@@ -113,7 +113,7 @@ setupMock({
           y: presetData[idx],
         }));
       };
-      return successResponseWrap([...getLineData()]);
+      return successResponseWrap([...getLineData()]).data;
     });
     Mock.mock(new RegExp('/api/popular/list'), (params: GetParams) => {
       const { type = 'text' } = qs.parseUrl(params.url).query;
@@ -123,7 +123,7 @@ setupMock({
       if (type === 'video') {
         return successResponseWrap([...imageList]);
       }
-      return successResponseWrap([...textList]);
+      return successResponseWrap([...textList]).data;
     });
   },
 });

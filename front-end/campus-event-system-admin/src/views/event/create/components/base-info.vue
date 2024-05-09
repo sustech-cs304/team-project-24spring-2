@@ -57,8 +57,9 @@
     >
       <a-range-picker
         show-time
-        format="YYYY-MM-DD HH:mm"
         v-model="formData.time_range"
+        format="YYYY-MM-DD HH:mm"
+        type="datetime"
       />
     </a-form-item>
     <a-form-item
@@ -69,16 +70,19 @@
           required: true,
           message: $t('event.form.error.eventAddress.required'),
         },
-        {
-          type: 'url',
-          message: $t('event.form.error.eventAddress.pattern'),
-        },
       ]"
       row-class="keep-margin"
     >
       <a-input
         v-model="formData.address"
+        disabled
         :placeholder="$t('event.form.placeholder.address')"
+      />
+      <MyMAP
+        @confirm="onSelectedAddress"
+        :address="formData.address"
+        :lat="formData.lat"
+        :lng="formData.lng"
       />
 
       <template #help>
@@ -91,16 +95,13 @@
       </a-button>
     </a-form-item>
   </a-form>
-  <!-- <div>
-    <mymap style="height: auto; width: auto" />
-  </div> -->
 </template>
 
 <script lang="ts" setup>
   import { ref } from 'vue';
   import { FormInstance } from '@arco-design/web-vue/es/form';
   import { EventBaseInfoModel } from '@/api/event';
-  import mymap from './map.vue';
+  import MyMAP from './map.vue';
 
   const emits = defineEmits(['changeStep']);
   const formRef = ref<FormInstance>();
@@ -108,7 +109,9 @@
     title: '',
     category_id: 0,
     time_range: [],
-    address: 'https://arco.design',
+    address: '',
+    lng: 0,
+    lat: 0,
   });
 
   const onNextClick = async () => {
@@ -116,6 +119,12 @@
     if (!res) {
       emits('changeStep', 'forward', { ...formData.value });
     }
+  };
+
+  const onSelectedAddress = (form: any) => {
+    formData.value.address = form.address;
+    formData.value.lng = form.lng;
+    formData.value.lat = form.lat;
   };
 </script>
 
