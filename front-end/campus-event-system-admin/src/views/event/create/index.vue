@@ -52,7 +52,7 @@
   //   import { start } from 'nprogress';
 
   const { loading, setLoading } = useLoading(false);
-  const step = ref(1);
+  const step = ref(2);
   const submitModel = ref<originalEventCreationModel>({} as originalEventCreationModel);
   const submitForm = async () => {
     setLoading(true);
@@ -76,16 +76,15 @@
         end_time: endDate,
         document_url: '',
         image_url: '',
-        latitude: 0,
-        longitude: 0,
+        latitude: submitModel.value.lat,
+        longitude: submitModel.value.lng,
         location_name: submitModel.value.address,
-        category_id: '',
+        category: submitModel.value.category,
         // tickets: submitModel.value.tickets,
         tickets: jsonTickets,
       };
-      console.log(sendData.value);
+      console.log('sending', sendData.value);
       const res = await CreateEventApi(sendData.value); // The mock api default success
-      console.log(res);
       Notification.success({
         title: 'Success',
         content: '创建成功！',

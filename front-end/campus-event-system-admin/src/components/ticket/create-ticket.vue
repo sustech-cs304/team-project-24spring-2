@@ -1,8 +1,8 @@
 <template>
-  <a-button type="primary" @click="handleClick">{{$t('ticket.create')}}</a-button>
+  <a-button type="primary" @click="handleClick" style="width: inherit">{{$t('ticket.create')}}</a-button>
   <a-modal
     v-model:visible="visible"
-    title="Modal Form"
+    :title="$t('ticket.create')"
     @cancel="handleCancel"
     @before-ok="handleBeforeOk"
   >

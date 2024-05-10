@@ -8,15 +8,15 @@
   >
     <a-form-item
       field="title"
-      :label="$t('event.form.label.eventName')"
+      :label="$t('event.label.eventName')"
       :rules="[
         {
           required: true,
-          message: $t('event.form.error.eventName.required'),
+          message: $t('event.error.eventName.required'),
         },
         {
           match: /^[a-zA-Z0-9\u4e00-\u9fa5]{1,20}$/,
-          message: $t('event.form.error.eventName.pattern'),
+          message: $t('event.error.eventName.pattern'),
         },
       ]"
     >
@@ -26,17 +26,17 @@
       />
     </a-form-item>
     <a-form-item
-      field="category_id"
-      :label="$t('event.form.label.eventType')"
+      field="category"
+      :label="$t('event.label.eventType')"
       :rules="[
         {
           required: true,
-          message: $t('event.form.error.eventType.required'),
+          message: $t('event.error.eventType.required'),
         },
       ]"
     >
       <a-select
-        v-model="formData.category_id"
+        v-model="formData.category"
         :placeholder="$t('event.placeholder.eventType')"
       >
         <a-option :value="0">社交</a-option>
@@ -47,11 +47,11 @@
     </a-form-item>
     <a-form-item
       field="time_range"
-      :label="$t('event.form.label.eventTime')"
+      :label="$t('event.label.eventTime')"
       :rules="[
         {
           required: true,
-          message: $t('event.form.error.eventTime.required'),
+          message: $t('event.error.eventTime.required'),
         },
       ]"
     >
@@ -64,19 +64,18 @@
     </a-form-item>
     <a-form-item
       field="address"
-      :label="$t('event.form.label.eventAddress')"
+      :label="$t('event.label.eventAddress')"
       :rules="[
         {
           required: true,
-          message: $t('event.form.error.eventAddress.required'),
+          message: $t('event.error.eventAddress.required'),
         },
       ]"
       row-class="keep-margin"
     >
       <a-input
         v-model="formData.address"
-        disabled
-        :placeholder="$t('event.form.placeholder.address')"
+        :placeholder="$t('event.placeholder.address')"
       />
       <MyMAP
         @confirm="onSelectedAddress"
@@ -86,7 +85,7 @@
       />
 
       <template #help>
-        <span>{{ $t('event.form.tip.eventAddress') }}</span>
+        <span>{{ $t('event.tip.eventAddress') }}</span>
       </template>
     </a-form-item>
     <a-form-item>
@@ -101,13 +100,13 @@
   import { ref } from 'vue';
   import { FormInstance } from '@arco-design/web-vue/es/form';
   import { EventBaseInfoModel } from '@/api/event';
-  import MyMAP from './map.vue';
+  import MyMAP from '@/components/map/select-map.vue';
 
   const emits = defineEmits(['changeStep']);
   const formRef = ref<FormInstance>();
   const formData = ref<EventBaseInfoModel>({
     title: '',
-    category_id: '',
+    category: '',
     time_range: [],
     address: '',
     lng: 0,

@@ -5,5 +5,8 @@ export default {
   'eventEdit.tab.title.detail': '详细信息',
   'eventEdit.info.event': '活动信息',
   'eventEdit.info.ticket': '票务信息',
-  
+  'eventEdit.save': '保存',
+  'eventEdit.reset': '重置',
+  'eventEdit.submit': '提交审核',
+
 };

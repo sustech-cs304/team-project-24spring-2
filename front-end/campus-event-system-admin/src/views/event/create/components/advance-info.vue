@@ -13,7 +13,7 @@
     <a-table
       row-key="id"
       :columns="(cloneColumns as TableColumnData[])"
-      :data="renderData"
+      :data="formData.tickets"
       :bordered="false"
       :size="size"
     >
@@ -58,7 +58,7 @@
   import cloneDeep from 'lodash/cloneDeep';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
   import { Tickets } from '@/api/event';
-  import createTicketButton from './create-ticket.vue';
+  import createTicketButton from '@/components/ticket/create-ticket.vue';
 
   const emits = defineEmits(['changeStep']);
   type SizeProps = 'mini' | 'small' | 'medium' | 'large';
@@ -70,8 +70,6 @@
   const symbol = '¥';
   const cloneColumns = ref<Column[]>([]);
   const showColumns = ref<Column[]>([]);
-  const renderData = ref<Tickets[]>([]);
-  //   const renderData = ref;
 
   const { t } = useI18n();
 
@@ -112,12 +110,14 @@
   const onAddTicket = (Ticket: Tickets) => {
     cnt += 1;
     Ticket.id = cnt;
-    renderData.value.push(Ticket);
+    if (formData.value.tickets === undefined) {
+      formData.value.tickets = [];
+    }
+    formData.value.tickets.push(Ticket);
   };
-
   const onNextClick = async () => {
     const res = await formRef.value?.validate();
-    formData.value.tickets = renderData.value;
+
     if (!res) {
       emits('changeStep', 'submit', { ...formData.value });
     }
@@ -127,16 +127,15 @@
   };
 
   const onDeleteTicket = (id: number) => {
-    for (let i = 0; i < renderData.value.length; i += 1) {
-      if (renderData.value[i].id === id) {
-        renderData.value.splice(i, 1);
+    for (let i = 0; i < formData.value.tickets.length; i += 1) {
+      if (formData.value.tickets[i].id === id) {
+        formData.value.tickets.splice(i, 1);
         break;
       }
     }
-    console.log('data', renderData.value);
+    console.log('data', formData.value.tickets);
     console.log('delete', id);
   };
-
   const regHandel = (value: any) => {
     let reg = null;
     let gs = null;

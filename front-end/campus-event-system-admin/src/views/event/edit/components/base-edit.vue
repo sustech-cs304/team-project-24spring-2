@@ -1,33 +1,49 @@
 <template>
   <div class="container">
-    <a-form ref="formRef" layout="vertical" :model="formData">
+    <a-form ref="formRef" layout="vertical" :model="formData" class="form">
       <a-space direction="vertical" :size="16">
         <a-card class="info-card" hoverable>
           <template #title>
-            {{ $t('groupForm.title.video') }}
+            {{ $t('eventEdit.info.event') }}
           </template>
           <a-row :gutter="80">
-            <a-col :span="8">
+            <a-col :span="12">
               <a-form-item
-                :label="$t('groupForm.form.label.video.mode')"
-                field="video.mode"
+                :label="$t('event.label.eventName')"
+                :rules="[
+                  {
+                    required: true,
+                    message: $t('event.error.eventName.required'),
+                  },
+                  {
+                    match: /^[a-zA-Z0-9\u4e00-\u9fa5]{1,20}$/,
+                    message: $t('event.error.eventName.pattern'),
+                  },
+                ]"
+                field="title"
               >
-                <a-select :placeholder="$t('groupForm.placeholder.video.mode')">
-                  <a-option value="custom">自定义</a-option>
-                  <a-option value="mode1">模式1</a-option>
-                  <a-option value="mode2">模式2</a-option>
-                </a-select>
+                <a-input
+                  v-model="formData.title"
+                  :placeholder="$t('event.placeholder.eventName')"
+                >
+                </a-input>
               </a-form-item>
             </a-col>
+
             <a-col :span="8">
               <a-form-item
-                :label="$t('groupForm.form.label.video.acquisition.resolution')"
-                field="video.acquisition.resolution"
+                :label="$t('event.label.eventType')"
+                :rules="[
+                  {
+                    required: true,
+                    message: $t('event.error.eventName.required'),
+                  },
+                ]"
+                field="category"
               >
                 <a-select
-                  :placeholder="
-                    $t('groupForm.placeholder.video.acquisition.resolution')
-                  "
+                  v-model="formData.category"
+                  :placeholder="$t('event.placeholder.eventType')"
                 >
                   <a-option value="resolution1">分辨率1</a-option>
                   <a-option value="resolution2">分辨率2</a-option>
@@ -35,252 +51,92 @@
                 </a-select>
               </a-form-item>
             </a-col>
-            <a-col :span="8">
-              <a-form-item
-                :label="$t('groupForm.form.label.video.acquisition.frameRate')"
-                field="video.acquisition.frameRate"
-              >
-                <a-input
-                  :placeholder="
-                    $t('groupForm.placeholder.video.acquisition.frameRate')
-                  "
-                >
-                  <template #append> fps </template>
-                </a-input>
-              </a-form-item>
-            </a-col>
           </a-row>
           <a-row :gutter="80">
-            <a-col :span="8">
+            <a-col :span="12">
               <a-form-item
-                :label="$t('groupForm.form.label.video.encoding.resolution')"
-                field="video.encoding.resolution"
+                field="time_range"
+                :label="$t('event.label.eventTime')"
+                :rules="[
+                  {
+                    required: true,
+                    message: $t('event.error.eventTime.required'),
+                  },
+                ]"
               >
-                <a-select
-                  :placeholder="
-                    $t('groupForm.placeholder.video.encoding.resolution')
-                  "
-                >
-                  <a-option value="resolution1">分辨率1</a-option>
-                  <a-option value="resolution2">分辨率2</a-option>
-                  <a-option value="resolution3">分辨率3</a-option>
-                </a-select>
+                <a-range-picker
+                  v-model="formData.time_range"
+                  format="YYYY-MM-DD HH:mm"
+                  type="datetime"
+                  show-time
+                />
               </a-form-item>
             </a-col>
-            <a-col :span="8">
+
+            <a-col :span="12">
               <a-form-item
-                :label="$t('groupForm.form.label.video.encoding.rate.min')"
-                field="video.encoding.rate.min"
+                field="address"
+                :label="$t('event.label.eventAddress')"
+                :rules="[
+                  {
+                    required: true,
+                    message: $t('event.error.eventAddress.required'),
+                  },
+                ]"
+                row-class="keep-margin"
               >
                 <a-input
-                  :placeholder="
-                    $t('groupForm.placeholder.video.encoding.rate.min')
-                  "
-                  add-after="bps"
-                >
-                  <template #append> bps </template>
-                </a-input>
-              </a-form-item>
-            </a-col>
-            <a-col :span="8">
-              <a-form-item
-                :label="$t('groupForm.form.label.video.encoding.rate.max')"
-                field="video.encoding.rate.max"
-              >
-                <a-input
-                  :placeholder="
-                    $t('groupForm.placeholder.video.encoding.rate.max')
-                  "
-                >
-                  <template #append> bps </template>
-                </a-input>
-              </a-form-item>
-            </a-col>
-          </a-row>
-          <a-row :gutter="80">
-            <a-col :span="8">
-              <a-form-item
-                :label="$t('groupForm.form.label.video.encoding.rate.default')"
-                field="video.encoding.rate.default"
-              >
-                <a-input
-                  :placeholder="
-                    $t('groupForm.placeholder.video.encoding.rate.default')
-                  "
-                >
-                  <template #append> bps </template>
-                </a-input>
-              </a-form-item>
-            </a-col>
-            <a-col :span="8">
-              <a-form-item
-                :label="$t('groupForm.form.label.video.encoding.frameRate')"
-                field="video.encoding.frameRate"
-              >
-                <a-input
-                  :placeholder="
-                    $t('groupForm.placeholder.video.encoding.frameRate')
-                  "
-                >
-                  <template #append> fps </template>
-                </a-input>
-              </a-form-item>
-            </a-col>
-            <a-col :span="8">
-              <a-form-item
-                :label="$t('groupForm.form.label.video.encoding.profile')"
-                field="video.encoding.profile"
-              >
-                <a-input
-                  :placeholder="
-                    $t('groupForm.placeholder.video.encoding.profile')
-                  "
-                >
-                  <template #append> bps </template>
-                </a-input>
+                  v-model="formData.address"
+                  :placeholder="$t('event.placeholder.address')"
+                />
+                <MyMAP
+                  :address="formData.address"
+                  :lat="formData.lat"
+                  :lng="formData.lng"
+                  @confirm="onSelectedAddress"
+                />
+
+                <template #help>
+                  <span>{{ $t('event.tip.eventAddress') }}</span>
+                </template>
               </a-form-item>
             </a-col>
           </a-row>
         </a-card>
         <a-card class="info-card" hoverable>
           <template #title>
-            {{ $t('groupForm.title.video') }}
+            {{ $t('eventEdit.info.ticket') }}
           </template>
-          <a-row :gutter="80">
-            <a-col :span="8">
-              <a-form-item
-                :label="$t('groupForm.form.label.video.mode')"
-                field="video.mode"
-              >
-                <a-select :placeholder="$t('groupForm.placeholder.video.mode')">
-                  <a-option value="custom">自定义</a-option>
-                  <a-option value="mode1">模式1</a-option>
-                  <a-option value="mode2">模式2</a-option>
-                </a-select>
-              </a-form-item>
-            </a-col>
-            <a-col :span="8">
-              <a-form-item
-                :label="$t('groupForm.form.label.video.acquisition.resolution')"
-                field="video.acquisition.resolution"
-              >
-                <a-select
-                  :placeholder="
-                    $t('groupForm.placeholder.video.acquisition.resolution')
-                  "
+          <a-col :span="24">
+            <createTicketButton ref="child" @editConfirm="onAddTicket" />
+            <a-divider style="margin-top: 0" />
+
+            <a-table
+              row-key="id"
+              :columns="(cloneColumns as TableColumnData[])"
+              :data="formData.tickets"
+              :bordered="false"
+              :size="size"
+            >
+              <template #description="{ record }">
+                {{ record.description }}
+              </template>
+
+              <template #price="{ record }">
+                {{ inputNumberF(record.price) }}
+              </template>
+
+              <template #operations="{ record }">
+                <a-button
+                  type="text"
+                  size="small"
+                  @click.prevent="onDeleteTicket(record.id)"
                 >
-                  <a-option value="resolution1">分辨率1</a-option>
-                  <a-option value="resolution2">分辨率2</a-option>
-                  <a-option value="resolution3">分辨率3</a-option>
-                </a-select>
-              </a-form-item>
-            </a-col>
-            <a-col :span="8">
-              <a-form-item
-                :label="$t('groupForm.form.label.video.acquisition.frameRate')"
-                field="video.acquisition.frameRate"
-              >
-                <a-input
-                  :placeholder="
-                    $t('groupForm.placeholder.video.acquisition.frameRate')
-                  "
-                >
-                  <template #append> fps </template>
-                </a-input>
-              </a-form-item>
-            </a-col>
-          </a-row>
-          <a-row :gutter="80">
-            <a-col :span="8">
-              <a-form-item
-                :label="$t('groupForm.form.label.video.encoding.resolution')"
-                field="video.encoding.resolution"
-              >
-                <a-select
-                  :placeholder="
-                    $t('groupForm.placeholder.video.encoding.resolution')
-                  "
-                >
-                  <a-option value="resolution1">分辨率1</a-option>
-                  <a-option value="resolution2">分辨率2</a-option>
-                  <a-option value="resolution3">分辨率3</a-option>
-                </a-select>
-              </a-form-item>
-            </a-col>
-            <a-col :span="8">
-              <a-form-item
-                :label="$t('groupForm.form.label.video.encoding.rate.min')"
-                field="video.encoding.rate.min"
-              >
-                <a-input
-                  :placeholder="
-                    $t('groupForm.placeholder.video.encoding.rate.min')
-                  "
-                  add-after="bps"
-                >
-                  <template #append> bps </template>
-                </a-input>
-              </a-form-item>
-            </a-col>
-            <a-col :span="8">
-              <a-form-item
-                :label="$t('groupForm.form.label.video.encoding.rate.max')"
-                field="video.encoding.rate.max"
-              >
-                <a-input
-                  :placeholder="
-                    $t('groupForm.placeholder.video.encoding.rate.max')
-                  "
-                >
-                  <template #append> bps </template>
-                </a-input>
-              </a-form-item>
-            </a-col>
-          </a-row>
-          <a-row :gutter="80">
-            <a-col :span="8">
-              <a-form-item
-                :label="$t('groupForm.form.label.video.encoding.rate.default')"
-                field="video.encoding.rate.default"
-              >
-                <a-input
-                  :placeholder="
-                    $t('groupForm.placeholder.video.encoding.rate.default')
-                  "
-                >
-                  <template #append> bps </template>
-                </a-input>
-              </a-form-item>
-            </a-col>
-            <a-col :span="8">
-              <a-form-item
-                :label="$t('groupForm.form.label.video.encoding.frameRate')"
-                field="video.encoding.frameRate"
-              >
-                <a-input
-                  :placeholder="
-                    $t('groupForm.placeholder.video.encoding.frameRate')
-                  "
-                >
-                  <template #append> fps </template>
-                </a-input>
-              </a-form-item>
-            </a-col>
-            <a-col :span="8">
-              <a-form-item
-                :label="$t('groupForm.form.label.video.encoding.profile')"
-                field="video.encoding.profile"
-              >
-                <a-input
-                  :placeholder="
-                    $t('groupForm.placeholder.video.encoding.profile')
-                  "
-                >
-                  <template #append> bps </template>
-                </a-input>
-              </a-form-item>
-            </a-col>
-          </a-row>
+                  {{ $t('tickets.operation.delete') }}
+                </a-button>
+              </template>
+            </a-table>
+          </a-col>
         </a-card>
       </a-space>
     </a-form>
@@ -288,26 +144,167 @@
 </template>
 
 <script lang="ts" setup>
-  import { onMounted, ref } from 'vue';
-  import { originalEventCreationModel } from '@/api/event';
+  import { ref, watch, computed } from 'vue';
+  import { useI18n } from 'vue-i18n';
+  import { originalEventCreationModel, getEventInfo } from '@/api/event';
   import { FormInstance } from '@arco-design/web-vue/es/form';
+  import createTicketButton from '@/components/ticket/create-ticket.vue';
+  import { Tickets } from '@/api/event';
+  import MyMAP from '@/components/map/select-map.vue';
+  import cloneDeep from 'lodash/cloneDeep';
+  import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
 
-  const formData = ref<originalEventCreationModel>({} as originalEventCreationModel);
-  const formRef = ref<FormInstance>();
+  type SizeProps = 'mini' | 'small' | 'medium' | 'large';
+  type Column = TableColumnData & { checked?: true };
+  const { t } = useI18n();
 
-
-  onMounted(() => {
-    console.log('mounted');
+  const props = defineProps({
+    eventInfo: {
+      type: Object,
+    },
   });
+  let cnt = 0;
+  const integralDigits = 6;
+  const decimalPlaces = 2;
+  const symbol = '¥';
+  const cloneColumns = ref<Column[]>([]);
+  const showColumns = ref<Column[]>([]);
+  const size = ref<SizeProps>('medium');
+
+  const formData = ref<originalEventCreationModel>(
+    {} as originalEventCreationModel
+  );
+  const formRef = ref<FormInstance>();
+  const onSelectedAddress = (form: any) => {
+    formData.value.address = form.address;
+    formData.value.lng = form.lng;
+    formData.value.lat = form.lat;
+  };
+  const columns = computed<TableColumnData[]>(() => [
+    {
+      title: t('tickets.columns.description'),
+      dataIndex: 'description',
+      slotName: 'description',
+    },
+    {
+      title: t('tickets.columns.price'),
+      dataIndex: 'price',
+      slotName: 'price',
+    },
+    {
+      title: t('tickets.columns.total_amount'),
+      dataIndex: 'total_amount',
+      slotName: 'total_amount',
+      align: 'center',
+    },
+    {
+      title: t('tickets.columns.operation'),
+      dataIndex: 'operations',
+      slotName: 'operations',
+      align: 'center',
+    },
+  ]);
+
+  const onAddTicket = (Ticket: Tickets) => {
+    cnt += 1;
+    Ticket.id = cnt;
+    if (formData.value.tickets === undefined) {
+      formData.value.tickets = [];
+    }
+    formData.value.tickets.push(Ticket);
+  };
+
+  const onDeleteTicket = (id: number) => {
+    for (let i = 0; i < formData.value.tickets.length; i += 1) {
+      if (formData.value.tickets[i].id === id) {
+        formData.value.tickets.splice(i, 1);
+        break;
+      }
+    }
+  };
+
+  const regHandel = (value: any) => {
+    let reg = null;
+    let gs = null;
+    const dIndex = value.toString().indexOf('.');
+    // 点开头处理为 0.
+    if (dIndex === 0) {
+      value = '0.';
+    } else {
+      // 连续点转为一个点
+      const dIndex2 = value.toString().indexOf('..');
+      if (dIndex2 !== -1) {
+        value = value.replace(/\.\./, '.');
+      }
+    }
+    value = value.replace(/[^0-9.]/g, '');
+    const arr = value.split('.');
+    if (arr.length === 2 && arr[1] !== '') {
+      reg = new RegExp(
+        `^(-)*(\\d{0,${integralDigits}})\\d*\\.(\\d{0,${decimalPlaces}}).*$`
+      );
+      gs = '$1$2.$3';
+    } else {
+      reg = new RegExp(`^(-)*(\\d{0,${integralDigits}}).*$`);
+      if (dIndex !== -1) {
+        gs = '$1$2.';
+      } else {
+        gs = '$1$2';
+      }
+    }
+    return { reg, gs };
+  };
+
+  const inputNumberF = (value: any) => {
+    const strValue = value.toString();
+    const res = regHandel(strValue);
+    const val = strValue.replace(res.reg, res.gs);
+    return `${symbol} ${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  };
+  watch(
+    () => props.eventInfo,
+    (newVal: any) => {
+      formData.value.title = newVal.title;
+      formData.value.time_range = newVal.time_range;
+      formData.value.address = newVal.address;
+      formData.value.category = newVal.category;
+      formData.value.lng = newVal.lng;
+      formData.value.lat = newVal.lat;
+      formData.value.tickets = newVal.tickets;
+    }
+  );
+  watch(
+    () => columns.value,
+    (val) => {
+      cloneColumns.value = cloneDeep(val);
+      cloneColumns.value.forEach((item, index) => {
+        item.checked = true;
+      });
+      showColumns.value = cloneDeep(cloneColumns.value);
+    },
+    { deep: true, immediate: true }
+  );
 </script>
 
 <style scoped lang="less">
   .container {
     padding: 0 20px 40px 20px;
     overflow: hidden;
+    align-items: center;
   }
 
   .info-card {
     border-radius: 8px;
+    width: 80%;
+    margin: auto;
+    max-width: 1000px;
+  }
+
+  .ticket {
+    margin: 0;
+    padding: 0;
+    flex: auto;
+    width: 100%;
+    align-items: center;
   }
 </style>
