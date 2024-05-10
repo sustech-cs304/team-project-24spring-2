@@ -46,8 +46,8 @@ public class EventController {
         Long endTime = request.getLong("end_time");
         String documentUrl = request.getString("document_url");
         String imageUrl = request.getString("image_url");
-        Integer latitude = request.getInteger("latitude");
-        Integer longitude = request.getInteger("longitude");
+        Double latitude = request.getDouble("latitude");
+        Double longitude = request.getDouble("longitude");
         String locationName = request.getString("location_name");
         Integer categoryId = request.getInteger("category_id");
 
@@ -149,11 +149,11 @@ public class EventController {
         }
 
         if (eventJsonObject.containsKey("latitude")) {
-            event.setLatitude(eventJsonObject.getInteger("latitude"));
+            event.setLatitude(eventJsonObject.getDouble("latitude"));
         }
 
         if (eventJsonObject.containsKey("longitude")) {
-            event.setLongitude(eventJsonObject.getInteger("longitude"));
+            event.setLongitude(eventJsonObject.getDouble("longitude"));
         }
 
         if (eventJsonObject.containsKey("location_name")) {
