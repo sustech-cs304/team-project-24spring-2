@@ -100,5 +100,5 @@ export function getEventInfo(uuid: string) {
 }
 
 export function listEvent(params: EventParams) {
-  return axios.post<EventRecord[]>(`/api/event/list-events?page=${params.current}&size=${params.pageSize}`, {});
+  return axios.post<EventRecord[]>(`/api/event/list-events?page=${params.current-1}&size=${params.pageSize}`, );
 }
