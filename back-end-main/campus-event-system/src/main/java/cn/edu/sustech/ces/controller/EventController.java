@@ -49,7 +49,7 @@ public class EventController {
         Double latitude = request.getDouble("latitude");
         Double longitude = request.getDouble("longitude");
         String locationName = request.getString("location_name");
-        Integer categoryId = request.getInteger("category_id");
+        String category = request.getString("category");
 
         Event event = new Event();
         event.setTitle(title);
@@ -62,7 +62,7 @@ public class EventController {
         event.setStatus(EventStatus.EDITING);
         event.setPublisher(user.getId());
         event.setTickets(new ArrayList<>());
-        event.setCategoryId(categoryId);
+        event.setCategory(category);
 
         List<Ticket> tickets = new ArrayList<>();
 
@@ -124,7 +124,7 @@ public class EventController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        if (event.getStatus() == EventStatus.PENDING || event.getStatus() == EventStatus.IN_PROGRESS || event.getStatus() == EventStatus.FINISHED) {
+        if (event.getStatus() != EventStatus.EDITING) {
             return ResponseEntity.badRequest().body("Event is not editable");
         }
 
@@ -161,7 +161,7 @@ public class EventController {
         }
 
         if (eventJsonObject.containsKey("category_id")) {
-            event.setCategoryId(eventJsonObject.getInteger("category_id"));
+            event.setCategory(eventJsonObject.getString("category"));
         }
 
         if (eventJsonObject.containsKey("tickets")) {
@@ -196,7 +196,6 @@ public class EventController {
             }
         }
 
-        event.setStatus(EventStatus.EDITING);
         event = eventService.saveEvent(event);
 
         return ResponseEntity.ok(event);

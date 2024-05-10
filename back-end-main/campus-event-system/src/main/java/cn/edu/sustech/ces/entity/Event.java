@@ -50,7 +50,7 @@ public class Event {
 
     private Double longitude;
 
-    private Integer categoryId;
+    private String category;
 
     private String locationName;
 
