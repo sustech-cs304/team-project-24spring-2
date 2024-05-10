@@ -46,15 +46,15 @@ public class Event {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<UUID> tickets;
 
-    private Integer latitude;
+    private Double latitude;
 
-    private Integer longitude;
+    private Double longitude;
 
-    private Integer categoryId;
+    private String category;
 
     private String locationName;
 
-    public void setLocation(Integer latitude, Integer longitude, String locationName) {
+    public void setLocation(Double latitude, Double longitude, String locationName) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.locationName = locationName;
