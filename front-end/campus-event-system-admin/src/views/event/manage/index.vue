@@ -476,7 +476,12 @@
   };
 
   const onEventEditClicked = (uuid: string) => {
-    router.push(`/event/edit?uuid=${uuid}`);
+    router.push({
+      path: '/event/edit',
+      query: {
+        uuid,
+      },
+    });
   };
 
   const longTime2String = (time: number) => {

@@ -26,7 +26,11 @@
           <keep-alive>
             <BaseInfo v-if="step === 1" @change-step="changeStep" />
             <ChannelInfo v-else-if="step === 2" @change-step="changeStep" />
-            <Success v-else-if="step === 3" @change-step="changeStep" />
+            <Success
+              v-else-if="step === 3"
+              @change-step="changeStep"
+              @edit-event="editEvent"
+            />
           </keep-alive>
         </div>
       </a-card>
@@ -37,6 +41,8 @@
 <script lang="ts" setup>
   import { ref } from 'vue';
   import useLoading from '@/hooks/loading';
+  import { useRouter } from 'vue-router';
+
   import {
     CreateEventApi,
     EventBaseInfoModel,
@@ -52,8 +58,13 @@
   //   import { start } from 'nprogress';
 
   const { loading, setLoading } = useLoading(false);
-  const step = ref(2);
-  const submitModel = ref<originalEventCreationModel>({} as originalEventCreationModel);
+  const step = ref(1);
+  const router = useRouter();
+  const submitModel = ref<originalEventCreationModel>(
+    {} as originalEventCreationModel
+  );
+  const uuid = ref<string>('');
+
   const submitForm = async () => {
     setLoading(true);
     const Dates: Date[] = submitModel.value.time_range;
@@ -85,6 +96,7 @@
       };
       console.log('sending', sendData.value);
       const res = await CreateEventApi(sendData.value); // The mock api default success
+      uuid.value = res.data.id;
       Notification.success({
         title: 'Success',
         content: '创建成功！',
@@ -98,6 +110,14 @@
     } finally {
       setLoading(false);
     }
+  };
+  const editEvent = () => {
+    router.push({
+      path: '/event/edit',
+      query: {
+        uuid: uuid.value,
+      },
+    });
   };
   const changeStep = (
     direction: string | number,
