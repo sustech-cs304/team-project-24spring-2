@@ -6,6 +6,7 @@ import cn.edu.sustech.ces.entity.User;
 import cn.edu.sustech.ces.enums.EventStatus;
 import cn.edu.sustech.ces.repository.EventRepository;
 import cn.edu.sustech.ces.repository.UserRepository;
+import cn.edu.sustech.ces.utils.CESUtils;
 import com.alibaba.fastjson.JSONObject;
 import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
@@ -27,10 +28,6 @@ public class EventService {
         return eventRepository.findById(eventId).orElse(null);
     }
 
-    public List<Event> getEventsByTitle(String title) {
-        return eventRepository.findAllByTitle(title);
-    }
-
     public Event saveEvent(Event event) {
         eventRepository.save(event);
         return event;
@@ -40,36 +37,30 @@ public class EventService {
         return eventRepository.findAll();
     }
 
-    public Page<Event> getEvents(Pageable pageable) {
-        return eventRepository.findAll(pageable);
+    public List<Event> getEvents(Pageable pageable) {
+        return eventRepository.findAll(pageable).getContent();
     }
 
-    public Page<Event> getEventsByFilter(Pageable pageable, String title, Integer categoryId, Set<EventStatus> statuses, UUID publisher) {
-        if (title == null && categoryId == null && publisher == null) {
-            return eventRepository.findAllByStatusIn(pageable, statuses);
-        } else if (title == null && categoryId == null) {
-            return eventRepository.findAllByPublisher(pageable, publisher);
-        } else if (title == null && publisher == null) {
-            return eventRepository.findAllByCategoryIdAndStatusIn(pageable, categoryId, statuses);
-        } else if (categoryId == null && publisher == null) {
-            return eventRepository.findAllByTitleContainingAndStatusIn(pageable, title, statuses);
-        } else if (title == null) {
-            return eventRepository.findAllByCategoryIdAndPublisherAndStatusIn(pageable, categoryId, publisher, statuses);
-        } else if (categoryId == null) {
-            return eventRepository.findAllByTitleContainingAndPublisherAndStatusIn(pageable, title, publisher, statuses);
-        } else if (publisher == null) {
-            return eventRepository.findAllByTitleContainingAndCategoryIdAndStatusIn(pageable, title, categoryId, statuses);
+    public List<Event> getEventsByFilter(Pageable pageable, String title, String category, Set<EventStatus> statuses, UUID publisher) {
+        List<Event> events = null;
+        if (publisher == null) {
+            events = eventRepository.findAllByStatusIn(statuses);
         } else {
-            return eventRepository.findAllByTitleContainingAndCategoryIdAndPublisherAndStatusIn(pageable, title, categoryId, publisher, statuses);
+            events = eventRepository.findAllByStatusInAndPublisher(statuses, publisher);
         }
+        events = events.stream()
+                .filter(event -> title == null || title.isEmpty() || event.getTitle().contains(title))
+                .filter(event -> category == null || event.getCategory().equalsIgnoreCase(category))
+                .toList();
+        if (pageable == null)
+            return events;
+        return CESUtils.getPage(pageable, events);
     }
 
-    public List<Event> getEventsByPublisher(User user) {
-        return eventRepository.findAllByPublisher(user.getId());
-    }
-
-    public Page<Event> getEventsByPublisher(Pageable pageable, User user) {
-        return eventRepository.findAllByPublisher(pageable, user.getId());
+    public List<Event> getEventsByPublisher(Pageable pageable, User user) {
+        if (pageable == null)
+            return eventRepository.findAllByPublisher(user.getId());
+        return eventRepository.findAllByPublisher(pageable, user.getId()).getContent();
     }
 
     public void deleteEvent(Event event) {
@@ -84,24 +75,8 @@ public class EventService {
         return eventRepository.countByPublisher(user.getId());
     }
 
-    public long countEventsByFilter(String title, Integer categoryId, Set<EventStatus> statuses, UUID publisher) {
-        if (title == null && categoryId == null && publisher == null) {
-            return eventRepository.countByStatusIn(statuses);
-        } else if (title == null && categoryId == null) {
-            return eventRepository.countByPublisher(publisher);
-        } else if (title == null && publisher == null) {
-            return eventRepository.countByCategoryIdAndStatusIn(categoryId, statuses);
-        } else if (categoryId == null && publisher == null) {
-            return eventRepository.countByTitleContainingAndStatusIn(title, statuses);
-        } else if (title == null) {
-            return eventRepository.countByCategoryIdAndPublisherAndStatusIn(categoryId, publisher, statuses);
-        } else if (categoryId == null) {
-            return eventRepository.countByTitleContainingAndPublisherAndStatusIn(title, publisher, statuses);
-        } else if (publisher == null) {
-            return eventRepository.countByTitleContainingAndCategoryIdAndStatusIn(title, categoryId, statuses);
-        } else {
-            return eventRepository.countByTitleContainingAndCategoryIdAndPublisherAndStatusIn(title, categoryId, publisher, statuses);
-        }
+    public long countEventsByFilter(String title, String category, Set<EventStatus> statuses, UUID publisher) {
+        return getEventsByFilter(null, title, category, statuses, publisher).size();
     }
 
 

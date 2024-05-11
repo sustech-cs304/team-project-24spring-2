@@ -17,13 +17,11 @@ import java.util.UUID;
 
 @Repository
 public interface EventRepository extends ListCrudRepository<Event, UUID> {
-    List<Event> findAllByTitle(String title);
-
     List<Event> findAllByPublisher(UUID publisher);
 
-    Page<Event> findAllByStatusIn(Pageable pageable, Set<EventStatus> statusSet);
+    List<Event> findAllByStatusIn(Set<EventStatus> statusSet);
 
-    long countByStatusIn(Set<EventStatus> statusSet);
+    List<Event> findAllByStatusInAndPublisher(Set<EventStatus> statusSet, UUID publisher);
 
     Page<Event> findAll(Pageable pageable);
 
@@ -31,32 +29,5 @@ public interface EventRepository extends ListCrudRepository<Event, UUID> {
 
     long countByPublisher(UUID id);
 
-    Page<Event> findAllByTitleContainingAndStatusIn(Pageable pageable, String title, Set<EventStatus> statuses);
-
-    Page<Event> findAllByTitleContainingAndStatusInAndCategoryId(Pageable pageable, String title, Set<EventStatus> statuses, Integer categoryId);
-
-    Page<Event> findAllByCategoryIdAndStatusIn(Pageable pageable, Integer categoryId, Set<EventStatus> statuses);
-
-    long countByCategoryIdAndStatusIn(Integer categoryId, Set<EventStatus> statuses);
-
-    long countByTitleContainingAndStatusIn(String title, Set<EventStatus> statuses);
-
-    long countByTitleContainingAndStatusInAndCategoryId(String title, Set<EventStatus> statuses, Integer categoryId);
-
-    Page<Event> findAllByCategoryIdAndPublisherAndStatusIn(Pageable pageable, Integer categoryId, UUID publisher, Set<EventStatus> statuses);
-
-    Page<Event> findAllByTitleContainingAndPublisherAndStatusIn(Pageable pageable, String title, UUID publisher, Set<EventStatus> statuses);
-
-    Page<Event> findAllByTitleContainingAndCategoryIdAndStatusIn(Pageable pageable, String title, Integer categoryId, Set<EventStatus> statuses);
-
-    Page<Event> findAllByTitleContainingAndCategoryIdAndPublisherAndStatusIn(Pageable pageable, String title, Integer categoryId, UUID publisher, Set<EventStatus> statuses);
-
-    long countByCategoryIdAndPublisherAndStatusIn(Integer categoryId, UUID publisher, Set<EventStatus> statuses);
-
-    long countByTitleContainingAndPublisherAndStatusIn(String title, UUID publisher, Set<EventStatus> statuses);
-
-    long countByTitleContainingAndCategoryIdAndStatusIn(String title, Integer categoryId, Set<EventStatus> statuses);
-
-    long countByTitleContainingAndCategoryIdAndPublisherAndStatusIn(String title, Integer categoryId, UUID publisher, Set<EventStatus> statuses);
 }
 

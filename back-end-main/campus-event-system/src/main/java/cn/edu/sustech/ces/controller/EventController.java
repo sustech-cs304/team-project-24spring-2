@@ -160,7 +160,7 @@ public class EventController {
             event.setLocationName(eventJsonObject.getString("location_name"));
         }
 
-        if (eventJsonObject.containsKey("category_id")) {
+        if (eventJsonObject.containsKey("category")) {
             event.setCategory(eventJsonObject.getString("category"));
         }
 
@@ -206,14 +206,14 @@ public class EventController {
     public ResponseEntity<Long> exploreEventsSize(HttpServletRequest request) {
         Set<EventStatus> statuses = Set.of(EventStatus.PENDING, EventStatus.IN_PROGRESS);
         String title = null;
-        Integer categoryId = null;
+        String category = null;
         if (request.getParameter("title") != null) {
             title = request.getParameter("title");
         }
-        if (request.getParameter("category_id") != null) {
-            categoryId = Integer.parseInt(request.getParameter("category_id"));
+        if (request.getParameter("category") != null) {
+            category = request.getParameter("category");
         }
-        return ResponseEntity.ok(eventService.countEventsByFilter(title, categoryId, statuses, null));
+        return ResponseEntity.ok(eventService.countEventsByFilter(title, category, statuses, null));
     }
 
     @PostMapping("/explore-events")
@@ -224,15 +224,14 @@ public class EventController {
         Set<EventStatus> statuses = Set.of(EventStatus.PENDING, EventStatus.IN_PROGRESS);
         Pageable pageable = PageRequest.of(page, size);
         String title = null;
-        Integer categoryId = null;
+        String category = null;
         if (request.getParameter("title") != null) {
             title = request.getParameter("title");
         }
-        if (request.getParameter("category_id") != null) {
-            categoryId = Integer.parseInt(request.getParameter("category_id"));
+        if (request.getParameter("category") != null) {
+            category = request.getParameter("category");
         }
-        Page<Event> events = eventService.getEventsByFilter(pageable, title, categoryId, statuses, null);
-        List<Event> eventList = events.getContent();
+        List<Event> eventList = eventService.getEventsByFilter(pageable, title, category, statuses, null);
         return ResponseEntity.ok(eventList);
     }
 
@@ -244,14 +243,14 @@ public class EventController {
         User user = CESUtils.getAuthorizedUser();
 
         String title = null;
-        Integer categoryId = null;
+        String category = null;
         UUID publisher = null;
         Set<EventStatus> statuses = Arrays.stream(EventStatus.values()).collect(Collectors.toSet());
         if (request.getParameter("title") != null) {
             title = request.getParameter("title");
         }
-        if (request.getParameter("category_id") != null) {
-            categoryId = Integer.parseInt(request.getParameter("category_id"));
+        if (request.getParameter("category") != null) {
+            category = request.getParameter("category");
         }
 
         if (user.getPermissionGroup() == PermissionGroup.DEPARTMENT_ADMIN) {
@@ -269,7 +268,7 @@ public class EventController {
                 statuses.add(EventStatus.valueOf(statusString));
             }
         }
-        return ResponseEntity.ok(eventService.countEventsByFilter(title, categoryId, statuses, publisher));
+        return ResponseEntity.ok(eventService.countEventsByFilter(title, category, statuses, publisher));
     }
 
     @PostMapping("/list-events")
@@ -280,14 +279,14 @@ public class EventController {
         }
         User user = CESUtils.getAuthorizedUser();
         String title = null;
-        Integer categoryId = null;
+        String category = null;
         UUID publisher = null;
         Set<EventStatus> statuses = Arrays.stream(EventStatus.values()).collect(Collectors.toSet());
         if (request.getParameter("title") != null) {
             title = request.getParameter("title");
         }
-        if (request.getParameter("category_id") != null) {
-            categoryId = Integer.parseInt(request.getParameter("category_id"));
+        if (request.getParameter("category") != null) {
+            category = request.getParameter("category");
         }
         if (user.getPermissionGroup() == PermissionGroup.DEPARTMENT_ADMIN) {
             publisher = user.getId();
@@ -305,8 +304,7 @@ public class EventController {
             }
         }
         Pageable pageable = PageRequest.of(page, size);
-        Page<Event> events = eventService.getEventsByFilter(pageable, title, categoryId, statuses, publisher);
-        List<Event> eventList = events.getContent();
+        List<Event> eventList = eventService.getEventsByFilter(pageable, title, category, statuses, publisher);
         return ResponseEntity.ok(eventList);
     }
 
