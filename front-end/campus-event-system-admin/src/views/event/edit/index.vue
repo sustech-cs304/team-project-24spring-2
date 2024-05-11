@@ -1,7 +1,11 @@
 <template>
   <div class="container">
     <Breadcrumb :items="['menu.event', 'menu.event.edit']" />
-    <a-spin :loading="loading" tip="This may take a while..." style="width: 100%">
+    <a-spin
+      :loading="loading"
+      tip="This may take a while..."
+      style="width: 100%"
+    >
       <a-row :gutter="20" align="stretch">
         <a-col :span="24">
           <a-card :title="$t('menu.event.edit')">
@@ -9,17 +13,13 @@
               <a-col :span="24">
                 <a-tabs :default-active-tab="1" type="rounded">
                   <a-tab-pane key="1" :title="$t('eventEdit.tab.title.basic')">
-                    <TheService :eventInfo="formData" />
+                    <baseEdit :event-info="formData" />
                   </a-tab-pane>
                   <a-tab-pane key="2" :title="$t('eventEdit.tab.title.detail')">
-                    <RulesPreset />
+                    <infoEdit />
                   </a-tab-pane>
                 </a-tabs>
               </a-col>
-              <a-input-search
-                :placeholder="$t('eventEdit.searchInput.placeholder')"
-                style="width: 240px; position: absolute; top: 60px; right: 20px"
-              />
             </a-row>
           </a-card>
         </a-col>
@@ -57,22 +57,22 @@
     getTicketInfo,
   } from '@/api/event';
   import useLoading from '@/hooks/loading';
-  import TheService from './components/base-edit.vue';
-  import RulesPreset from './components/detail-edit.vue';
+  import baseEdit from './components/base-edit.vue';
+  import infoEdit from './components/detail-edit.vue';
 
   const { loading, setLoading } = useLoading(true);
 
   const formData = ref<originalEventCreationModel>(
     {} as originalEventCreationModel
   );
-  const { t } = useI18n();
+  //   const { t } = useI18n();
 
   const fetchData = async () => {
     setLoading(true);
     try {
       const args = new URLSearchParams(window.location.search);
       const { data } = await getEventInfo(args.get('uuid') as string);
-      console.log(data)
+      console.log(data);
       const promises = Object.values(data.tickets).map((uuid) =>
         getTicketInfo(uuid)
       );
@@ -90,7 +90,7 @@
         time_range: [new Date(data.start_time), new Date(data.end_time)],
       };
     } catch (err) {
-      console.log(err);
+      // operations
     } finally {
       setLoading(false);
     }
@@ -149,7 +149,6 @@
       }
     }
   }
-
 
   .actions {
     position: flex;

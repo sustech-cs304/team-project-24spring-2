@@ -2,7 +2,7 @@
   <div class="container">
     <a-form ref="formRef" layout="vertical" :model="formData" class="form">
       <a-space direction="vertical" :size="16">
-        <a-card class="info-card" hoverable>
+        <a-card class="basic-info-card" hoverable>
           <template #title>
             {{ $t('eventEdit.info.event') }}
           </template>
@@ -103,12 +103,12 @@
             </a-col>
           </a-row>
         </a-card>
-        <a-card class="info-card" hoverable>
+        <a-card class="ticket-info-card" hoverable>
           <template #title>
             {{ $t('eventEdit.info.ticket') }}
           </template>
           <a-col :span="24">
-            <createTicketButton ref="child" @editConfirm="onAddTicket" />
+            <createTicketButton ref="child" @edit-confirm="onAddTicket" />
             <a-divider style="margin-top: 0" />
 
             <a-table
@@ -146,10 +146,9 @@
 <script lang="ts" setup>
   import { ref, watch, computed } from 'vue';
   import { useI18n } from 'vue-i18n';
-  import { originalEventCreationModel, getEventInfo } from '@/api/event';
+  import { originalEventCreationModel, Tickets } from '@/api/event';
   import { FormInstance } from '@arco-design/web-vue/es/form';
   import createTicketButton from '@/components/ticket/create-ticket.vue';
-  import { Tickets } from '@/api/event';
   import MyMAP from '@/components/map/select-map.vue';
   import cloneDeep from 'lodash/cloneDeep';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
@@ -293,7 +292,14 @@
     align-items: center;
   }
 
-  .info-card {
+  .ticket-info-card {
+    border-radius: 8px;
+    width: 80%;
+    margin: auto;
+    max-width: 1000px;
+  }
+
+  .basic-info-card {
     border-radius: 8px;
     width: 80%;
     margin: auto;
