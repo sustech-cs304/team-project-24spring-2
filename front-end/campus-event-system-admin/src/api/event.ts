@@ -96,13 +96,38 @@ export function listEventSize(params: EventParams) {
 }
 
 export function getEventInfo(uuid: string) {
-    return axios.post<EventRecord>(`/api/event/get-event?eventId=${uuid}`);
+  return axios.post<EventRecord>(
+    '/api/event/get-event',
+    {},
+    {
+      params: {
+        eventId: uuid,
+      },
+    }
+  );
 }
 
 export function getTicketInfo(uuid: string) {
-    return axios.post<Tickets>(`/api/ticket/get-ticket?ticketId=${uuid}`);
+  return axios.post<Tickets>(
+    '/api/ticket/get-ticket',
+    {},
+    {
+      params: {
+        ticketId: uuid,
+      },
+    }
+  );
 }
 
 export function listEvent(params: EventParams) {
-  return axios.post<EventRecord[]>(`/api/event/list-events?page=${params.current-1}&size=${params.pageSize}`, );
+  return axios.post<EventRecord[]>(
+    '/api/event/list-events',
+    {},
+    {
+      params: {
+        page: params.current - 1,
+        size: params.pageSize,
+      },
+    }
+  );
 }
