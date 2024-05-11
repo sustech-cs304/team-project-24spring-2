@@ -10,7 +10,7 @@ export interface LoginData {
 export interface LoginRes {
   access_token: string;
   token_type: string;
-  user: UserState
+  user: UserState;
 }
 
 export function login(data: LoginData) {
@@ -22,7 +22,8 @@ export function login(data: LoginData) {
 }
 
 export function logout() {
-  return axios.post<LoginRes>('/api/user/logout');
+  //   return axios.post<LoginRes>('/api/user/logout');
+  return true;
 }
 
 export function getUserInfo() {
