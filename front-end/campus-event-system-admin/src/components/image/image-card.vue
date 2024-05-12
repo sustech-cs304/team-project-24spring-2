@@ -5,6 +5,7 @@
         <a-image
           :src="props.image.url"
           :description="props.image.name"
+          :on-error="ImageInterceptor"
           width="100%"
         />
       </div>
@@ -15,6 +16,7 @@
 <script lang="ts" setup>
   import { useI18n } from 'vue-i18n';
   import { Notification } from '@arco-design/web-vue';
+  import { ImageInterceptor } from '@/api/file';
 
   const props = defineProps({
     image: {

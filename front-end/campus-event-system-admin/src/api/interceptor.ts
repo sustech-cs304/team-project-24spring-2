@@ -28,6 +28,7 @@ axios.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    config.headers.Connection = "keep-alive"
     return config;
   },
   (error) => {

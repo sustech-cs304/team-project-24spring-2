@@ -56,7 +56,7 @@
           <template #title>
             {{ $t('eventEdit.imageForm') }}
           </template>
-          <a-list :max-height="550">
+          <a-list :max-height="550" @reach-bottom="pushNewData">
             <img-card
               v-for="(element, index) in renderImages"
               :image="element"
@@ -89,35 +89,22 @@
   import imgCard from '@/components/image/image-card.vue';
   import { Notification } from '@arco-design/web-vue';
   import { uploadFile } from '@/api/file';
+  import { getUploadImages } from '@/api/user';
   import { ref, onMounted } from 'vue';
   import { IconEdit, IconPlus } from '@arco-design/web-vue/es/icon';
   import cropImageModal from '@/components/image/croper-modal.vue';
 
   // 2. 获取DOM引用
   const vditor = ref();
-  const renderImages = ref([
-    {
-      name: 'image1',
-      url: 'https://www.oscar-referencement.com/wp-content/uploads/2019/01/1472132976url-parameters.jpg',
-    },
-    {
-      name: 'image2',
-      url: 'https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/a8c8cdb109cb051163646151a4a5083b.png~tplv-uwbnlip3yd-webp.webp',
-    },
-    {
-      name: 'image3',
-      url: 'https://th.bing.com/th/id/OIP.gJkmBFK8shWJRa41tQRsngHaFj?w=188&h=180&c=7&r=0&o=5&dpr=1.7&pid=1.7',
-    },
-    {
-      name: 'image4',
-      url: 'https://th.bing.com/th/id/OIP.i9n79q1sI-UcBOrfKnQegwAAAA?rs=1&pid=ImgDetMain',
-    },
-  ]);
+  const renderImages = ref<any>([]);
 
   const fileList = ref([]);
-  const userImages = ref([]);
-  const cropImage = ref();
+
+  const userImages = [] as any[];
+
   const strImg = ref<string>('');
+
+  const imgIndex = ref(0);
 
   const onExceed = (file: any) => {
     console.log('exceed');
@@ -127,9 +114,23 @@
     });
   };
 
-  const fetchData = () => {
-    // fetch user images
+  const fetchData = async () => {
+    const res = await getUploadImages();
+    for (let i = 0; i < res.data.length; i += 1) {
+      userImages.push({
+        name: 'image',
+        url: `${res.data[i]}`,
+        // url: `http://localhost:19000${res.data[i]}`,
+      });
+    }
   };
+
+  const pushNewData = async () => {
+
+    for (let i = 0; i < 20 && userImages.length > 0; i += 1)
+      renderImages.value.push(userImages.pop());
+  };
+
   const fakeUpload = (option: any) => {
     return {
       abort() {
@@ -152,6 +153,10 @@
           content: '上传成功',
         });
         onSuccess(res, fileItem);
+        renderImages.value.push({
+          name: 'image',
+          url: `${res.data}`,
+        });
       })
       .catch((err: any) => {
         console.log('err', err);
@@ -171,12 +176,10 @@
   const file = ref();
   const modalVisible = ref(false);
   const cropOptions = {
-    viewMode: 2 ,
+    viewMode: 2,
     aspectRatio: 16 / 4,
-    dragMode:'move',
-
-
-  }
+    dragMode: 'move',
+  };
   const onSelectedImage = (_: any, currentFile: any) => {
     console.log(currentFile);
     // file.value = {
@@ -206,7 +209,7 @@
     file.value = currentFile;
   };
 
-  onMounted(() => {
+  onMounted(async () => {
     vditor.value = new Vditor('vditor', {
       height: 800,
       width: '70%',
@@ -214,6 +217,9 @@
         index: 100,
       },
     });
+    const res = await fetchData();
+
+    pushNewData();
   });
 </script>
 
