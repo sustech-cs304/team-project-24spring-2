@@ -3,6 +3,7 @@
     :title="props.title"
     :visible="props.visible"
     :on-before-cancel="exit"
+    :on-before-ok="finish"
     append-to-body
   >
     <a-row>
@@ -24,7 +25,7 @@
 
   const previews = ref({});
 
-  const emits = defineEmits(['closeModal']);
+  const emits = defineEmits(['closeModal', 'confirm']);
 
   const optDefault = {
     autoCrop: true,
@@ -58,20 +59,14 @@
 
   //   const cropper = ref();
 
-  const realTime = (data: any) => {
+  const realTime =  (data: any) => {
     previews.value = data;
   };
 
-  const rotateLeft = () => {
-    // cropper.rotateLeft();
-  };
-  const rotateRight = () => {
-    // cropper.rotateRight();
-  };
-  // 图片缩放
-  const changeScale = (num: number) => {
-    num = num || 1;
-    // cropper.value.changeScale(num);
+  const finish = async () => {
+    if (!cropper) return;
+    const blob: Blob | null | undefined = await cropper.getBlob();
+    emits('confirm', blob);
   };
 
   const exit = () => {

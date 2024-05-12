@@ -2,39 +2,51 @@
   <div class="container">
     <a-card class="card">
       <div class="cover-image-area">
-        <a-card>
-          <crop-image-modal
-            ref="crop-image"
-            :visible="modalVisible"
-            :img="strImg"
-            @closeModal="onCloseCrop"
-          />
-          <a-upload
-            action="/"
-            :fileList="file ? [file] : []"
-            :show-file-list="false"
-            :custom-request="fakeUpload"
-            @change="onSelectedImage"
-            @progress="onProgress"
-          >
-            <template #upload-button>
-              <div class="cover-upload">
-                <div class="cover-upload-done" v-if="file && file.url">
-                  <img :src="file.url" class="cover-upload-list-image" />
-                  <div class="cover-upload-list-mask">
-                    <IconEdit />
-                  </div>
-                </div>
-                <div class="cover-before-upload" v-else>
-                  <div class="cover-before-upload-text">
-                    <IconPlus style="margin: 20 auto 20;" />
-                    <div style="font-weight: 600; font-size: large; margin: auto">Upload</div>
-                  </div>
-                </div>
+        <crop-image-modal
+          ref="crop-image"
+          :visible="modalVisible"
+          :img="strImg"
+          :options="cropOptions"
+          @closeModal="onCloseCrop"
+          @confirm="onConfirmCrop"
+        />
+        <a-upload
+          action="/"
+          :fileList="file ? [file] : []"
+          :show-file-list="false"
+          :custom-request="fakeUpload"
+          @change="onSelectedImage"
+          @progress="onProgress"
+          class="cover-upload"
+        >
+          <template #upload-button>
+            <div class="cover-upload-done" v-if="file && file.url">
+              <img :src="file.url" class="cover-upload-list-image" />
+              <div class="cover-upload-list-mask">
+                <IconEdit
+                  style="
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    margin: auto;
+                    width: 50px;
+                    height: 50px;
+                  "
+                />
               </div>
-            </template>
-          </a-upload>
-        </a-card>
+            </div>
+            <div class="cover-before-upload" v-else>
+              <div class="cover-before-upload-text">
+                <IconPlus style="margin: 20 auto 20" />
+                <div style="font-weight: 600; font-size: large; margin: auto"
+                  >Upload</div
+                >
+              </div>
+            </div>
+          </template>
+        </a-upload>
       </div>
 
       <div id="vditor" class="markdown-form"></div>
@@ -158,16 +170,21 @@
 
   const file = ref();
   const modalVisible = ref(false);
+  const cropOptions = {
+    viewMode: 2 ,
+    aspectRatio: 16 / 4,
+    dragMode:'move',
 
+
+  }
   const onSelectedImage = (_: any, currentFile: any) => {
-    file.value = {
-      ...currentFile,
-      url: URL.createObjectURL(currentFile.file),
-    };
+    console.log(currentFile);
+    // file.value = {
+    //   ...currentFile,
+    //   url: URL.createObjectURL(currentFile.file),
+    // };
 
-    console.log(file.value);
-    strImg.value = file.value.url;
-
+    strImg.value = URL.createObjectURL(currentFile.file);
     modalVisible.value = true;
   };
 
@@ -175,7 +192,15 @@
     console.log('close');
     modalVisible.value = false;
   };
+  const onConfirmCrop = (currentFile: any) => {
+    modalVisible.value = false;
 
+    file.value = {
+      ...currentFile,
+      url: URL.createObjectURL(currentFile),
+    };
+    console.log(currentFile);
+  };
   const onChange = (_: any, currentFile: any) => {};
   const onProgress = (currentFile: any) => {
     file.value = currentFile;
@@ -252,10 +277,7 @@
   }
 
   .uploading {
-    // width: 100%;
-    // height: 30%;
     flex: auto;
-    // align-items: stretch;
     position: absolute;
     align-self: flex-end;
 
@@ -263,32 +285,33 @@
     right: 0;
     bottom: 0;
     left: 0;
-    border-radius: 5px;
+    border-radius: 8px;
     background-color: #f5f5f5;
   }
 
   .cover-image-area {
     width: 100%;
-    max-height: 200px;
-    overflow: auto;
-    // background-color: #f5f5f5;
-    align-items: center;
+    overflow: hidden;
     margin-bottom: 20px;
+    border-radius: 8px;
   }
 
   .cover-upload {
     cursor: pointer;
+    border-radius: 8px;
+    align-items: center;
+    align-content: center;
+    width: 100%;
+    height: inherit;
   }
 
   .cover-before-upload {
-    height: 150px;
-    width: 750px;
-    margin: auto;
-    padding: auto;
     border: 2px solid #d9d9d9;
-    border-radius: 8px;
     background-color: #fafafa;
+    border-radius: 8px;
     cursor: pointer;
+    justify-content: center;
+    align-items: center;
   }
 
   .cover-before-upload-text {
@@ -298,44 +321,38 @@
     text-align: center;
     margin: auto;
     margin-top: 30px;
-}
+  }
 
   .cover-upload-done {
     position: relative;
+    border-radius: 8px;
+    width: 100%;
     height: 100%;
-    border-radius: 4px;
+    margin: 0 auto;
     background-color: #fafafa;
     cursor: pointer;
   }
   .cover-upload-list-image {
-    height: 150px;
-    width: 750px;
+    position: relative;
+    margin: auto;
+    width: 100%;
+    height: 100%;
   }
 
   .cover-upload-list-mask {
-    transition: all 0.2s;
     position: absolute;
-    top: 0;
     left: 0;
+    top: 0;
+    opacity: 0;
+    background-color: rgb(122, 122, 122);
+    transition: opacity 0.2s;
+    align-items: center;
+
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
-    font-size: 24px;
-    cursor: pointer;
-    opacity: 0;
   }
 
   .cover-upload-list-mask:hover {
-    opacity: 1;
+    opacity: 0.5;
   }
-  //   .img-cards:nth-of-type(2n) {
-  //     /* 每行第5个不需要列间隔 */
-  //     margin-right: 0;
-  //     /* 每行第5个设置行间隔=>不足5个即为最后一行，不需要行间隔 */
-  //     margin-bottom: 20px;
-  //   }
 </style>
