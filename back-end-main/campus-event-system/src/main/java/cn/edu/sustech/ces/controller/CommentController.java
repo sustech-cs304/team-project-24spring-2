@@ -118,7 +118,7 @@ public class CommentController {
             }
             suffix = Optional.of(suffix.get().toLowerCase());
             return suffix.get().equalsIgnoreCase("jpg") || suffix.get().equalsIgnoreCase("jpeg") || suffix.get().equalsIgnoreCase("png") || suffix.get().equalsIgnoreCase("mp4");
-        }).map(Item::objectName).toList();
+        }).map(item -> "/" + minioService.getCommentBucket() + "/" + item.objectName()).toList();
         return ResponseEntity.ok(urls);
     }
 
