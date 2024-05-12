@@ -33,3 +33,7 @@ export function getUserInfo() {
 export function getMenuList() {
   return axios.post<RouteRecordNormalized[]>('/api/user/menu');
 }
+
+export function getUploadImages() {
+  return axios.post<string[]>('/api/user/get-upload-images');
+}
