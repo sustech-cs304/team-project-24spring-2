@@ -56,7 +56,7 @@ function navigateToUserInfo() {
   flex-grow: 1;
   margin: 0.1%;
   padding: 10px; /* 添加一些内边距 */
-  height: calc(100% - 52px);
+  height: auto;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 轻微的阴影效果 */
   transition: box-shadow 0.3s ease; /* 鼠标悬停时阴影效果的平滑过渡 */
 }
