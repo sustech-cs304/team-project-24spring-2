@@ -123,7 +123,7 @@ public class UserController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getUploadImages() {
         User user = CESUtils.getAuthorizedUser();
-        List<String> urls = minioService.getItems(minioService.getImageBucket(), user.getId().toString())
+        List<String> urls = minioService.getItems(minioService.getImageBucket(), "user/" + user.getId().toString())
                 .stream()
                 .map(item -> "/" + minioService.getImageBucket() + "/" + item.objectName())
                 .toList();
