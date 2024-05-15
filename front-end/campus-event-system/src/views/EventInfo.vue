@@ -1,43 +1,42 @@
 <script>
-
-
-
-import { ref, onMounted, toRefs, computed } from 'vue';
-import axios from 'axios';
+import { ref, onMounted, toRefs} from 'vue';
 import { useRouter } from 'vue-router';
+import axios from 'axios';
+
 
 export default {
   name: 'Events',
-  components: {},
   props: {
-    eventId: {
-      type: String,
+    id: {
+      type: Object,
       required: true,
     }
   },
   setup(props) {
-    const { eventId } = toRefs(props);
 
-    const eventInfo = ref(Object);
+    const eventInfo = ref({});
+    const router = useRouter();
 
     onMounted(() => {
-      loadEventsInfo(eventId);
+      loadEventsInfo(router.currentRoute.value.query.id)
     });
 
     async function loadEventsInfo(eventId) {
       axios.post(`/api/event/get-event?eventId=${eventId}`)
         .then(response => {
           eventInfo.value = response.data;
-          console.log(eventInfo.value)
+          console.log(eventInfo.value);
         })
         .catch(error => {
           console.error(error);
         });
     }
-    return { eventInfo, loadEventsInfo};
+
+    return { eventInfo, loadEventsInfo };
   }
 }
 </script>
+
 
 
 <template>

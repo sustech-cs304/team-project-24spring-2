@@ -48,8 +48,7 @@ export default {
     });
 
     function navigateToDetail() {
-      
-      router.push({path:`/eventInfo`, query:event.value.eventId});
+      router.push({path:`/eventInfo`, query: {"id": event.value.id}});
     };
 
     async function getTicketInfo(ticket_id) {
