@@ -52,9 +52,6 @@ export default {
       <icon-home @click="navigate('/homepage')"/>
       <icon-apps @click="navigate('/events')"/>
       <icon-user @click="navigate('/userinfo')"/>
-<!--      <icon-settings @click="navigate('/settings')"/>-->
-<!--      <icon-bug @click="navigate('/report-issue')"/>-->
-<!--      <icon-question-circle @click="navigate('/faq')"/>-->
       <icon-export @click="navigate('/logout')"/>
     </div>
   </div>
@@ -80,8 +77,8 @@ export default {
 
 .logo-image {
   margin-right: 15px;
-  height: 50px;
-  width: auto;
+  height: auto;
+  width: 200px;
 }
 
 .logo {

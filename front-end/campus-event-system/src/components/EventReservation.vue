@@ -49,4 +49,5 @@ export default {
   margin-top: 10%;
   margin-left: 20%;
 }
+
 </style>
