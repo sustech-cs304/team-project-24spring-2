@@ -52,9 +52,6 @@ export default {
       <icon-home @click="navigate('/homepage')"/>
       <icon-apps @click="navigate('/events')"/>
       <icon-user @click="navigate('/userinfo')"/>
-<!--      <icon-settings @click="navigate('/settings')"/>-->
-<!--      <icon-bug @click="navigate('/report-issue')"/>-->
-<!--      <icon-question-circle @click="navigate('/faq')"/>-->
       <icon-export @click="navigate('/logout')"/>
     </div>
   </div>
