@@ -10,6 +10,7 @@ export default {
   components: {
     EventCard,
   },
+
   setup() {
     const eventsData = ref([]);
     const totalEvents = ref(0);
@@ -48,7 +49,8 @@ export default {
 <template>
   <div class="page-container">
     <!-- 设置 a-scrollbar 的高度以适应页面布局，这里假设为页面布局允许的最大高度 -->
-    <a-scrollbar style="height: 100%; max-height: 770px; overflow: auto;">
+    <!-- <a-scrollbar style="height: 100%; max-height: 770px; overflow: auto;"> -->
+    <a-scrollbar>
       <div class="cards-container">
         <EventCard v-for="(item, index) in eventsData" :key="index" :event="item" />
       </div>

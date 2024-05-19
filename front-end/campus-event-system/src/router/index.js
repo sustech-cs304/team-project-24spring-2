@@ -5,10 +5,20 @@ import Layout from "@/layout/Layout.vue";
 import events from "@/views/Events.vue";
 import userInfo from "@/views/UserInfo.vue";
 import EventInfo from "@/views/EventInfo.vue";
+import Login from "@/views/Login.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/',
+      redirect: '/homepage'
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: Login
+    },
     {
       path: '/layout',
       name: 'layout',
@@ -23,7 +33,7 @@ const router = createRouter({
             component: events
           },
           {
-            path: '/',
+            path: '/homepage',
             name: 'homepage',
             component: Homepage
           },

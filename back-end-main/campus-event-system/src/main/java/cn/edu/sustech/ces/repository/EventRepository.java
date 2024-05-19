@@ -23,11 +23,15 @@ public interface EventRepository extends ListCrudRepository<Event, UUID> {
 
     List<Event> findAllByStatusInAndPublisher(Set<EventStatus> statusSet, UUID publisher);
 
+    List<Event> findAllByStatusInAndStartTimeBefore(Set<EventStatus> statusSet, Long startTime);
+
     Page<Event> findAll(Pageable pageable);
 
     Page<Event> findAllByPublisher(Pageable pageable, UUID publisherId);
 
     long countByPublisher(UUID id);
+
+    List<Event> findAllByStatusInAndEndTimeBefore(Set<EventStatus> statusSet, Long endTime);
 
 }
 

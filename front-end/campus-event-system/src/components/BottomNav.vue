@@ -25,7 +25,7 @@ export default {
 
 .logo img {
 
-  height: 150px;
+  height: 100px;
   width: auto;
   margin-bottom: 5px;
 }
