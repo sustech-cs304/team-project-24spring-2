@@ -52,6 +52,9 @@ export default {
 
 
 
+
+
+
 <template>
   <div class="outline_container">
     <div class="main_container">
@@ -109,6 +112,8 @@ export default {
 </template>
 
 
+
+
 <style scoped>
 .outline_container {
   display: flex;
@@ -146,7 +151,45 @@ export default {
 .lower_conatiner {
   width: 100%;
   height: auto;
+.outline_container {
+  display: flex;
+  width: 86vw;
+  margin: auto;
 }
+
+.main_container {
+  flex: 1;
+
+  border-right: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+}
+
+.right_container {
+  width: 25%;
+
+  border-right: 1px solid #ccc;
+}
+
+.upper_container {
+  width: 100%;
+  height: auto;
+  display: flex;
+  border-bottom: 1px solid #ccc;
+}
+
+.post_container {
+  flex: 1;
+}
+
+.Details_container {
+  width: 70%;
+}
+.lower_conatiner {
+  width: 100%;
+  height: auto;
+}
+
+
 
 
 </style>

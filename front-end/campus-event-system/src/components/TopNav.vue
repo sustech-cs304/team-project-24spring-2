@@ -77,8 +77,8 @@ export default {
 
 .logo-image {
   margin-right: 15px;
-  height: 50px;
-  width: auto;
+  height: auto;
+  width: 200px;
 }
 
 .logo {
