@@ -3,6 +3,8 @@ import { ref } from 'vue'
 import Pictures from "@/components/Pictures.vue";
 import EventCard from "@/components/EventCard.vue";
 import BottomNav from "@/components/BottomNav.vue";
+import axios from 'axios';
+import { onMounted } from "vue";
 
 export default {
   name: 'Homepage',
@@ -12,47 +14,39 @@ export default {
     BottomNav,
   },
   setup() {
-    const data = ref([
-      {
-        title: "Card Title 1",
-        description: "This is the description of card 1.",
-        imgUrl: "https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/a20012a2d4d5b9db43dfc6a01fe508c0.png~tplv-uwbnlip3yd-webp.webp",
-        username: "Username1",
-      },
-      {
-        title: "Card Title 2",
-        description: "This is the description of card 2.",
-        imgUrl: "https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/a20012a2d4d5b9db43dfc6a01fe508c0.png~tplv-uwbnlip3yd-webp.webp",
-        username: "Username2",
-      },
-      {
-        title: "Card Title 3",
-        description: "This is the description of card 3.",
-        imgUrl: "https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/a20012a2d4d5b9db43dfc6a01fe508c0.png~tplv-uwbnlip3yd-webp.webp",
-        username: "Username3",
-      },
-      {
-        title: "Card Title 4",
-        description: "This is the description of card 4.",
-        imgUrl: "https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/a20012a2d4d5b9db43dfc6a01fe508c0.png~tplv-uwbnlip3yd-webp.webp",
-        username: "Username4",
-      },
-      {
-        title: "Card Title 5",
-        description: "This is the description of card 5.",
-        imgUrl: "https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/a20012a2d4d5b9db43dfc6a01fe508c0.png~tplv-uwbnlip3yd-webp.webp",
-        username: "Username5",
-      },
-      {
-        title: "Card Title 6",
-        description: "This is the description of card 6.",
-        imgUrl: "https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/a20012a2d4d5b9db43dfc6a01fe508c0.png~tplv-uwbnlip3yd-webp.webp",
-        username: "Username6",
-      },
+    const data = ref([]);
+    const images = ref([]);
 
-    ]);
 
-    return {data};
+    onMounted(async () => {
+      try {
+        await loadEventsData(1);        
+        for (let i = 0; i < 2; i++) {
+          // console.log(data.value[i]);
+          if (data.value[i] && data.value[i].image_url) {
+            // console.log(data.value[i].image_url);
+            images.value.push(data.value[i].image_url);
+          } else {
+            console.warn(`data.value[${i}] is undefined or has no image_url`);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading events data:', error);
+      }
+    });
+
+    async function loadEventsData(current) {
+      current -= 1;
+      await axios.post(`/api/event/explore-events?page=${current}`)
+        .then(response => {
+          data.value = response.data;
+          console.log(data.value);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
+    return { data, images, loadEventsData};
   }
 }
 
@@ -61,7 +55,9 @@ export default {
 <template>
   <div class="container">
     <div class="picture">
-      <Pictures/>
+      <Pictures
+          :images=imgaes
+      />
     </div>
     <!-- <a-divider/> -->
     <a-typography-title class="title">

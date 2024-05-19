@@ -122,18 +122,7 @@ export default {
         ¥{{ priceRange }}
       </div>
     </div>
-    <!-- <a-card-meta :title="event.title" :description="event.description">
-      <template #avatar>
-        <div
-            :style="{ display: 'flex', alignItems: 'center', color: '#1D2129' }"
-        >
-          <a-avatar :size="24" :style="{ marginRight: '8px' }">
-            {{ event.username[0].toUpperCase() }}
-          </a-avatar>
-          <a-typography-text>{{ event.username }}</a-typography-text>
-        </div>
-      </template>
-    </a-card-meta> -->
+
   </a-card>
 
 </template>

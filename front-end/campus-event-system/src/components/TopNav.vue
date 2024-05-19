@@ -49,11 +49,21 @@ export default {
       <span class="logo">Campus Events and Entertainment Center</span>
     </div>
     <div class="navigation-icons">
-      <icon-home @click="navigate('/homepage')"/>
-      <icon-apps @click="navigate('/events')"/>
-      <icon-user @click="navigate('/userinfo')"/>
-      <icon-export @click="navigate('/logout')"/>
+      <a href="#" class="nav-item" @click="navigate('/homepage')">
+        <icon-home />主页 
+      </a>
+      <a href="#" class="nav-item" @click="navigate('/events')">
+        <icon-apps />更多 
+      </a>
+      <a href="#" class="nav-item" @click="navigate('/userinfo')">
+        <icon-user />个人信息 
+      </a>
+      <a href="#" class="nav-item" @click="navigate('/logout')">
+        <icon-export />登出 
+      </a>
     </div>
+
+
   </div>
 </template>
 
@@ -86,11 +96,30 @@ export default {
   font-weight: bold;
 }
 
-.navigation-icons > * {
+/* .navigation-icons > * {
   margin-right: 20px;
   cursor: pointer;
   vertical-align: middle;
-  color: inherit; /* 图标继承父元素的颜色设置 */
+  color: inherit; 
+} */
+
+.navigation-icons {
+  display: flex;
+  gap: 20px; /* 调整每个导航项之间的间距 */
 }
+
+.nav-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px; /* 调整图标和文字之间的间距 */
+  cursor: pointer; /* 鼠标悬停时显示手形光标 */
+  text-decoration: none; /* 移除链接的下划线 */
+  color: inherit; /* 继承父元素的颜色 */
+}
+
+.nav-item:hover {
+  color: #007bff; /* 可选：设置悬停时的文本颜色 */
+}
+
 </style>
 

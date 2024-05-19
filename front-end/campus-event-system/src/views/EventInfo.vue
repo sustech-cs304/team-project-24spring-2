@@ -1,53 +1,45 @@
 <script>
-import { ref, onMounted, toRefs} from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
 import axios from 'axios';
-
+import Comment from '@/components/comment.vue';
 
 export default {
   name: 'Events',
-  props: {
-    id: {
-      type: Object,
-      required: true,
-    }
+  components: {
+    Comment,
   },
-  setup(props) {
-
+  setup() {
     const eventInfo = ref({});
-    const router = useRouter();
+    const route = useRoute();
     const tickets = ref([]);
+    const selectedPrice = ref(null);
 
     onMounted(async () => {
-      await loadEventsInfo(router.currentRoute.value.query.id)
-      console.log("hello world");
-      const ticketPromises = eventInfo.value.tickets.map(ticket_id => {
-          return getTicketInfo(ticket_id);
-      });
-
-      tickets.value = await Promise.all(ticketPromises);
-      console.log(tickets.value); 
+      await loadEventsInfo(route.query.id);
+      if (eventInfo.value.tickets) {
+        const ticketPromises = eventInfo.value.tickets.map(ticket_id => getTicketInfo(ticket_id));
+        tickets.value = await Promise.all(ticketPromises);
+      }
     });
 
     async function getTicketInfo(ticket_id) {
       const response = await axios.post(`/api/ticket/get-ticket?ticketId=${ticket_id}`);
       return response.data;
-    };
-
-    async function loadEventsInfo(eventId) {
-      await axios.post(`/api/event/get-event?eventId=${eventId}`)
-        .then(response => {
-          eventInfo.value = response.data;
-          console.log(eventInfo.value);
-        })
-        .catch(error => {
-          console.error(error);
-        });
     }
 
-    return { eventInfo, tickets, loadEventsInfo};
+    async function loadEventsInfo(eventId) {
+      try {
+        const response = await axios.post(`/api/event/get-event?eventId=${eventId}`);
+        eventInfo.value = response.data;
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    return { eventInfo, tickets, selectedPrice, loadEventsInfo };
   }
-}
+};
 </script>
 
 
@@ -60,20 +52,20 @@ export default {
     <div class="main_container">
       <div class="upper_container">
         <div class="post_container">
-            picture
+          <img :src="eventInfo.image_url" alt="event image" style="width: 100%; height: 100%">
         </div>
         <div class="Details_container">
-          <h1> {{ eventInfo.tit }}</h1>
-          <p>时间：{{ this.$formatDateTime(eventInfo.start_time) }} - {{ this.$formatDateTime(eventInfo.end_time)}}</p>
-          <p>地点：{{ eventInfo.location_name }}</p>
-          <div >
-            票档 
-            <a-radio-group v-model:checked="selectedPrice">
-              <a-radio v-for="ticket in tickets" :key="ticket" :value="ticket">{{ ticket.price }} 元</a-radio>
+          <h1>{{ eventInfo.title }}</h1>
+          <p class="details_item">时间：{{ $formatDateTime(eventInfo.start_time) }} - {{ $formatDateTime(eventInfo.end_time) }}</p>
+          <p class="details_item"> 地点：{{ eventInfo.location_name }}</p>
+          <div class="details_item">
+            票档
+            <a-radio-group type="button" v-model:checked="selectedPrice" >
+              <a-radio v-for="ticket in tickets" :key="ticket.id" :value="ticket">{{ ticket.description  + " " + ticket.price }} 元</a-radio>
             </a-radio-group>
           </div>
-          <a-button type="primary">
-              确定
+          <a-button type="primary" class="details_item">
+            购票
           </a-button>
         </div>
       </div>
@@ -81,7 +73,7 @@ export default {
         <a-tabs>
           <a-tab-pane key="1">
             <template #title>
-              <icon-calendar/> 项目详情
+              项目详情
             </template>
             <div class="Description">
               这里是项目详情
@@ -89,7 +81,7 @@ export default {
           </a-tab-pane>
           <a-tab-pane key="2">
             <template #title>
-              <icon-clock-circle/>购票须知
+              购票须知
             </template>
             <div class="Information">
               这里是购票须知
@@ -97,12 +89,19 @@ export default {
           </a-tab-pane>
           <a-tab-pane key="3">
             <template #title>
-              <icon-user/> 评论
+              评论
             </template>
-              这里是评论
+            <div class="comment">
+              <Comment />
+              <Comment />
+              <Comment />
+              <div class="my_comment">
+                <a-input placeholder="Here is your content." />
+                <a-button type="primary">评论</a-button>
+              </div>
+            </div>
           </a-tab-pane>
         </a-tabs>
-
       </div>
     </div>
     <div class="right_container">
@@ -110,7 +109,7 @@ export default {
     </div>
   </div>
 </template>
-
+r
 
 
 
@@ -146,50 +145,28 @@ export default {
 }
 
 .Details_container {
+
   width: 70%;
 }
 .lower_conatiner {
   width: 100%;
   height: auto;
+}
 .outline_container {
   display: flex;
   width: 86vw;
   margin: auto;
 }
-
-.main_container {
-  flex: 1;
-
-  border-right: 1px solid #ccc;
-  border-left: 1px solid #ccc;
+.comment{
+  margin: 10px;
 }
 
-.right_container {
-  width: 25%;
-
-  border-right: 1px solid #ccc;
-}
-
-.upper_container {
-  width: 100%;
-  height: auto;
+.my_comment {
   display: flex;
-  border-bottom: 1px solid #ccc;
+  align-items: center; 
+  gap: 10px; 
 }
-
-.post_container {
-  flex: 1;
+.details_item {
+  margin-bottom: 20px;
 }
-
-.Details_container {
-  width: 70%;
-}
-.lower_conatiner {
-  width: 100%;
-  height: auto;
-}
-
-
-
-
 </style>
