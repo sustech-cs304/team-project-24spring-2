@@ -13,10 +13,20 @@
               <a-col :span="24">
                 <a-tabs :default-active-tab="1" type="rounded">
                   <a-tab-pane key="1" :title="$t('eventEdit.tab.title.basic')">
-                    <baseEdit :event-info="formData" />
+                    <baseEdit
+                      ref="be"
+                      v-model:form="formData"
+                      v-model:mod="modification"
+                    />
                   </a-tab-pane>
                   <a-tab-pane key="2" :title="$t('eventEdit.tab.title.detail')">
-                    <infoEdit />
+                    <infoEdit
+                      ref="ie"
+                      :cover-image="formData.image_url"
+                      :markdown-doc="formData.document_url"
+                      v-model:form="formData"
+                      v-model:mod="modification"
+                    />
                   </a-tab-pane>
                 </a-tabs>
               </a-col>
@@ -26,13 +36,13 @@
       </a-row>
       <a-card class="actions">
         <a-space>
-          <a-button>
+          <a-button @click="reset">
             <template #icon>
               <icon-redo />
             </template>
             {{ $t('eventEdit.reset') }}
           </a-button>
-          <a-button type="secondary">
+          <a-button type="secondary" @click="saveEvent">
             <template #icon>
               <icon-save />
             </template>
@@ -50,29 +60,42 @@
 <script lang="ts" setup>
   //   import QualityInspection from './components/quality-inspection.vue';
   import { onBeforeMount, ref } from 'vue';
+  import { Notification } from '@arco-design/web-vue';
   import { useI18n } from 'vue-i18n';
   import {
     originalEventCreationModel,
+    EventUpdateModel,
     getEventInfo,
     getTicketInfo,
+    updateEvent,
   } from '@/api/event';
+  import { uploadFile, getFile } from '@/api/file';
+
   import useLoading from '@/hooks/loading';
   import baseEdit from './components/base-edit.vue';
   import infoEdit from './components/detail-edit.vue';
+
+  const be = ref();
+  const ie = ref();
 
   const { loading, setLoading } = useLoading(true);
 
   const formData = ref<originalEventCreationModel>(
     {} as originalEventCreationModel
   );
-  //   const { t } = useI18n();
+
+  const originData = ref<originalEventCreationModel>(
+    {} as originalEventCreationModel
+  );
+
+  const modification = ref({});
+  const args = new URLSearchParams(window.location.search);
+  const uuid = args.get('uuid') as string;
 
   const fetchData = async () => {
     setLoading(true);
     try {
-      const args = new URLSearchParams(window.location.search);
-      const { data } = await getEventInfo(args.get('uuid') as string);
-      console.log(data);
+      const { data } = await getEventInfo(uuid);
       const promises = Object.values(data.tickets).map((uuid) =>
         getTicketInfo(uuid)
       );
@@ -88,6 +111,20 @@
         document_url: data.document_url,
         image_url: data.image_url,
         time_range: [new Date(data.start_time), new Date(data.end_time)],
+        uuid,
+      };
+
+      originData.value = {
+        title: data.title,
+        address: data.location_name,
+        category: data.category,
+        lng: data.longitude,
+        lat: data.latitude,
+        tickets: [...res.map((item) => item.data)],
+        document_url: data.document_url,
+        image_url: data.image_url,
+        time_range: [new Date(data.start_time), new Date(data.end_time)],
+        uuid,
       };
     } catch (err) {
       // operations
@@ -95,9 +132,67 @@
       setLoading(false);
     }
   };
-  onBeforeMount(() => {
-    fetchData();
+
+  const updateMkd = async () => {
+    const mkdText = ie.value.vditor.getValue();
+    if (mkdText) {
+      const newMkd = new File([mkdText], 'content.md', {
+        type: 'text/markdown',
+      });
+      const mkdData = new FormData();
+      mkdData.append('file', newMkd);
+      const resMkd = await uploadFile(mkdData, {
+        usage: 'event',
+        eventId: uuid,
+      });
+      return resMkd.data;
+    }
+    return '';
+  };
+
+  const saveEvent = async () => {
+    try {
+      const coverUrl = await ie.value.updateCover();
+
+      const mkdUrl = await updateMkd();
+
+      const Dates: Date[] = formData.value.time_range;
+      const startDate = new Date(Dates[0]).getTime();
+      const endDate = new Date(Dates[1]).getTime();
+      const sendData = ref<EventUpdateModel>();
+      sendData.value = {
+        title: formData.value.title,
+        start_time: startDate,
+        end_time: endDate,
+        document_url: mkdUrl,
+        latitude: formData.value.lat,
+        longitude: formData.value.lng,
+        location_name: formData.value.address,
+        category: formData.value.category,
+        tickets: formData.value.tickets,
+      };
+      if (coverUrl !== '') {
+        sendData.value.image_url = coverUrl;
+      }
+      // console.log(sendData.value);
+      const res = await updateEvent(uuid, sendData.value);
+    } finally {
+      Notification.success({
+        title: 'Success',
+        content: '更新成功！',
+      });
+    }
+  };
+  onBeforeMount(async () => {
+    const res = await fetchData();
   });
+
+  const reset = () => {
+    formData.value = {
+        ...originData.value,
+    };
+    ie.value.reset();
+  };
 </script>
 
 <script lang="ts">

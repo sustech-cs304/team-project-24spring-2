@@ -1,13 +1,27 @@
 <template>
   <div class="container">
-    <a-card class="card" hoverable>
+    <a-card class="card" hoverable draggable="">
       <div class="img-body">
         <a-image
+          class="img"
+          footer-position="outer"
           :src="props.image.url"
-          :description="props.image.name"
+          :title="props.image.name"
           :on-error="ImageInterceptor"
           width="100%"
-        />
+        >
+          <template #extra>
+            <a-space>
+              <a-tooltip content="删除">
+                <span
+                  class="action actions-outer"
+                  @click.prevent="deleteImage(props.image.url)"
+                  ><icon-delete
+                /></span>
+              </a-tooltip>
+            </a-space>
+          </template>
+        </a-image>
       </div>
     </a-card>
   </div>
@@ -16,7 +30,7 @@
 <script lang="ts" setup>
   import { useI18n } from 'vue-i18n';
   import { Notification } from '@arco-design/web-vue';
-  import { ImageInterceptor } from '@/api/file';
+  import { ImageInterceptor, deleteFile } from '@/api/file';
 
   const props = defineProps({
     image: {
@@ -50,6 +64,18 @@
       });
     }
   };
+
+  const deleteImage = async (url: string) => {
+    try {
+      await ImageInterceptor.deleteImage(props.image.url);
+      Notification.success({
+        title: 'Success',
+        content: '图片删除成功',
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
 </script>
 
 <style scoped lang="less">
@@ -64,14 +90,44 @@
     -moz-user-select: none; /*火狐*/
     -ms-user-select: none; /*IE10*/
     user-select: none;
+    min-height: 50px;
   }
   .card:hover {
     transform: translateY(-1px);
   }
 
-  img {
+  .img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    margin: 0 auto;
+    font-size: px;
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+  }
+  .action {
+    padding: 5px 4px;
+    font-size: 14px;
+    margin-left: 12px;
+    border-radius: 2px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .action:first-child {
+    margin-left: 0;
+  }
+
+  .action:hover {
+    background: rgba(0,0,0,.5);
+  }
+  .actions-outer {
+    .action {
+      &:hover {
+        color: #ffffff;
+      }
+    }
   }
 </style>

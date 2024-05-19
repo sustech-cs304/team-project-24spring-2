@@ -68,19 +68,11 @@
   const submitForm = async () => {
     setLoading(true);
     const Dates: Date[] = submitModel.value.time_range;
-
     const startDate = new Date(Dates[0]).getTime();
     const endDate = new Date(Dates[1]).getTime();
     try {
       const sendData = ref<EventCreationModel>();
-      const jsonTickets = [];
-      for (let i = 0; i < submitModel.value.tickets.length; i += 1) {
-        jsonTickets.push({
-          description: submitModel.value.tickets[i].description,
-          price: submitModel.value.tickets[i].price,
-          total_amount: submitModel.value.tickets[i].total_amount,
-        });
-      }
+
       sendData.value = {
         title: submitModel.value.title,
         start_time: startDate,
@@ -91,10 +83,10 @@
         longitude: submitModel.value.lng,
         location_name: submitModel.value.address,
         category: submitModel.value.category,
-        // tickets: submitModel.value.tickets,
-        tickets: jsonTickets,
+        tickets: submitModel.value.tickets,
       };
       console.log('sending', sendData.value);
+
       const res = await CreateEventApi(sendData.value); // The mock api default success
       uuid.value = res.data.id;
       Notification.success({

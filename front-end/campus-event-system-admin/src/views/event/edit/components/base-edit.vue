@@ -144,7 +144,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, watch, computed } from 'vue';
+  import { ref, watch, computed, defineModel } from 'vue';
   import { useI18n } from 'vue-i18n';
   import { originalEventCreationModel, Tickets } from '@/api/event';
   import { FormInstance } from '@arco-design/web-vue/es/form';
@@ -157,11 +157,16 @@
   type Column = TableColumnData & { checked?: true };
   const { t } = useI18n();
 
-  const props = defineProps({
-    eventInfo: {
-      type: Object,
-    },
+  //   const props = defineProps({
+  //     eventInfo: {
+  //       type: Object,
+  //     },
+  //   });
+
+  const formData = defineModel<originalEventCreationModel>('form', {
+    default: {} as originalEventCreationModel,
   });
+
   let cnt = 0;
   const integralDigits = 6;
   const decimalPlaces = 2;
@@ -170,9 +175,10 @@
   const showColumns = ref<Column[]>([]);
   const size = ref<SizeProps>('medium');
 
-  const formData = ref<originalEventCreationModel>(
-    {} as originalEventCreationModel
-  );
+  //   const formData = ref<originalEventCreationModel>(
+  //
+  //   );
+
   const formRef = ref<FormInstance>();
   const onSelectedAddress = (form: any) => {
     formData.value.address = form.address;
@@ -261,7 +267,7 @@
     return `${symbol} ${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   };
   watch(
-    () => props.eventInfo,
+    () => formData,
     (newVal: any) => {
       formData.value.title = newVal.title;
       formData.value.time_range = newVal.time_range;

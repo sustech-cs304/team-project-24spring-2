@@ -12,7 +12,7 @@
         />
         <a-upload
           action="/"
-          :fileList="file ? [file] : []"
+          :fileList="coverImage ? [coverImage] : []"
           :show-file-list="false"
           :custom-request="fakeUpload"
           @change="onSelectedImage"
@@ -20,8 +20,8 @@
           class="cover-upload"
         >
           <template #upload-button>
-            <div class="cover-upload-done" v-if="file && file.url">
-              <img :src="file.url" class="cover-upload-list-image" />
+            <div class="cover-upload-done" v-if="coverImage">
+              <img :src="coverImage.url" class="cover-upload-list-image" />
               <div class="cover-upload-list-mask">
                 <IconEdit
                   style="
@@ -83,19 +83,28 @@
 </template>
 
 <script lang="ts" setup>
-  // 1.1 引入Vditor 构造函数
   import Vditor from 'vditor';
   import 'vditor/dist/index.css';
   import imgCard from '@/components/image/image-card.vue';
   import { Notification } from '@arco-design/web-vue';
-  import { uploadFile } from '@/api/file';
+  import { uploadFile, getFile } from '@/api/file';
+  import { originalEventCreationModel, Tickets } from '@/api/event';
   import { getUploadImages } from '@/api/user';
-  import { ref, onMounted } from 'vue';
+  import { ref, onMounted, defineProps } from 'vue';
   import { IconEdit, IconPlus } from '@arco-design/web-vue/es/icon';
   import cropImageModal from '@/components/image/croper-modal.vue';
+  import { watch } from 'vue';
+  import { onUnmounted } from 'vue';
+
+  const coverImage = ref();
+  const vditor = ref();
+  const setted = false;
+  const originText = ref('');
+  const originCover = ref('');
+
+  // 1.1 引入Vditor 构造函数
 
   // 2. 获取DOM引用
-  const vditor = ref();
   const renderImages = ref<any>([]);
 
   const fileList = ref([]);
@@ -105,6 +114,38 @@
   const strImg = ref<string>('');
 
   const imgIndex = ref(0);
+
+  const formData = defineModel<originalEventCreationModel>('form', {
+    default: {} as originalEventCreationModel,
+  });
+
+  const modification = defineModel('mod');
+
+  const modalVisible = ref(false);
+  const cropOptions = {
+    viewMode: 2,
+    aspectRatio: 16 / 4,
+    dragMode: 'move',
+  };
+
+  const updateCover = async () => {
+    const { blob, url } = coverImage.value;
+    if (url && !blob) {
+      return '';
+    }
+
+    const newCover = new File([blob], 'cover.png', {
+      type: 'image/png',
+    });
+    const coverData = new FormData();
+    coverData.append('file', newCover);
+    const resCover = await uploadFile(coverData, {
+      usage: 'event',
+      eventId: formData.value.uuid,
+    });
+
+    return resCover.data;
+  };
 
   const onExceed = (file: any) => {
     console.log('exceed');
@@ -120,13 +161,11 @@
       userImages.push({
         name: 'image',
         url: `${res.data[i]}`,
-        // url: `http://localhost:19000${res.data[i]}`,
       });
     }
   };
 
   const pushNewData = async () => {
-
     for (let i = 0; i < 20 && userImages.length > 0; i += 1)
       renderImages.value.push(userImages.pop());
   };
@@ -141,11 +180,17 @@
 
   const customUploadUser = (option: any) => {
     const { onProgress, onError, onSuccess, fileItem, name } = option;
-    const formData = new FormData();
-    formData.append('file', fileItem.file);
-    uploadFile(formData, 'user', (e: any) => {
-      onProgress({ percent: e.loaded / e.total }, e);
-    })
+    const form = new FormData();
+    form.append('file', fileItem.file);
+    uploadFile(
+      form,
+      {
+        usage: 'user',
+      },
+      (e: any) => {
+        onProgress({ percent: e.loaded / e.total }, e);
+      }
+    )
       .then((res: any) => {
         console.log('res', res);
         Notification.success({
@@ -173,20 +218,18 @@
     };
   };
 
-  const file = ref();
-  const modalVisible = ref(false);
-  const cropOptions = {
-    viewMode: 2,
-    aspectRatio: 16 / 4,
-    dragMode: 'move',
+  const setVditor = async () => {
+    if (formData.value.document_url) {
+      const mkd = await getFile(formData.value.document_url);
+      originText.value = mkd.data;
+      vditor.value.setValue(originText.value);
+      console.log('setVditor', originText.value);
+    } else {
+      vditor.value.setValue('');
+    }
   };
-  const onSelectedImage = (_: any, currentFile: any) => {
-    console.log(currentFile);
-    // file.value = {
-    //   ...currentFile,
-    //   url: URL.createObjectURL(currentFile.file),
-    // };
 
+  const onSelectedImage = (_: any, currentFile: any) => {
     strImg.value = URL.createObjectURL(currentFile.file);
     modalVisible.value = true;
   };
@@ -198,28 +241,59 @@
   const onConfirmCrop = (currentFile: any) => {
     modalVisible.value = false;
 
-    file.value = {
-      ...currentFile,
+    coverImage.value = {
+      blob: currentFile,
       url: URL.createObjectURL(currentFile),
     };
-    console.log(currentFile);
+    console.log(coverImage);
   };
   const onChange = (_: any, currentFile: any) => {};
   const onProgress = (currentFile: any) => {
-    file.value = currentFile;
+    coverImage.value = currentFile;
   };
 
-  onMounted(async () => {
-    vditor.value = new Vditor('vditor', {
-      height: 800,
-      width: '70%',
-      fullscreen: {
-        index: 100,
-      },
-    });
-    const res = await fetchData();
+  const reset = () => {
+    coverImage.value = originCover.value;
+    vditor.value.setValue(originText.value);
+  };
+  onMounted(async () => {});
 
-    pushNewData();
+  onUnmounted(() => {
+    vditor.value.destroy();
+  });
+
+  watch(
+    () => formData.value,
+    async (val) => {
+      console.log(val);
+      if (val.image_url) {
+        coverImage.value = {
+          url: val.image_url,
+        };
+        console.log(coverImage);
+        originCover.value = coverImage.value;
+      }
+      vditor.value = new Vditor('vditor', {
+        height: 800,
+        width: '70%',
+        fullscreen: {
+          index: 100,
+        },
+        after() {
+          setVditor();
+        },
+      });
+      const res = await fetchData();
+
+      pushNewData();
+    }
+  );
+
+  defineExpose({
+    vditor,
+    coverImage,
+    updateCover,
+    reset,
   });
 </script>
 

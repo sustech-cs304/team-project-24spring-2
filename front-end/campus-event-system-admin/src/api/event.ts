@@ -39,6 +39,7 @@ export interface EventTicketsInfoModel {
   tickets: Tickets[];
   document_url?: string;
   image_url?: string;
+  uuid?: string;
 }
 
 export type originalEventCreationModel = EventBaseInfoModel &
@@ -56,6 +57,19 @@ export interface EventCreationModel {
   document_url: string;
   image_url: string;
 }
+
+export interface EventUpdateModel {
+    title?: string;
+    category?: string;
+    start_time?: number;
+    end_time?: number;
+    latitude?: number;
+    longitude?: number;
+    location_name?: string;
+    tickets?: any[];
+    document_url?: string;
+    image_url?: string;
+  }
 
 export interface ExtraEventRecord {
   id: string;
@@ -130,4 +144,12 @@ export function listEvent(params: EventParams) {
       },
     }
   );
+}
+
+export function updateEvent(uuid: string, data: EventUpdateModel) {
+  return axios.post('/api/event/update-event', data, {
+    params: {
+      eventId: uuid,
+    },
+  });
 }

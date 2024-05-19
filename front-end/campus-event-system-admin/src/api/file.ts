@@ -2,28 +2,17 @@ import axios from 'axios';
 
 export function uploadFile(
   data: FormData,
-  usage: string,
+  params: any,
   uploadProgress: (event: any) => void = () => {}
 ) {
   return axios.post('/api/file/upload', data, {
-    params: {
-      usage,
-    },
+    params,
     onUploadProgress: uploadProgress,
   });
 }
 
-export function getFile(
-  data: FormData,
-  usage: string,
-  uploadProgress: (event: any) => void = () => {}
-) {
-  return axios.post('/api/file/upload', data, {
-    params: {
-      usage,
-    },
-    onUploadProgress: uploadProgress,
-  });
+export function getFile(url: string) {
+  return axios.get(url);
 }
 
 export async function ImageInterceptor(url: string) {
