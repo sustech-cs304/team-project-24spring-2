@@ -20,12 +20,12 @@ public class ScheduleTask {
 
     @Scheduled(cron = "0 * * * * *")
     public void checkEventType() {
-        List<Event> events = eventRepository.findAllByStatusInAndStartTimeAfter(Set.of(EventStatus.PENDING), System.currentTimeMillis() - 1);
+        List<Event> events = eventRepository.findAllByStatusInAndStartTimeBefore(Set.of(EventStatus.PENDING), System.currentTimeMillis());
         events.forEach(event -> {
             event.setStatus(EventStatus.IN_PROGRESS);
             eventRepository.save(event);
         });
-        events = eventRepository.findAllByStatusInAndEndTimeAfter(Set.of(EventStatus.IN_PROGRESS, EventStatus.PENDING), System.currentTimeMillis() - 1);
+        events = eventRepository.findAllByStatusInAndEndTimeBefore(Set.of(EventStatus.IN_PROGRESS, EventStatus.PENDING), System.currentTimeMillis());
         events.forEach(event -> {
             event.setStatus(EventStatus.FINISHED);
             eventRepository.save(event);
