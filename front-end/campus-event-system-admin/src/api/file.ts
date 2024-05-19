@@ -15,6 +15,19 @@ export function getFile(url: string) {
   return axios.get(url);
 }
 
+export function deteleFile(url: string, params: any) {
+  const fileName = url.split('/').pop();
+  return axios.post(
+    '/api/file/delete',
+    {},
+    {
+      params: {
+        ...params,
+        fileName,
+      },
+    }
+  );
+}
 export async function ImageInterceptor(url: string) {
   // 请求图片，axios是已经实现拦截的,如上面导入,responseType为arraybuffer
   const response = await axios.get(url, { responseType: 'arraybuffer' });

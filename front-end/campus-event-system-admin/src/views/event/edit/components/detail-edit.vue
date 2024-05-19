@@ -63,6 +63,7 @@
               :key="index"
               :is="element"
               class="img-cards"
+              @delete-image="deleteImage(element.url)"
             />
           </a-list>
           <div class="uploading">
@@ -87,7 +88,7 @@
   import 'vditor/dist/index.css';
   import imgCard from '@/components/image/image-card.vue';
   import { Notification } from '@arco-design/web-vue';
-  import { uploadFile, getFile } from '@/api/file';
+  import { uploadFile, getFile, deteleFile } from '@/api/file';
   import { originalEventCreationModel, Tickets } from '@/api/event';
   import { getUploadImages } from '@/api/user';
   import { ref, onMounted, defineProps } from 'vue';
@@ -217,7 +218,27 @@
       },
     };
   };
-
+  const deleteImage = async (url: string) => {
+    console.log('deleting', url);
+    try {
+      await deteleFile(url, {
+        usage: 'user',
+      });
+      Notification.success({
+        title: 'Success',
+        content: '图片删除成功',
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+        for (let i = 0; i < renderImages.value.length; i += 1) {
+          if (renderImages.value[i].url === url) {
+            renderImages.value.splice(i, 1);
+            break;
+          }
+        }
+    }
+  };
   const setVditor = async () => {
     if (formData.value.document_url) {
       const mkd = await getFile(formData.value.document_url);

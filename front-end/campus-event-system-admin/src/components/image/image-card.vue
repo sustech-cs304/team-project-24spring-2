@@ -30,7 +30,9 @@
 <script lang="ts" setup>
   import { useI18n } from 'vue-i18n';
   import { Notification } from '@arco-design/web-vue';
-  import { ImageInterceptor, deleteFile } from '@/api/file';
+  import { ImageInterceptor, deteleFile } from '@/api/file';
+  
+  const emits = defineEmits(['deleteImage']);
 
   const props = defineProps({
     image: {
@@ -66,15 +68,7 @@
   };
 
   const deleteImage = async (url: string) => {
-    try {
-      await ImageInterceptor.deleteImage(props.image.url);
-      Notification.success({
-        title: 'Success',
-        content: '图片删除成功',
-      });
-    } catch (error) {
-      console.error(error);
-    }
+      emits('deleteImage', url);
   };
 </script>
 
@@ -121,7 +115,7 @@
   }
 
   .action:hover {
-    background: rgba(0,0,0,.5);
+    background: rgba(0, 0, 0, 0.5);
   }
   .actions-outer {
     .action {
