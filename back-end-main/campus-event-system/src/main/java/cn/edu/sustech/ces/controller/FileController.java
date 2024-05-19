@@ -7,6 +7,7 @@ import cn.edu.sustech.ces.enums.PermissionGroup;
 import cn.edu.sustech.ces.service.CommentService;
 import cn.edu.sustech.ces.service.EventService;
 import cn.edu.sustech.ces.service.GlobalSettingService;
+import cn.edu.sustech.ces.service.UserService;
 import cn.edu.sustech.ces.service.minio.MinioService;
 import cn.edu.sustech.ces.utils.CESUtils;
 import com.alibaba.fastjson.JSONObject;
@@ -33,6 +34,7 @@ public class FileController {
     private final CommentService commentService;
     private final GlobalSettingService globalSettingService;
     private final EventService eventService;
+    private final UserService userService;
 
     //TODO: add user upload file management
 
@@ -142,6 +144,34 @@ public class FileController {
             }
             String fileName = "user/" + user.getId().toString() + "/" + UUID.randomUUID().toString() + "." + suffix.get();
             minioService.uploadFile(minioService.getImageBucket(), fileName, file);
+            return ResponseEntity.ok("/" + minioService.getImageBucket() + "/" + fileName);
+        }
+
+        if (usage.equalsIgnoreCase("avatar")) {
+            String type = file.getContentType();
+            // only allow image
+            if (type == null || !type.startsWith("image")) {
+                return ResponseEntity.badRequest().body("File type not supported");
+            }
+            Optional<String> suffix = Optional.ofNullable(file.getOriginalFilename())
+                    .filter(f -> f.contains("."))
+                    .map(f -> f.substring(file.getOriginalFilename().lastIndexOf(".") + 1));
+            if (suffix.isEmpty()) {
+                return ResponseEntity.badRequest().body("File type not supported");
+            }
+            suffix = Optional.of(suffix.get().toLowerCase());
+            if (!suffix.get().equalsIgnoreCase("jpg") && !suffix.get().equalsIgnoreCase("jpeg") && !suffix.get().equalsIgnoreCase("png")) {
+                return ResponseEntity.badRequest().body("File type not supported");
+            }
+            try {
+                minioService.deleteDirectory(minioService.getImageBucket(), "avatar/" + user.getId().toString());
+            } catch (Exception e) {
+                // ignore
+            }
+            String fileName = "avatar/" + user.getId().toString() + "/avatar." + suffix.get();
+            minioService.uploadFile(minioService.getImageBucket(), fileName, file);
+            user.setAvatarUrl("/" + minioService.getImageBucket() + "/" + fileName);
+            user = userService.updateUser(user);
             return ResponseEntity.ok("/" + minioService.getImageBucket() + "/" + fileName);
         }
 

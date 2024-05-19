@@ -35,6 +35,8 @@ public class User {
 
     private String phone;
 
+    private Long birthday;
+
     @Enumerated(EnumType.ORDINAL)
     private UserGender gender;
 
