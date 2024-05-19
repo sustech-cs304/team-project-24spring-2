@@ -178,6 +178,24 @@ public class FileController {
         return ResponseEntity.badRequest().body("Usage not supported");
     }
 
+    @PostMapping("/delete")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<String> deleteFile(@RequestParam String usage, HttpServletRequest request) {
+        User user = CESUtils.getAuthorizedUser();
+        if (usage.equalsIgnoreCase("user")) {
+            if (user.getPermissionGroup() == PermissionGroup.USER) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Permission denied");
+            }
+            String fileName = request.getParameter("fileName");
+            if (fileName == null) {
+                return ResponseEntity.badRequest().body("File name is required");
+            }
+            minioService.deleteFile(minioService.getImageBucket(), "user/" + user.getId().toString() + "/" + fileName);
+            return ResponseEntity.ok("File deleted");
+        }
+        return ResponseEntity.badRequest().body("Usage not supported");
+    }
+
 
     public int countCommentWeight(UUID commentId) {
         List<Item> items = minioService.getItems(minioService.getCommentBucket(), commentId.toString());
