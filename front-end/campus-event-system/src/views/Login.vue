@@ -6,7 +6,7 @@
       </div>
       <a-form @submit="handleSubmit" layout="vertical" :model="loginForm" :rules="rules" ref="form">
         <a-form-item label="用户名" prop="username">
-          <a-input v-model="loginForm.username" placeholder="请输入用户名" />
+          <a-input v-model="loginForm.user_input" placeholder="请输入用户名" />
         </a-form-item>
         <a-form-item label="密码" prop="password">
           <a-input-password v-model="loginForm.password" placeholder="请输入密码" />
@@ -23,18 +23,27 @@
         </a-form-item>
       </a-form>
       <a-modal v-model:visible="isRegisterVisible" title="注册" @ok="handleRegister" @cancel="handleCancel">
-        <a-form layout="vertical" :model="registerForm" :rules="registerRules" ref="registerForm">
-          <a-form-item label="用户名" prop="username">
-            <a-input v-model="registerForm.username" placeholder="请输入用户名" />
+        <a-form layout="vertical" :model="registerForm"  ref="register">
+          <a-form-item label="用户名" prop="nickname">
+            <a-input v-model="registerForm.nickname" placeholder="请输入用户名" />
+          </a-form-item>
+          <a-form-item label="真名" prop="realName">
+            <a-input v-model="registerForm.realName" placeholder="请输入真名" />
           </a-form-item>
           <a-form-item label="密码" prop="password">
             <a-input-password v-model="registerForm.password" placeholder="请输入密码" />
           </a-form-item>
           <a-form-item label="确认密码" prop="confirmPassword">
-            <a-input-password v-model="registerForm.confirmPassword" placeholder="请确认密码" @input="validateConfirmPassword" />
+            <a-input-password v-model="confirmPassword" placeholder="请确认密码" />
           </a-form-item>
           <a-form-item label="邮箱" prop="email">
-            <a-input v-model="registerForm.email" placeholder="请输入邮箱" />
+            <a-input-group compact>
+              <a-input v-model="registerForm.email" placeholder="请输入邮箱" style="width: 320px;" />
+              <a-button type="primary" @click="sendVerificationCode" style="position: absolute; right: 20px; width: 30%;">发送验证码</a-button>
+            </a-input-group>
+          </a-form-item>
+          <a-form-item label="验证码" prop="verifyCode">
+            <a-input v-model="registerForm.verifyCode" placeholder="请输入验证码" />
           </a-form-item>
           <a-form-item label="电话号码" prop="phone">
             <a-input v-model="registerForm.phone" placeholder="请输入电话号码" />
@@ -47,88 +56,128 @@
 
 <script>
 import axios from 'axios';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { Message } from '@arco-design/web-vue';
+import { onMounted } from 'vue';
+// import { toRaw } from 'vue';
+
 
 export default {
-  data() {
-    return {
-      loginForm: {
-        user_input: '',
-        password: ''
-      },
-      registerForm: {
-        user_input: '',
-        email: '',
-        phone: '',
-        password: '',
-        confirmPassword: ''
-      },
-      isRegisterVisible: false,
-      rules: {
-        user_input: [
-          { required: true, message: '请输入用户名', trigger: 'blur' }
-        ],
-        password: [
-          { required: true, message: '请输入密码', trigger: 'blur' }
-        ]
-      },
-      registerRules: {
-        username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' }
-        ],
-        password: [
-          { required: true, message: '请输入密码', trigger: 'blur' }
-        ],
-        confirmPassword: [
-          { required: true, message: '请确认密码', trigger: 'blur' }
-        ],
-        email: [
-          { required: true, message: '请输入邮箱', trigger: 'blur' },
-          { type: 'email', message: '请输入有效的邮箱地址', trigger: 'blur' }
-        ],
-        phone: [
-          { required: true, message: '请输入电话号码', trigger: 'blur' },
-          { pattern: /^1[3-9]\d{9}$/, message: '请输入有效的电话号码', trigger: 'blur' }
-        ]
-      }
-    };
-  },
-  methods: {
-    async handleSubmit() {
+
+
+  setup() {
+    const router = useRouter();
+    async function handleSubmit() {
       try {
-        const response = await axios.post(`http://localhost:8080/api/user/login`, this.loginForm);
-        console.log('登录成功:', response.data);
+        // console.log(loginForm.value);
+        const response = await axios.post(`/api/user/login`, loginForm.value);
+        localStorage.setItem('access_token', response.data.access_toke);
+        localStorage.setItem('token_type', response.data.token_type);
+        router.push('/homepage');
       } catch (error) {
-        console.log('登录失败:', error);
+        Message.error('登录失败');
       }
-    },
-    showRegister() {
-      this.isRegisterVisible = true;
-    },
-    async handleRegister() {  
-      if (this.registerForm.password !== this.registerForm.confirmPassword) {
-        this.$message.error('密码和确认密码不匹配');
+    }
+
+    async function showRegister() {
+      isRegisterVisible.value = true;
+    }
+
+    const confirmPassword = ref('');
+
+    async function handleRegister() {
+      if (registerForm.value.password !== confirmPassword.value) {
+        Message.error('密码和确认密码不匹配');
         return false;
       }
 
       try {
-        const response = await axios.post('/api/user/register', this.registerForm);
+        console.log(registerForm.value);
+        // console.log({ ...registerForm.value }); // 展开运算符
+        // console.log(JSON.parse(JSON.stringify(toRaw(registerForm.value)))); // 深拷贝
+
+
+        const response = await axios.post('/api/user/register', registerForm.value);
         console.log('注册成功:', response.data);
-        // 处理成功逻辑
-        this.$refs.registerForm.resetFields();
-        this.isRegisterVisible = false;
+        Message.success('注册成功');
+        // registerForm.resetFields();
+        // isRegisterVisible.value = false;
       } catch (error) {
         console.log('注册失败:', error);
-        // 处理失败逻辑
+        Message.error('注册失败');
       }
       
-    },
+    }
+    onMounted(() => {
+      localStorage.clear();
+    });
 
-    validateConfirmPassword() {
-      this.$refs.registerForm.validateField('confirmPassword');
-    },
-    handleCancel() {
-      this.isRegisterVisible = false;
-    },
+    async function sendVerificationCode() {
+      if (!registerForm.value.email) {
+        Message.error('请输入邮箱');
+        return false;
+      }
+      try {
+        console.log(registerForm.value.email)
+        const response = await axios.post(`/api/user/fetch-register-code?email=${registerForm.value.email}`);
+        Message.success('发送验证码成功');
+      } catch (error) {
+        if (error.response.status === 429) {
+          Message.error('发送验证码过于频繁，请稍后再试');
+        }else {
+        Message.error('发送验证码失败');
+        }
+      }
+    }
+
+
+
+
+    function handleCancel() {
+      isRegisterVisible.value = false;
+    }
+
+    const loginForm = ref({
+      user_input: '',
+      password: ''
+    });
+
+    const registerForm = ref({
+      nickname: '',
+      password: '',
+      verifyCode: '',
+      email: '',
+      phone: '',
+      realName: '',
+    });
+
+    const isRegisterVisible = ref(false);
+
+    const rules = ref({
+      username: [
+        { required: true, message: '请输入用户名', trigger: 'blur' }
+      ],
+      password: [
+        { required: true, message: '请输入密码', trigger: 'blur' }
+      ]
+    });
+
+
+
+    return {
+      loginForm,
+      registerForm,
+      isRegisterVisible,
+      rules,
+      handleSubmit,
+      showRegister,
+      handleRegister,
+      handleCancel,
+      sendVerificationCode,
+      confirmPassword
+    };
+
   }
 };
 </script>
@@ -139,8 +188,6 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: url('college.jpg') no-repeat center center;
-  background-size: cover;
 }
 
 .login-card {

@@ -9,12 +9,14 @@ import {
 import { ref, onMounted, toRefs, computed } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+import CustomImage from './CustomImage.vue';
+
 
 
 export default {
   name: "EventCard",
   ticket_info: {},
-  components: {IconThumbUp, IconShareInternal, IconMore, IconLocation, IconSchedule},
+  components: {IconThumbUp, IconShareInternal, IconMore, IconLocation, IconSchedule, CustomImage},
   props: {
     event: {
       type: Object,
@@ -99,8 +101,9 @@ export default {
           class="icon"
           @click="navigateToDetail()"
       >
-        <img
+        <CustomImage
             :src="event.image_url"
+            :fallbackSrc="'public/test.png'"
             :style="{ width: '100%', transform: 'translateY(-20px)' }"
             alt="event image"
         />
