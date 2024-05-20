@@ -34,4 +34,8 @@ public class CommentService {
     public long countCommentsByEventId(UUID eventId) {
         return commentRepository.countByEventId(eventId);
     }
+
+    public Object getCommentsByEventId(UUID eventId) {
+        return commentRepository.findByEventId(eventId);
+    }
 }
