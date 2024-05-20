@@ -49,6 +49,38 @@ public class UserController {
         return ResponseEntity.ok(userDetails.getUser());
     }
 
+    @PostMapping("/get-user")
+    public ResponseEntity<?> getUser(@RequestParam UUID userId) {
+        User user = userService.getUserById(userId);
+        if (user == null) {
+            return ResponseEntity.badRequest().body("User Not Found");
+        }
+        String nickName = user.getNickname();
+        String avatarUrl = user.getAvatarUrl();
+        int permissionGroup = user.getPermissionGroup().ordinal();
+        JSONObject response = new JSONObject();
+        response.put("nickname", nickName);
+        response.put("avatar_url", avatarUrl);
+        response.put("permission_group", permissionGroup);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/get-user-name")
+    public ResponseEntity<?> getUserByName(@RequestParam String nickname) {
+        User user = userService.getUserByNickname(nickname);
+        if (user == null) {
+            return ResponseEntity.badRequest().body("User Not Found");
+        }
+        String uuid = user.getId().toString();
+        String avatarUrl = user.getAvatarUrl();
+        int permissionGroup = user.getPermissionGroup().ordinal();
+        JSONObject response = new JSONObject();
+        response.put("uuid", uuid);
+        response.put("avatar_url", avatarUrl);
+        response.put("permission_group", permissionGroup);
+        return ResponseEntity.ok(response);
+    }
+
     //TODO: add CAPTCHA verification
 
     @PostMapping("/login")
@@ -116,6 +148,9 @@ public class UserController {
         }
         if (request.containsKey("description")) {
             user.setDescription(request.getString("description"));
+        }
+        if (request.containsKey("password")) {
+            user.setPassword(passwordEncoder.encode(request.getString("password")));
         }
 
         userService.updateUser(user);
