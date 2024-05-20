@@ -28,6 +28,19 @@ public class RecommendationService {
     }
 
     public Map<UUID, Long> getEventRating() {
-        return null;
+        Map<UUID, Long> eventRating = new java.util.HashMap<>();
+        List<Object[]> eventUserCounts = recommendationRepository.getEventUserCounts();
+        for (Object[] eventUserCount : eventUserCounts) {
+            eventRating.put((UUID) eventUserCount[0], (Long) eventUserCount[1]);
+        }
+        return eventRating;
+    }
+
+    public Long getIntersectCount(UUID event1, UUID event2) {
+        return recommendationRepository.getIntersectCount(event1, event2);
+    }
+
+    public List<Recommendation> getRecommendationsByUserID(UUID userID) {
+        return recommendationRepository.findAllByRecommend_id_User_id(userID);
     }
 }
