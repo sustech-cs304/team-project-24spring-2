@@ -1,13 +1,19 @@
 <script>
+import {
+  IconLocation,
+} from '@arco-design/web-vue/es/icon';
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 import Comment from '@/components/comment.vue';
+import CustomImage from '@/components/CustomImage.vue';
 
 export default {
   name: 'Events',
   components: {
     Comment,
+    IconLocation,
+    CustomImage
   },
   setup() {
     const eventInfo = ref({});
@@ -21,6 +27,7 @@ export default {
         const ticketPromises = eventInfo.value.tickets.map(ticket_id => getTicketInfo(ticket_id));
         tickets.value = await Promise.all(ticketPromises);
       }
+      // console.log(eventInfo.value);
     });
 
     async function getTicketInfo(ticket_id) {
@@ -37,7 +44,13 @@ export default {
       }
     }
 
-    return { eventInfo, tickets, selectedPrice, loadEventsInfo };
+    function openAMap(latitude, longitude) {
+      // console.log(latitude, longitude);  
+      const url = `https://www.amap.com/search?query=${latitude},${longitude}`;
+      window.open(url, '_blank');
+    }
+
+    return { eventInfo, tickets, selectedPrice, loadEventsInfo , openAMap};
   }
 };
 </script>
@@ -52,12 +65,17 @@ export default {
     <div class="main_container">
       <div class="upper_container">
         <div class="post_container">
-          <img :src="eventInfo.image_url" alt="event image" style="width: 100%; height: 100%">
+          <CustomImage :src="eventInfo.image_url" :fallbackSrc="'public/college.jpg'" alt="event image" class="event_post"/>
         </div>
         <div class="Details_container">
           <h1>{{ eventInfo.title }}</h1>
           <p class="details_item">时间：{{ $formatDateTime(eventInfo.start_time) }} - {{ $formatDateTime(eventInfo.end_time) }}</p>
-          <p class="details_item"> 地点：{{ eventInfo.location_name }}</p>
+          <p class="details_item"> 
+            地点：{{ eventInfo.location_name }}
+            <ALink @click="openAMap(eventInfo.latitude, eventInfo.longitude)">  <IconLocation/>  </ALink>
+
+          </p>
+
           <div class="details_item">
             票档
             <a-radio-group type="button" v-model:checked="selectedPrice" >
@@ -142,6 +160,7 @@ r
 
 .post_container {
   flex: 1;
+
 }
 
 .Details_container {
@@ -168,5 +187,10 @@ r
 }
 .details_item {
   margin-bottom: 20px;
+}
+.event_post {
+  width: 80%;
+  height: 100%;
+  
 }
 </style>

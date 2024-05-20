@@ -36,11 +36,15 @@ export default {
       router.push(path);
     }
 
-    return { navigate };
+    // Check if the user is logged in by looking for the access_token in localStorage
+    const isLoggedIn = () => {
+      return !!localStorage.getItem('access_token');
+    }
+
+    return { navigate, isLoggedIn };
   }
 }
 </script>
-
 
 <template>
   <div class="top-navbar">
@@ -55,18 +59,18 @@ export default {
       <a href="#" class="nav-item" @click="navigate('/events')">
         <icon-apps />更多 
       </a>
-      <a href="#" class="nav-item" @click="navigate('/userinfo')">
+      <a v-if="isLoggedIn()" href="#" class="nav-item" @click="navigate('/userinfo')">
         <icon-user />个人信息 
       </a>
-      <a href="#" class="nav-item" @click="navigate('/logout')">
+      <a v-if="isLoggedIn()" href="#" class="nav-item" @click="navigate('/login')">
         <icon-export />登出 
       </a>
+      <a v-else href="#" class="nav-item" @click="navigate('/login')">
+        <icon-user />登录 
+      </a>
     </div>
-
-
   </div>
 </template>
-
 
 <style scoped>
 .top-navbar {
@@ -96,13 +100,6 @@ export default {
   font-weight: bold;
 }
 
-/* .navigation-icons > * {
-  margin-right: 20px;
-  cursor: pointer;
-  vertical-align: middle;
-  color: inherit; 
-} */
-
 .navigation-icons {
   display: flex;
   gap: 20px; /* 调整每个导航项之间的间距 */
@@ -120,6 +117,4 @@ export default {
 .nav-item:hover {
   color: #007bff; /* 可选：设置悬停时的文本颜色 */
 }
-
 </style>
-

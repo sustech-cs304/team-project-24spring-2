@@ -5,6 +5,7 @@ import cn.edu.sustech.ces.entity.Ticket;
 import cn.edu.sustech.ces.enums.PermissionGroup;
 import cn.edu.sustech.ces.enums.UserGender;
 import cn.edu.sustech.ces.security.CESUserDetails;
+import cn.edu.sustech.ces.security.JwtTokenProvider;
 import cn.edu.sustech.ces.security.LoginRequest;
 import cn.edu.sustech.ces.entity.User;
 import cn.edu.sustech.ces.security.RegisterRequest;
@@ -40,6 +41,8 @@ public class UserController {
     private final VerifyCodeService codeService;
     private final MailService mailService;
 
+    private final JwtTokenProvider jwtTokenProvider;
+
     //TODO: selectively expose user information
 
     @PostMapping ("/profile")
@@ -47,6 +50,44 @@ public class UserController {
     public ResponseEntity<User> fetchProfile() {
         CESUserDetails userDetails = (CESUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.ok(userDetails.getUser());
+    }
+
+    @PostMapping("/verify")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> verifyLoginState() {
+        return ResponseEntity.ok("Verified");
+    }
+
+    @PostMapping("/get-user")
+    public ResponseEntity<?> getUser(@RequestParam UUID userId) {
+        User user = userService.getUserById(userId);
+        if (user == null) {
+            return ResponseEntity.badRequest().body("User Not Found");
+        }
+        String nickName = user.getNickname();
+        String avatarUrl = user.getAvatarUrl();
+        int permissionGroup = user.getPermissionGroup().ordinal();
+        JSONObject response = new JSONObject();
+        response.put("nickname", nickName);
+        response.put("avatar_url", avatarUrl);
+        response.put("permission_group", permissionGroup);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/get-user-name")
+    public ResponseEntity<?> getUserByName(@RequestParam String nickname) {
+        User user = userService.getUserByNickname(nickname);
+        if (user == null) {
+            return ResponseEntity.badRequest().body("User Not Found");
+        }
+        String uuid = user.getId().toString();
+        String avatarUrl = user.getAvatarUrl();
+        int permissionGroup = user.getPermissionGroup().ordinal();
+        JSONObject response = new JSONObject();
+        response.put("uuid", uuid);
+        response.put("avatar_url", avatarUrl);
+        response.put("permission_group", permissionGroup);
+        return ResponseEntity.ok(response);
     }
 
     //TODO: add CAPTCHA verification
@@ -60,6 +101,7 @@ public class UserController {
         JSONObject jwtAuthResponse = new JSONObject();
         jwtAuthResponse.put("access_token", token);
         jwtAuthResponse.put("token_type", "Bearer");
+        jwtAuthResponse.put("expire_time", System.currentTimeMillis() + jwtTokenProvider.getExpirationTime() - 1000);
         jwtAuthResponse.put("user", userDetails.getUser());
 
         return ResponseEntity.ok(jwtAuthResponse);
@@ -116,6 +158,9 @@ public class UserController {
         }
         if (request.containsKey("description")) {
             user.setDescription(request.getString("description"));
+        }
+        if (request.containsKey("password")) {
+            user.setPassword(passwordEncoder.encode(request.getString("password")));
         }
 
         userService.updateUser(user);

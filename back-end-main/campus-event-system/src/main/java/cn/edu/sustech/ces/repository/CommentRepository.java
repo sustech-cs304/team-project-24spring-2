@@ -13,4 +13,6 @@ public interface CommentRepository extends ListCrudRepository<Comment, UUID> {
     List<Comment> findByEventId(Pageable pageable, UUID eventId);
 
     long countByEventId(UUID eventId);
+
+    List<Comment> findByEventId(UUID eventId);
 }

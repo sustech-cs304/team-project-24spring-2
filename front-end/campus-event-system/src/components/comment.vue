@@ -8,6 +8,7 @@ import {
   IconStarFill,
   IconHeartFill,
 } from '@arco-design/web-vue/es/icon';
+import CustomImage from './CustomImage.vue';
 
 export default {
   name: 'Comment',
@@ -17,6 +18,7 @@ export default {
     IconStar,
     IconStarFill,
     IconHeartFill,
+    CustomImage,
   },
   setup() {
     const like = ref(false);
@@ -69,9 +71,10 @@ export default {
     </template>
     <template #avatar>
       <a-avatar>
-        <img
+        <CustomImage
           alt="avatar"
-          src="https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/3ee5f13fb09879ecb5185e440cef6eb9.png~tplv-uwbnlip3yd-webp.webp"
+          :src="'error'"
+          :fallbackSrc="'public/test1.jpeg'"
         />
       </a-avatar>
     </template>

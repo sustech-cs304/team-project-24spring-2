@@ -1,16 +1,3 @@
-<script setup>
-import { defineProps } from 'vue'
-
-const props = defineProps({
-  images: {
-    type: Array,
-    required: true
-  }
-})
-
-defineExpose({ images: props.images })
-</script>
-
 <template>
   <a-carousel
       :style="{
@@ -23,14 +10,31 @@ defineExpose({ images: props.images })
   >
     <a-carousel-item v-for="(image, index) in images" :key="index">
       <div class="image-container">
-        <img
+        <CustomImage
             :src="image"
+            :fallbackSrc="'public/college.jpg'"
+            alt="carousel image"
             class="carousel-image"
         />
       </div>
     </a-carousel-item>
   </a-carousel>
 </template>
+
+<script setup>
+import { defineProps, defineExpose } from 'vue'
+import CustomImage from './CustomImage.vue';
+
+const props = defineProps({
+  images: {
+    type: Array,
+    required: true
+  }
+})
+
+defineExpose({ images: props.images })
+// return { CustomImage, props}
+</script>
 
 <style scoped>
 .image-container {

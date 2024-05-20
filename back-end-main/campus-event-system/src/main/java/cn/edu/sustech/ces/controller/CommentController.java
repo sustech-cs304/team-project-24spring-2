@@ -85,7 +85,7 @@ public class CommentController {
         return ResponseEntity.ok(comment);
     }
 
-    @PostMapping("/get-comments")
+    @PostMapping("/get-page-comments")
     public ResponseEntity<?> getComments(@RequestParam UUID eventId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         if (page < 0 || size < 0) {
             return ResponseEntity.badRequest().body("Invalid page or size");
@@ -98,8 +98,13 @@ public class CommentController {
     }
 
     @PostMapping("/get-comments-size")
-    public ResponseEntity<Long> getComments(@RequestParam UUID eventId) {
+    public ResponseEntity<Long> getCommentsSize(@RequestParam UUID eventId) {
         return ResponseEntity.ok(commentService.countCommentsByEventId(eventId));
+    }
+
+    @PostMapping("/get-comments")
+    public ResponseEntity<?> getComments(@RequestParam UUID eventId) {
+        return ResponseEntity.ok(commentService.getCommentsByEventId(eventId));
     }
 
     @PostMapping("/get-comment-attachments")
