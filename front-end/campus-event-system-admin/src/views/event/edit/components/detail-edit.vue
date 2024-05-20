@@ -56,7 +56,7 @@
           <template #title>
             {{ $t('eventEdit.imageForm') }}
           </template>
-          <a-list :max-height="550" @reach-bottom="pushNewData">
+          <a-list :max-height="550" @reach-bottom="pushNewData(10)">
             <img-card
               v-for="(element, index) in renderImages"
               :image="element"
@@ -101,7 +101,7 @@
   const vditor = ref();
   const setted = false;
   const originText = ref('');
-  const originCover = ref('');
+  const originCover = ref();
 
   // 1.1 引入Vditor 构造函数
 
@@ -158,16 +158,19 @@
 
   const fetchData = async () => {
     const res = await getUploadImages();
+    userImages.splice(0, userImages.length);
     for (let i = 0; i < res.data.length; i += 1) {
       userImages.push({
         name: 'image',
         url: `${res.data[i]}`,
       });
     }
+    renderImages.value.splice(0, renderImages.value.length);
+    console.log('fetchData', res);
   };
 
-  const pushNewData = async () => {
-    for (let i = 0; i < 20 && userImages.length > 0; i += 1)
+  const pushNewData = async (time: number) => {
+    for (let i = 0; i < time && userImages.length > 0; i += 1)
       renderImages.value.push(userImages.pop());
   };
 
@@ -231,12 +234,13 @@
     } catch (error) {
       console.error(error);
     } finally {
-        for (let i = 0; i < renderImages.value.length; i += 1) {
-          if (renderImages.value[i].url === url) {
-            renderImages.value.splice(i, 1);
-            break;
-          }
+      for (let i = 0; i < renderImages.value.length; i += 1) {
+        if (renderImages.value[i].url === url) {
+          renderImages.value.splice(i, 1);
+          break;
         }
+      }
+      pushNewData(1);
     }
   };
   const setVditor = async () => {
@@ -276,6 +280,16 @@
   const reset = () => {
     coverImage.value = originCover.value;
     vditor.value.setValue(originText.value);
+    console.log('reset', originText.value);
+  };
+
+  const submited = () => {
+    originCover.value = {
+      url: coverImage.value.url,
+    };
+    coverImage.value = originCover.value;
+    originText.value = vditor.value.getValue();
+    console.log('submited', originText.value);
   };
   onMounted(async () => {});
 
@@ -306,7 +320,7 @@
       });
       const res = await fetchData();
 
-      pushNewData();
+      pushNewData(20);
     }
   );
 
@@ -315,6 +329,7 @@
     coverImage,
     updateCover,
     reset,
+    submited
   });
 </script>
 

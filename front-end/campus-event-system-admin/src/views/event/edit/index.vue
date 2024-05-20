@@ -181,6 +181,8 @@
         title: 'Success',
         content: '更新成功！',
       });
+      fetchData();
+      ie.value.submited();
     }
   };
   onBeforeMount(async () => {
@@ -189,7 +191,7 @@
 
   const reset = () => {
     formData.value = {
-        ...originData.value,
+      ...originData.value,
     };
     ie.value.reset();
   };
