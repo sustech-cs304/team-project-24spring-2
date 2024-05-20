@@ -5,6 +5,7 @@ import cn.edu.sustech.ces.entity.Ticket;
 import cn.edu.sustech.ces.enums.PermissionGroup;
 import cn.edu.sustech.ces.enums.UserGender;
 import cn.edu.sustech.ces.security.CESUserDetails;
+import cn.edu.sustech.ces.security.JwtTokenProvider;
 import cn.edu.sustech.ces.security.LoginRequest;
 import cn.edu.sustech.ces.entity.User;
 import cn.edu.sustech.ces.security.RegisterRequest;
@@ -39,6 +40,8 @@ public class UserController {
     private final TicketService ticketService;
     private final VerifyCodeService codeService;
     private final MailService mailService;
+
+    private final JwtTokenProvider jwtTokenProvider;
 
     //TODO: selectively expose user information
 
@@ -98,6 +101,7 @@ public class UserController {
         JSONObject jwtAuthResponse = new JSONObject();
         jwtAuthResponse.put("access_token", token);
         jwtAuthResponse.put("token_type", "Bearer");
+        jwtAuthResponse.put("expire_time", System.currentTimeMillis() + jwtTokenProvider.getExpirationTime() - 1000);
         jwtAuthResponse.put("user", userDetails.getUser());
 
         return ResponseEntity.ok(jwtAuthResponse);
