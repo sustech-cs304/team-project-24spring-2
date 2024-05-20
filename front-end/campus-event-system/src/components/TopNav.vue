@@ -48,12 +48,12 @@ export default {
 
 <template>
   <div class="top-navbar">
-    <div class="brand" @click="navigate('/homepage')">
+    <div class="brand" @click="navigate('/')">
       <img src="@/assets/LOGO.png" alt="Logo" class="logo-image">
       <span class="logo">Campus Events and Entertainment Center</span>
     </div>
     <div class="navigation-icons">
-      <a href="#" class="nav-item" @click="navigate('/homepage')">
+      <a href="#" class="nav-item" @click="navigate('/')">
         <icon-home />主页 
       </a>
       <a href="#" class="nav-item" @click="navigate('/events')">

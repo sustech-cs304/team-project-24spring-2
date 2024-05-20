@@ -25,13 +25,13 @@ export default {
         for (let i = 0; i < 2; i++) {
           // console.log(data.value[i]);
           if (data.value[i] && data.value[i].image_url) {
-            console.log(data.value[i].image_url);
+            // console.log(data.value[i].image_url);
             image_urls.value.push(data.value[i].image_url);
           } else {
             console.warn(`data.value[${i}] is undefined or has no image_url`);
           }
         }
-        console.log(image_urls.value);
+        // console.log(image_urls.value);
       } catch (error) {
         console.error('Error loading events data:', error);
       }

@@ -29,8 +29,8 @@ import { RouterLink, RouterView } from 'vue-router'
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  //color: #2c3e50;
-  //margin-top: 10px;
+  /* color: #2c3e50; */
+  /* margin-top: 10px; */
   width: 100%;
   height:100%;
 }
@@ -38,7 +38,7 @@ import { RouterLink, RouterView } from 'vue-router'
 
 .boundary {
   border-style: dashed;
-  //border-style: solid;
+  /* border-style: solid; */
   border-color: #d3dce6;
   border-width: 0.5px;
   border-radius: 100px;
