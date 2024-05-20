@@ -1,82 +1,54 @@
 <template>
   <div class="container">
-    <Breadcrumb :items="['menu.event', 'menu.event.audit']" />
-    <a-card class="general-card" :title="$t('menu.event.audit')">
+    <Breadcrumb :items="['menu.event', 'menu.event.manage']" />
+    <a-card class="general-card" :title="$t('menu.event.manage')">
       <a-row>
         <a-col :flex="1">
           <a-form
-            :model="formModel"
+            :model="searchForm"
             :label-col-props="{ span: 6 }"
             :wrapper-col-props="{ span: 18 }"
             label-align="left"
           >
             <a-row :gutter="16">
-              <a-col :span="8">
+              <a-col :span="12">
                 <a-form-item
-                  field="number"
-                  :label="$t('auditEventTable.form.number')"
+                  field="id"
+                  :label="$t('manageEventTable.form.publisher')"
                 >
                   <a-input
-                    v-model="formModel.number"
-                    :placeholder="$t('auditEventTable.form.number.placeholder')"
+                    v-model="searchForm.publisher"
+                    :placeholder="
+                      $t('manageEventTable.form.publisher.placeholder')
+                    "
+                    allow-clear
                   />
                 </a-form-item>
               </a-col>
-              <a-col :span="8">
+              <a-col :span="12">
                 <a-form-item
-                  field="name"
-                  :label="$t('auditEventTable.form.name')"
+                  field="title"
+                  :label="$t('manageEventTable.form.title')"
                 >
                   <a-input
-                    v-model="formModel.name"
-                    :placeholder="$t('auditEventTable.form.name.placeholder')"
+                    v-model="searchForm.title"
+                    :placeholder="$t('manageEventTable.form.title.placeholder')"
+                    allow-clear
                   />
                 </a-form-item>
               </a-col>
-              <a-col :span="8">
+            </a-row>
+            <a-row :gutter="16">
+              <a-col :span="12">
                 <a-form-item
                   field="contentType"
-                  :label="$t('auditEventTable.form.contentType')"
+                  :label="$t('manageEventTable.form.contentType')"
                 >
                   <a-select
-                    v-model="formModel.contentType"
-                    :options="contentTypeOptions"
-                    :placeholder="$t('auditEventTable.form.selectDefault')"
-                  />
-                </a-form-item>
-              </a-col>
-              <a-col :span="8">
-                <a-form-item
-                  field="filterType"
-                  :label="$t('auditEventTable.form.filterType')"
-                >
-                  <a-select
-                    v-model="formModel.filterType"
-                    :options="filterTypeOptions"
-                    :placeholder="$t('auditEventTable.form.selectDefault')"
-                  />
-                </a-form-item>
-              </a-col>
-              <a-col :span="8">
-                <a-form-item
-                  field="createdTime"
-                  :label="$t('auditEventTable.form.createdTime')"
-                >
-                  <a-range-picker
-                    v-model="formModel.createdTime"
-                    style="width: 100%"
-                  />
-                </a-form-item>
-              </a-col>
-              <a-col :span="8">
-                <a-form-item
-                  field="status"
-                  :label="$t('auditEventTable.form.status')"
-                >
-                  <a-select
-                    v-model="formModel.status"
-                    :options="statusOptions"
-                    :placeholder="$t('auditEventTable.form.selectDefault')"
+                    v-model="searchForm.category"
+                    :options="categoryOptions"
+                    :placeholder="$t('manageEventTable.form.selectDefault')"
+                    allow-clear
                   />
                 </a-form-item>
               </a-col>
@@ -90,13 +62,13 @@
               <template #icon>
                 <icon-search />
               </template>
-              {{ $t('auditEventTable.form.search') }}
+              {{ $t('manageEventTable.form.search') }}
             </a-button>
             <a-button @click="reset">
               <template #icon>
                 <icon-refresh />
               </template>
-              {{ $t('auditEventTable.form.reset') }}
+              {{ $t('manageEventTable.form.reset') }}
             </a-button>
           </a-space>
         </a-col>
@@ -105,14 +77,12 @@
       <a-row style="margin-bottom: 16px">
         <a-col :span="12">
           <a-space>
-            <!-- <a-space> -->
             <a-button type="primary">
               <template #icon>
                 <icon-download />
               </template>
-              {{ $t('auditEventTable.operation.download') }}
+              {{ $t('manageEventTable.operation.download') }}
             </a-button>
-            <!-- </a-space> -->
           </a-space>
         </a-col>
         <a-col
@@ -121,10 +91,10 @@
         >
           <a-button @click="search">
             <template #icon> <icon-refresh /> </template>
-            {{ $t('auditEventTable.actions.refresh') }}
+            {{ $t('manageEventTable.actions.refresh') }}
           </a-button>
           <a-dropdown @select="handleSelectDensity">
-            <a-tooltip :content="$t('auditEventTable.actions.density')">
+            <a-tooltip :content="$t('manageEventTable.actions.density')">
               <div class="action-icon"><icon-line-height size="18" /></div>
             </a-tooltip>
             <template #content>
@@ -138,7 +108,7 @@
               </a-doption>
             </template>
           </a-dropdown>
-          <a-tooltip :content="$t('auditEventTable.actions.columnSetting')">
+          <a-tooltip :content="$t('manageEventTable.actions.columnSetting')">
             <a-popover
               trigger="click"
               position="bl"
@@ -187,49 +157,38 @@
         <template #index="{ rowIndex }">
           {{ rowIndex + 1 + (pagination.current - 1) * pagination.pageSize }}
         </template>
-        <template #contentType="{ record }">
-          <a-space>
-            <a-avatar
-              v-if="record.contentType === 'img'"
-              :size="16"
-              shape="square"
+
+        <template #title="{ record }">
+          {{ record.title }}
+        </template>
+
+        <template #start_time="{ record }">
+          {{ longTime2String(record.start_time) }}
+        </template>
+
+        <template #end_time="{ record }">
+          {{ longTime2String(record.end_time) }}
+        </template>
+
+        <template #location_name="{ record }">
+          {{ record.location_name }}
+        </template>
+
+        <template #count="{ record }">
+          {{ record.count + ' / ' + record.capacity }}
+        </template>
+
+        <template #operations="{ record }">
+          <space>
+            <a-button
+              :v-permission="['ADMIN', 'SUPER_ADMIN']"
+              size="small"
+              type="primary"
+              @click.prevent="auditEvent(record.id)"
             >
-              <img
-                alt="avatar"
-                src="//p3-armor.byteimg.com/tos-cn-i-49unhts6dw/581b17753093199839f2e327e726b157.svg~tplv-49unhts6dw-image.image"
-              />
-            </a-avatar>
-            <a-avatar
-              v-else-if="record.contentType === 'horizontalVideo'"
-              :size="16"
-              shape="square"
-            >
-              <img
-                alt="avatar"
-                src="//p3-armor.byteimg.com/tos-cn-i-49unhts6dw/77721e365eb2ab786c889682cbc721c1.svg~tplv-49unhts6dw-image.image"
-              />
-            </a-avatar>
-            <a-avatar v-else :size="16" shape="square">
-              <img
-                alt="avatar"
-                src="//p3-armor.byteimg.com/tos-cn-i-49unhts6dw/ea8b09190046da0ea7e070d83c5d1731.svg~tplv-49unhts6dw-image.image"
-              />
-            </a-avatar>
-            {{ $t(`auditEventTable.form.contentType.${record.contentType}`) }}
-          </a-space>
-        </template>
-        <template #filterType="{ record }">
-          {{ $t(`auditEventTable.form.filterType.${record.filterType}`) }}
-        </template>
-        <template #status="{ record }">
-          <span v-if="record.status === 'offline'" class="circle"></span>
-          <span v-else class="circle pass"></span>
-          {{ $t(`auditEventTable.form.status.${record.status}`) }}
-        </template>
-        <template #operations>
-          <a-button v-permission="['admin']" type="text" size="small">
-            {{ $t('auditEventTable.columns.operations.audit') }}
-          </a-button>
+              {{ $t('manageEventTable.columns.operations.audit') }}
+            </a-button>
+          </space>
         </template>
       </a-table>
     </a-card>
@@ -238,34 +197,32 @@
 
 <script lang="ts" setup>
   import { useRouter } from 'vue-router';
-  import { computed, ref, reactive, watch, nextTick } from 'vue';
+  import { computed, ref, reactive, watch, nextTick, onBeforeMount } from 'vue';
   import { useI18n } from 'vue-i18n';
   import useLoading from '@/hooks/loading';
-  import { listEvent, EventRecord, EventParams } from '@/api/event';
+  import {
+    listEvent,
+    listEventSize,
+    EventRecord,
+    EventParams,
+  } from '@/api/event';
+  import { getSetting } from '@/api/global';
   import { Pagination } from '@/types/global';
   import type { SelectOptionData } from '@arco-design/web-vue/es/select/interface';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
   import cloneDeep from 'lodash/cloneDeep';
   import Sortable from 'sortablejs';
+  import { keys } from 'lodash';
 
   type SizeProps = 'mini' | 'small' | 'medium' | 'large';
   type Column = TableColumnData & { checked?: true };
 
   const router = useRouter();
-  const generateFormModel = () => {
-    return {
-      number: '',
-      name: '',
-      contentType: '',
-      filterType: '',
-      createdTime: [],
-      status: '',
-    };
-  };
+
   const { loading, setLoading } = useLoading(true);
   const { t } = useI18n();
   const renderData = ref<EventRecord[]>([]);
-  const formModel = ref(generateFormModel());
+  const searchForm = ref<EventParams>({} as EventParams);
   const cloneColumns = ref<Column[]>([]);
   const showColumns = ref<Column[]>([]);
 
@@ -273,116 +230,104 @@
 
   const basePagination: Pagination = {
     current: 1,
-    pageSize: 20,
+    pageSize: 10,
+  };
+
+  const defaultPagenation = {
+    page: basePagination.current,
+    size: basePagination.pageSize,
   };
   const pagination = reactive({
     ...basePagination,
   });
   const densityList = computed(() => [
     {
-      name: t('auditEventTable.size.mini'),
+      name: t('manageEventTable.size.mini'),
       value: 'mini',
     },
     {
-      name: t('auditEventTable.size.small'),
+      name: t('manageEventTable.size.small'),
       value: 'small',
     },
     {
-      name: t('auditEventTable.size.medium'),
+      name: t('manageEventTable.size.medium'),
       value: 'medium',
     },
     {
-      name: t('auditEventTable.size.large'),
+      name: t('manageEventTable.size.large'),
       value: 'large',
     },
   ]);
   const columns = computed<TableColumnData[]>(() => [
     {
-      title: t('auditEventTable.columns.index'),
+      title: t('manageEventTable.columns.index'),
       dataIndex: 'index',
       slotName: 'index',
     },
     {
-      title: t('auditEventTable.columns.number'),
-      dataIndex: 'number',
+      title: t('manageEventTable.columns.title'),
+      dataIndex: 'title',
+    },
+
+    {
+      title: t('manageEventTable.columns.startTime'),
+      dataIndex: 'start_time',
+      slotName: 'start_time',
     },
     {
-      title: t('auditEventTable.columns.name'),
-      dataIndex: 'name',
+      title: t('manageEventTable.columns.endTime'),
+      dataIndex: 'end_time',
+      slotName: 'end_time',
+    },
+
+    {
+      title: t('manageEventTable.columns.location'),
+      dataIndex: 'location_name',
+      slotName: 'location_name',
     },
     {
-      title: t('auditEventTable.columns.contentType'),
-      dataIndex: 'contentType',
-      slotName: 'contentType',
-    },
-    {
-      title: t('auditEventTable.columns.supervisor'),
-      dataIndex: 'supervisor',
-    },
-    {
-      title: t('auditEventTable.columns.startTime'),
-      dataIndex: 'startTime',
-    },
-    {
-      title: t('auditEventTable.columns.endTime'),
-      dataIndex: 'endTime',
-    },
-    {
-      title: t('auditEventTable.columns.status'),
-      dataIndex: 'status',
-      slotName: 'status',
-    },
-    {
-      title: t('auditEventTable.columns.operations'),
+      title: t('manageEventTable.columns.operations'),
       dataIndex: 'operations',
       slotName: 'operations',
       align: 'center',
     },
   ]);
 
-  const contentTypeOptions = computed<SelectOptionData[]>(() => [
-    {
-      label: t('auditEventTable.form.contentType.img'),
-      value: 'img',
-    },
-    {
-      label: t('auditEventTable.form.contentType.horizontalVideo'),
-      value: 'horizontalVideo',
-    },
-    {
-      label: t('auditEventTable.form.contentType.verticalVideo'),
-      value: 'verticalVideo',
-    },
-  ]);
-  const filterTypeOptions = computed<SelectOptionData[]>(() => [
-    {
-      label: t('auditEventTable.form.filterType.artificial'),
-      value: 'artificial',
-    },
-    {
-      label: t('auditEventTable.form.filterType.rules'),
-      value: 'rules',
-    },
-  ]);
-  const statusOptions = computed<SelectOptionData[]>(() => [
-    {
-      label: t('auditEventTable.form.status.online'),
-      value: 'online',
-    },
-    {
-      label: t('auditEventTable.form.status.offline'),
-      value: 'offline',
-    },
-  ]);
-  const fetchData = async (
-    params: EventParams = { current: 1, pageSize: 20 }
-  ) => {
+  const categoryOptions = ref<SelectOptionData[]>([]);
+
+  const getCategories = async () => {
+    const categories = await getSetting('categories');
+    categories.data.split(',').forEach((element: string) => {
+      categoryOptions.value.push({
+        label: t(`EventCategory.${element}`),
+        value: element,
+      });
+    });
+  };
+
+  const fetchData = async (params: EventParams = { page: 1, size: 20 }) => {
     setLoading(true);
     try {
-      const { data } = await listEvent(params);
-      renderData.value = data.list;
-      pagination.current = params.current;
-      pagination.total = data.total;
+      const newParam = Object.fromEntries(
+        Object.entries(params).filter(([_, v]) => v !== '')
+      ) as EventParams;
+      newParam.statuses = 'EDITING';
+      const queryParams = {
+        ...newParam,
+        page: params.page - 1,
+      };
+      const sizeParams = {
+        ...newParam,
+      } as any;
+
+      delete sizeParams.page;
+      delete sizeParams.size;
+
+      const resLen = await listEventSize(sizeParams);
+      const res = await listEvent(queryParams);
+      renderData.value = res.data;
+      pagination.current = params.page;
+      pagination.total = resLen.data;
     } catch (err) {
       // you can report use errorHandler or other
     } finally {
@@ -392,23 +337,25 @@
 
   const search = () => {
     fetchData({
-      ...basePagination,
-      ...formModel.value,
+      ...searchForm.value,
+      ...defaultPagenation,
     } as unknown as EventParams);
   };
 
-  const create = () => {
-    // openWindow('/event/create');
-    router.push('/event/create');
+  const auditEvent = (uuid: string) => {
+    console.log(uuid);
   };
 
   const onPageChange = (current: number) => {
-    fetchData({ ...basePagination, current });
+    fetchData({
+      ...searchForm.value,
+      ...defaultPagenation,
+      page: current,
+    });
   };
 
-  fetchData();
   const reset = () => {
-    formModel.value = generateFormModel();
+    searchForm.value = {} as EventParams;
   };
 
   const handleSelectDensity = (
@@ -450,6 +397,23 @@
     return newArray;
   };
 
+  const onEventEditClicked = (uuid: string) => {
+    router.push({
+      path: '/event/edit',
+      query: {
+        uuid,
+      },
+    });
+  };
+
+  const longTime2String = (time: number) => {
+    const date = new Date(time);
+    const dateStr = `${date.getFullYear()}-${
+      date.getMonth() + 1
+    }-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    return dateStr;
+  };
+
   const popupVisibleChange = (val: boolean) => {
     if (val) {
       nextTick(() => {
@@ -476,6 +440,9 @@
     },
     { deep: true, immediate: true }
   );
+  onBeforeMount(() => {
+    fetchData();
+  });
 </script>
 
 <script lang="ts">
@@ -488,6 +455,7 @@
   .container {
     padding: 0 20px 20px 20px;
   }
+
   :deep(.arco-table-th) {
     &:last-child {
       .arco-table-th-item-title {
@@ -495,18 +463,22 @@
       }
     }
   }
+
   .action-icon {
     margin-left: 12px;
     cursor: pointer;
   }
+
   .active {
     color: #0960bd;
     background-color: #e3f4fc;
   }
+
   .setting {
     display: flex;
     align-items: center;
     width: 200px;
+
     .title {
       margin-left: 12px;
       cursor: pointer;

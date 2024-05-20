@@ -5,80 +5,61 @@
       <a-row>
         <a-col :flex="1">
           <a-form
-            :model="formModel"
+            :model="searchForm"
             :label-col-props="{ span: 6 }"
             :wrapper-col-props="{ span: 18 }"
             label-align="left"
           >
             <a-row :gutter="16">
-              <a-col :span="8">
+              <a-col :span="12">
                 <a-form-item
-                  field="number"
-                  :label="$t('manageEventTable.form.number')"
+                  field="id"
+                  :label="$t('manageEventTable.form.publisher')"
                 >
                   <a-input
-                    v-model="formModel.number"
+                    v-model="searchForm.publisher"
                     :placeholder="
-                      $t('manageEventTable.form.number.placeholder')
+                      $t('manageEventTable.form.publisher.placeholder')
                     "
+                    allow-clear
                   />
                 </a-form-item>
               </a-col>
-              <a-col :span="8">
+              <a-col :span="12">
                 <a-form-item
-                  field="name"
-                  :label="$t('manageEventTable.form.name')"
+                  field="title"
+                  :label="$t('manageEventTable.form.title')"
                 >
                   <a-input
-                    v-model="formModel.name"
-                    :placeholder="$t('manageEventTable.form.name.placeholder')"
+                    v-model="searchForm.title"
+                    :placeholder="$t('manageEventTable.form.title.placeholder')"
+                    allow-clear
                   />
                 </a-form-item>
               </a-col>
-              <a-col :span="8">
+            </a-row>
+            <a-row :gutter="16">
+              <a-col :span="12">
                 <a-form-item
                   field="contentType"
                   :label="$t('manageEventTable.form.contentType')"
                 >
                   <a-select
-                    v-model="formModel.contentType"
-                    :options="contentTypeOptions"
+                    v-model="searchForm.category"
+                    :options="categoryOptions"
                     :placeholder="$t('manageEventTable.form.selectDefault')"
+                    allow-clear
                   />
                 </a-form-item>
               </a-col>
-              <a-col :span="8">
-                <a-form-item
-                  field="filterType"
-                  :label="$t('manageEventTable.form.filterType')"
-                >
+
+              <a-col :span="12">
+                <a-form-item field="status" :label="$t('EventStatus')">
                   <a-select
-                    v-model="formModel.filterType"
-                    :options="filterTypeOptions"
-                    :placeholder="$t('manageEventTable.form.selectDefault')"
-                  />
-                </a-form-item>
-              </a-col>
-              <a-col :span="8">
-                <a-form-item
-                  field="createdTime"
-                  :label="$t('manageEventTable.form.createdTime')"
-                >
-                  <a-range-picker
-                    v-model="formModel.createdTime"
-                    style="width: 100%"
-                  />
-                </a-form-item>
-              </a-col>
-              <a-col :span="8">
-                <a-form-item
-                  field="status"
-                  :label="$t('manageEventTable.form.status')"
-                >
-                  <a-select
-                    v-model="formModel.status"
+                    v-model="searchForm.statuses"
                     :options="statusOptions"
                     :placeholder="$t('manageEventTable.form.selectDefault')"
+                    allow-clear
                   />
                 </a-form-item>
               </a-col>
@@ -227,16 +208,19 @@
             <icon-edit />
           </span>
           <span v-else-if="record.status === 'AUDITING'">
+            <icon-stamp />
+          </span>
+          <span v-else-if="record.status === 'PENDING'">
             <icon-clock-circle />
           </span>
-          <span v-else-if="record.status === 'ONLINE'">
+          <span v-else-if="record.status === 'IN_PROGRESS'">
             <icon-check-circle />
           </span>
-          <span v-else-if="record.status === 'OFFLINE'">
+          <span v-else-if="record.status === 'FINISHED'">
             <icon-close-circle />
           </span>
 
-          {{ $t(`manageEventTable.form.status.${record.status}`) }}
+          {{ $t(`EventStatus.${record.status}`) }}
         </template>
 
         <template #operations="{ record }">
@@ -271,30 +255,23 @@
     EventRecord,
     EventParams,
   } from '@/api/event';
+  import { getSetting } from '@/api/global';
   import { Pagination } from '@/types/global';
   import type { SelectOptionData } from '@arco-design/web-vue/es/select/interface';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
   import cloneDeep from 'lodash/cloneDeep';
   import Sortable from 'sortablejs';
+  import { keys } from 'lodash';
 
   type SizeProps = 'mini' | 'small' | 'medium' | 'large';
   type Column = TableColumnData & { checked?: true };
 
   const router = useRouter();
-  const generateFormModel = () => {
-    return {
-      number: '',
-      name: '',
-      contentType: '',
-      filterType: '',
-      createdTime: [],
-      status: '',
-    };
-  };
+
   const { loading, setLoading } = useLoading(true);
   const { t } = useI18n();
   const renderData = ref<EventRecord[]>([]);
-  const formModel = ref(generateFormModel());
+  const searchForm = ref<EventParams>({} as EventParams);
   const cloneColumns = ref<Column[]>([]);
   const showColumns = ref<Column[]>([]);
 
@@ -302,7 +279,12 @@
 
   const basePagination: Pagination = {
     current: 1,
-    pageSize: 20,
+    pageSize: 10,
+  };
+
+  const defaultPagenation = {
+    page: basePagination.current,
+    size: basePagination.pageSize,
   };
   const pagination = reactive({
     ...basePagination,
@@ -332,7 +314,7 @@
       slotName: 'index',
     },
     {
-      title: t('manageEventTable.columns.name'),
+      title: t('manageEventTable.columns.title'),
       dataIndex: 'title',
     },
 
@@ -365,51 +347,50 @@
     },
   ]);
 
-  const contentTypeOptions = computed<SelectOptionData[]>(() => [
-    {
-      label: t('manageEventTable.form.contentType.img'),
-      value: 'img',
-    },
-    {
-      label: t('manageEventTable.form.contentType.horizontalVideo'),
-      value: 'horizontalVideo',
-    },
-    {
-      label: t('manageEventTable.form.contentType.verticalVideo'),
-      value: 'verticalVideo',
-    },
-  ]);
-  const filterTypeOptions = computed<SelectOptionData[]>(() => [
-    {
-      label: t('manageEventTable.form.filterType.artificial'),
-      value: 'artificial',
-    },
-    {
-      label: t('manageEventTable.form.filterType.rules'),
-      value: 'rules',
-    },
-  ]);
-  const statusOptions = computed<SelectOptionData[]>(() => [
-    {
-      label: t('manageEventTable.form.status.online'),
-      value: 'online',
-    },
-    {
-      label: t('manageEventTable.form.status.offline'),
-      value: 'offline',
-    },
-  ]);
-  const fetchData = async (
-    params: EventParams = { current: 1, pageSize: 20 }
-  ) => {
+  const categoryOptions = ref<SelectOptionData[]>([]);
+
+  const getCategories = async () => {
+    const categories = await getSetting('categories');
+    categories.data.split(',').forEach((element: string) => {
+      categoryOptions.value.push({
+        label: t(`EventCategory.${element}`),
+        value: element,
+      });
+    });
+  };
+
+  const status = ['EDITING', 'AUDITING', 'PENDING', 'IN_PROGRESS', 'FINISHED'];
+  const statusOptions = computed<SelectOptionData[]>(() => {
+    return status.map((item) => {
+      return {
+        label: t(`EventStatus.${item}`),
+        value: item,
+      };
+    });
+  });
+  const fetchData = async (params: EventParams = { page: 1, size: 20 }) => {
     setLoading(true);
     try {
-      const resLen = await listEventSize(params);
-      const res = await listEvent(params);
-      console.log(res);
+      const newParam = Object.fromEntries(
+        Object.entries(params).filter(([_, v]) => v !== '')
+      ) as EventParams;
+      const queryParams = {
+        ...newParam,
+        page: params.page - 1,
+      };
+      const sizeParams = {
+        ...newParam,
+      } as any;
+
+      delete sizeParams.page;
+      delete sizeParams.size;
+
+      const resLen = await listEventSize(sizeParams);
+      const res = await listEvent(queryParams);
       renderData.value = res.data;
-      pagination.current = params.current;
+      pagination.current = params.page;
       pagination.total = resLen.data;
+      getCategories();
     } catch (err) {
       // you can report use errorHandler or other
     } finally {
@@ -419,8 +400,8 @@
 
   const search = () => {
     fetchData({
-      ...basePagination,
-      ...formModel.value,
+      ...searchForm.value,
+      ...defaultPagenation,
     } as unknown as EventParams);
   };
 
@@ -429,11 +410,15 @@
   };
 
   const onPageChange = (current: number) => {
-    fetchData({ ...basePagination, current });
+    fetchData({
+      ...searchForm.value,
+      ...defaultPagenation,
+      page: current,
+    });
   };
 
   const reset = () => {
-    formModel.value = generateFormModel();
+    searchForm.value = {} as EventParams;
   };
 
   const handleSelectDensity = (
@@ -476,7 +461,12 @@
   };
 
   const onEventEditClicked = (uuid: string) => {
-    router.push(`/event/edit?uuid=${uuid}`);
+    router.push({
+      path: '/event/edit',
+      query: {
+        uuid,
+      },
+    });
   };
 
   const longTime2String = (time: number) => {

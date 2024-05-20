@@ -30,6 +30,7 @@ export default defineConfig({
         find: 'vue',
         replacement: 'vue/dist/vue.esm-bundler.js', // compile template
       },
+
     ],
     extensions: ['.ts', '.js'],
   },
@@ -37,11 +38,20 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8080/api/',
+        target: 'http://localhost:8080/api',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '/'),
-    },
-
+      },
+      '/images': {
+        target: 'http://localhost:19000/images',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/images/, '/'),
+      },
+      '/documents': {
+        target: 'http://localhost:19000/documents',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/documents/, '/'),
+      },
     },
   },
 

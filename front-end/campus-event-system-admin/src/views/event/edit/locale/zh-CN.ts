@@ -8,5 +8,5 @@ export default {
   'eventEdit.save': '保存',
   'eventEdit.reset': '重置',
   'eventEdit.submit': '提交审核',
-
+  'eventEdit.imageForm': '图库',
 };

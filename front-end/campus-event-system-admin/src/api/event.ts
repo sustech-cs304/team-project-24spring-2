@@ -39,6 +39,7 @@ export interface EventTicketsInfoModel {
   tickets: Tickets[];
   document_url?: string;
   image_url?: string;
+  uuid?: string;
 }
 
 export type originalEventCreationModel = EventBaseInfoModel &
@@ -57,6 +58,19 @@ export interface EventCreationModel {
   image_url: string;
 }
 
+export interface EventUpdateModel {
+  title?: string;
+  category?: string;
+  start_time?: number;
+  end_time?: number;
+  latitude?: number;
+  longitude?: number;
+  location_name?: string;
+  tickets?: any[];
+  document_url?: string;
+  image_url?: string;
+}
+
 export interface ExtraEventRecord {
   id: string;
   publisher: string;
@@ -66,9 +80,13 @@ export interface ExtraEventRecord {
 
 export type EventRecord = EventCreationModel & ExtraEventRecord;
 
-export interface EventParams extends Partial<EventRecord> {
-  current: number;
-  pageSize: number;
+export interface EventParams {
+  page: number;
+  size: number;
+  category?: string;
+  publisher?: string;
+  statuses?: string;
+  title?: string;
 }
 
 export interface PolicyListRes {
@@ -92,7 +110,7 @@ export function CreateEventApi(data: EventCreationModel) {
 }
 
 export function listEventSize(params: EventParams) {
-  return axios.post<number>('/api/event/list-events-size');
+  return axios.post<number>('/api/event/list-events-size', {}, { params });
 }
 
 export function getEventInfo(uuid: string) {
@@ -124,10 +142,15 @@ export function listEvent(params: EventParams) {
     '/api/event/list-events',
     {},
     {
-      params: {
-        page: params.current - 1,
-        size: params.pageSize,
-      },
+      params,
     }
   );
+}
+
+export function updateEvent(uuid: string, data: EventUpdateModel) {
+  return axios.post('/api/event/update-event', data, {
+    params: {
+      eventId: uuid,
+    },
+  });
 }

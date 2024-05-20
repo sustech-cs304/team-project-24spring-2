@@ -6,13 +6,14 @@
       :subtitle="$t('stepForm.success.subTitle')"
     />
     <a-space :size="16">
-      <a-button key="view" type="primary">
+      <a-button key="view" type="primary" @click="onView">
         {{ $t('stepForm.button.view') }}
       </a-button>
       <a-button key="again" type="secondary" @click="oneMore">
         {{ $t('stepForm.button.again') }}
       </a-button>
     </a-space>
+
     <div class="details-wrapper">
       <a-typography-title :heading="6" style="margin-top: 0">
         {{ $t('stepForm.form.description.title') }}
@@ -26,10 +27,16 @@
 </template>
 
 <script lang="ts" setup>
-  const emits = defineEmits(['changeStep']);
+
+  const emits = defineEmits(['changeStep', 'editEvent']);
+
   const oneMore = () => {
     emits('changeStep', 1);
   };
+  const onView = () => {
+    emits('editEvent');
+    
+  }
 </script>
 
 <style scoped lang="less">

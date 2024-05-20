@@ -10,7 +10,7 @@ export interface LoginData {
 export interface LoginRes {
   access_token: string;
   token_type: string;
-  user: UserState
+  user: UserState;
 }
 
 export function login(data: LoginData) {
@@ -22,13 +22,20 @@ export function login(data: LoginData) {
 }
 
 export function logout() {
-  return axios.post<LoginRes>('/api/user/logout');
+  //   return axios.post<LoginRes>('/api/user/logout');
+  return true;
 }
 
 export function getUserInfo() {
   return axios.post<UserState>('/api/user/profile');
 }
 
+
+
 export function getMenuList() {
   return axios.post<RouteRecordNormalized[]>('/api/user/menu');
+}
+
+export function getUploadImages() {
+  return axios.post<string[]>('/api/user/get-upload-images');
 }
