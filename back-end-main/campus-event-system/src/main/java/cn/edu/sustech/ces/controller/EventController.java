@@ -240,7 +240,7 @@ public class EventController {
 
     @PostMapping("/list-events-size")
     @PreAuthorize("hasAnyRole('INSTITUTE_ADMIN', 'DEPARTMENT_ADMIN', 'SUPER_ADMIN')")
-    public ResponseEntity<Long> listEventsSize(HttpServletRequest request) {
+    public ResponseEntity<?> listEventsSize(HttpServletRequest request) {
 
         User user = CESUtils.getAuthorizedUser();
 
@@ -258,8 +258,16 @@ public class EventController {
         if (user.getPermissionGroup() == PermissionGroup.DEPARTMENT_ADMIN) {
             publisher = user.getId();
         } else {
+            if (request.getParameter("publisher_id") != null) {
+                publisher = UUID.fromString(request.getParameter("publisher_id"));
+            }
             if (request.getParameter("publisher") != null) {
-                publisher = UUID.fromString(request.getParameter("publisher"));
+                User publisherUser = userService.getUserByNickname(request.getParameter("publisher"));
+                if (publisherUser != null) {
+                    publisher = publisherUser.getId();
+                } else {
+                    return ResponseEntity.badRequest().body("Publisher Not Found");
+                }
             }
         }
 
