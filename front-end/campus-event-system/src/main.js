@@ -15,7 +15,7 @@ app.config.globalProperties.$formatDateTime = function (dateTime) {
     if (typeof dateTime === 'number') {
         dateTime = new Date(dateTime);
     }
-    return moment(dateTime).format('YYYY-MM-DD HH:mm:ss');
+    return moment(dateTime).format('YYYY-MM-DD HH:mm');
 };
 
 app.use(router)

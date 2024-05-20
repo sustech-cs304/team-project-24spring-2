@@ -7,19 +7,6 @@ import BottomNav from "@/components/BottomNav.vue";
 
 const router = useRouter();
 
-function navigateToEvents() {
-  router.push({name: 'events'});
-}
-
-function navigateToHome() {
-  router.push({name: 'homepage'});
-}
-
-function navigateToUserInfo() {
-  router.push({name: 'userinfo'});
-}
-
-
 </script>
 
 <template>
@@ -29,7 +16,6 @@ function navigateToUserInfo() {
     </div>
     <div class="white-box">
       <router-view/>
-
     </div>
     <div class="bottom-nav">
       <BottomNav/>
@@ -43,7 +29,9 @@ function navigateToUserInfo() {
 <style scoped>
 .main {
   height: 100vh;
-  
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .top-nav {
@@ -59,6 +47,9 @@ function navigateToUserInfo() {
 }
 
 .white-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   border: 1px solid "--color-border"; /* 淡色边框比纯白色更可见 */
   background-color: "--color-background";
   flex-grow: 1;
@@ -70,7 +61,6 @@ function navigateToUserInfo() {
 }
 .bottom-nav {
   margin: 15px;
-  /* border-top: ghostwhite 2px solid; */
 }
 
 </style>

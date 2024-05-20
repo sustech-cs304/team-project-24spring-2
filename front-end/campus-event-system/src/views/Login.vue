@@ -17,7 +17,7 @@
               <a-button type="primary" html-type="submit" block class="login-button">登录</a-button>
             </a-col>
             <a-col :span="12">
-              <a-button type="link" @click="showRegister" block class="register-button">没有账户？注册</a-button>
+              <a-button type="outline" @click="showRegister" block class="register-button">没有账户？注册</a-button>
             </a-col>
           </a-row>
         </a-form-item>
@@ -72,9 +72,12 @@ export default {
       try {
         // console.log(loginForm.value);
         const response = await axios.post(`/api/user/login`, loginForm.value);
-        localStorage.setItem('access_token', response.data.access_toke);
+        console.log('登录成功:', response.data);
+        localStorage.setItem('access_token', response.data.access_token);
         localStorage.setItem('token_type', response.data.token_type);
-        router.push('/homepage');
+        localStorage.setItem('expire_time', response.data.expire_time);
+        localStorage.setItem('uuid', response.data.user.id);
+        router.push('/');
       } catch (error) {
         Message.error('登录失败');
       }
@@ -122,6 +125,7 @@ export default {
         console.log(registerForm.value.email)
         const response = await axios.post(`/api/user/fetch-register-code?email=${registerForm.value.email}`);
         Message.success('发送验证码成功');
+
       } catch (error) {
         if (error.response.status === 429) {
           Message.error('发送验证码过于频繁，请稍后再试');
@@ -187,7 +191,8 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  margin: auto;
+  height: 50vh;
 }
 
 .login-card {
@@ -218,8 +223,15 @@ a-input-password {
   font-size: 16px;
 }
 
+.row-buttom-item {
+  display: flex;
+  justify-content: space-between;
+
+}
+
 .login-button,
 .register-button {
+  
   height: 40px;
   font-size: 16px;
   border-radius: 4px;

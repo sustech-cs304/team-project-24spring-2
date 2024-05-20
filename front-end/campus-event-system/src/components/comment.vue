@@ -1,6 +1,6 @@
 
 <script>
-import { ref } from 'vue';
+import { ref , toRefs, onMounted} from 'vue';
 import {
   IconHeart,
   IconMessage,
@@ -9,6 +9,7 @@ import {
   IconHeartFill,
 } from '@arco-design/web-vue/es/icon';
 import CustomImage from './CustomImage.vue';
+import axios from 'axios';
 
 export default {
   name: 'Comment',
@@ -20,7 +21,15 @@ export default {
     IconHeartFill,
     CustomImage,
   },
-  setup() {
+  props: {
+    comment: {
+      required: true,
+    }
+  },
+  setup(props) {
+    const { comment } = toRefs(props);
+    const user = ref({});
+
     const like = ref(false);
     const star = ref(false);
     const onLikeChange = () => {
@@ -30,9 +39,20 @@ export default {
       star.value = !star.value;
     };
 
+    const fetchUser = async (userId) => {
+      const response = await axios.post(`/api/user/get-user?userId=${userId}`);
+      return response.data;
+    };
+
+    onMounted(async () => {
+      user.value = await fetchUser(comment.value.user_id);
+    });
+
     return {
       like,
       star,
+      comment,
+      user,
       onLikeChange,
       onStarChange
     }
@@ -42,9 +62,9 @@ export default {
 
 <template>
   <a-comment
-    author="Socrates"
-    content="Comment body content."
-    datetime="1 hour"
+    :author="user.nickname"
+    :content="comment.content"
+    :datetime="$formatDateTime(comment.create_time)"
   >
     <template #actions>
       <span class="action" key="heart" @click="onLikeChange">
@@ -73,8 +93,8 @@ export default {
       <a-avatar>
         <CustomImage
           alt="avatar"
-          :src="'error'"
-          :fallbackSrc="'public/test1.jpeg'"
+          :src="'user.avatar_url'"
+          fallbackSrc="test1.jpeg"
         />
       </a-avatar>
     </template>
