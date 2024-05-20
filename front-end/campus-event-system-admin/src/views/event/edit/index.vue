@@ -70,6 +70,7 @@
     updateEvent,
   } from '@/api/event';
   import { uploadFile, getFile } from '@/api/file';
+  import { keys } from 'lodash';
 
   import useLoading from '@/hooks/loading';
   import baseEdit from './components/base-edit.vue';
@@ -134,8 +135,8 @@
   };
 
   const updateMkd = async () => {
-    const mkdText = ie.value.vditor.getValue();
-    if (mkdText) {
+    const mkdText = ie.value.getDiffMkd();
+    if (mkdText !== '') {
       const newMkd = new File([mkdText], 'content.md', {
         type: 'text/markdown',
       });
@@ -153,36 +154,68 @@
   const saveEvent = async () => {
     try {
       const coverUrl = await ie.value.updateCover();
-
       const mkdUrl = await updateMkd();
 
       const Dates: Date[] = formData.value.time_range;
       const startDate = new Date(Dates[0]).getTime();
       const endDate = new Date(Dates[1]).getTime();
-      const sendData = ref<EventUpdateModel>();
-      sendData.value = {
-        title: formData.value.title,
-        start_time: startDate,
-        end_time: endDate,
-        document_url: mkdUrl,
-        latitude: formData.value.lat,
-        longitude: formData.value.lng,
-        location_name: formData.value.address,
-        category: formData.value.category,
-        tickets: formData.value.tickets,
-      };
+      const sendData = ref<EventUpdateModel>({} as EventUpdateModel);
+
+      if (formData.value.title !== originData.value.title) {
+        sendData.value.title = originData.value.title;
+      }
+      if (
+        formData.value.time_range[0].toString() !==
+        originData.value.time_range[0].toString()
+      ) {
+        sendData.value.start_time = startDate;
+      }
+      if (
+        formData.value.time_range[1].toString() !==
+        originData.value.time_range[1].toString()
+      ) {
+        sendData.value.end_time = endDate;
+      }
+
+      if (formData.value.address !== originData.value.address) {
+        sendData.value.location_name = formData.value.address;
+        sendData.value.latitude = formData.value.lat;
+        sendData.value.longitude = formData.value.lng;
+      }
+      if (formData.value.category !== originData.value.category) {
+        sendData.value.category = formData.value.category;
+      }
+      if (
+        formData.value.tickets.toString() !==
+        originData.value.tickets.toString()
+      ) {
+        sendData.value.tickets = formData.value.tickets;
+      }
+
       if (coverUrl !== '') {
         sendData.value.image_url = coverUrl;
       }
-      // console.log(sendData.value);
-      const res = await updateEvent(uuid, sendData.value);
-    } finally {
-      Notification.success({
-        title: 'Success',
-        content: '更新成功！',
-      });
-      fetchData();
-      ie.value.submited();
+      if (mkdUrl !== '') {
+        sendData.value.document_url = mkdUrl;
+      }
+      const updKeys = keys(sendData.value);
+      console.log('updated', updKeys);
+      if (updKeys.length > 0) {
+        const res = await updateEvent(uuid, sendData.value);
+        Notification.success({
+          title: 'Success',
+          content: '更新成功！',
+        });
+        fetchData();
+      } else {
+        console.log('Nothing Updated');
+        Notification.info({
+          title: 'Info',
+          content: '没有更新',
+        });
+      }
+    } catch (e) {
+      console.log(e);
     }
   };
   onBeforeMount(async () => {

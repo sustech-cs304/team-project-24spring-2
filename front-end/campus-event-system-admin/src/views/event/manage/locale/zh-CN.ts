@@ -1,24 +1,31 @@
 export default {
   'menu.event.manage': '活动管理',
-  'manageEventTable.form.number': '活动编号',
-  'manageEventTable.form.number.placeholder': '请输入活动编号',
-  'manageEventTable.form.name': '活动名称',
-  'manageEventTable.form.name.placeholder': '请输入活动名称',
-  'manageEventTable.form.contentType': '活动体裁',
+
+  'manageEventTable.form.publisher': '发布者',
+  'manageEventTable.form.publisher.placeholder': '搜索发布者',
+
+  'manageEventTable.form.title': '活动名称',
+  'manageEventTable.form.title.placeholder': '搜索活动名称',
+
+  'manageEventTable.form.contentType': '活动类型',
   'manageEventTable.form.contentType.callingImg': '征图',
   'manageEventTable.form.contentType.callingText': '征文',
   'manageEventTable.form.contentType.socialMeeting': '社交活动',
   'manageEventTable.form.contentType.show': '演出',
 
-  'manageEventTable.form.filterType': '筛选方式',
-  'manageEventTable.form.filterType.artificial': '人工筛选',
-  'manageEventTable.form.filterType.rules': '规则筛选',
-  'manageEventTable.form.createdTime': '创建时间',
-  'manageEventTable.form.status': '状态',
-  'manageEventTable.form.status.ONLINE': '上线',
-  'manageEventTable.form.status.EDITING': '编辑中',
-  'manageEventTable.form.status.AUDITING': '审核中',
-  'manageEventTable.form.status.OFFLINE': '已下线',
+  'EventStatus': '活动状态',
+  'EventStatus.EDITING': '编辑中',
+  'EventStatus.AUDITING': '审核中',
+  'EventStatus.PENDING': '未开始',
+  'EventStatus.IN_PROGRESS': '上线',
+  'EventStatus.FINISHED': '已下线',
+
+
+  'EventCategory.course': '课程',
+  'EventCategory.music': '音乐',
+  'EventCategory.activity': '活动',
+
+
   'manageEventTable.form.search': '查询',
   'manageEventTable.form.reset': '重置',
   'manageEventTable.form.selectDefault': '全部',
@@ -28,7 +35,8 @@ export default {
   // columns
   'manageEventTable.columns.index': '#',
   'manageEventTable.columns.number': '活动编号',
-  'manageEventTable.columns.name': '活动名称',
+  'manageEventTable.columns.title': '活动名称',
+
   'manageEventTable.columns.contentType': '内容体裁',
   'manageEventTable.columns.supervisor': '承办方',
   'manageEventTable.columns.filterType': '筛选方式',
@@ -41,6 +49,7 @@ export default {
   'manageEventTable.columns.operations': '操作',
   'manageEventTable.columns.operations.view': '查看',
   'manageEventTable.columns.operations.edit': '编辑',
+  'manageEventTable.columns.operations.audit': '审核',
 
   // size
   'manageEventTable.size.mini': '迷你',

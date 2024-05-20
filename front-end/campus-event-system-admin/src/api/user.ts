@@ -30,6 +30,8 @@ export function getUserInfo() {
   return axios.post<UserState>('/api/user/profile');
 }
 
+
+
 export function getMenuList() {
   return axios.post<RouteRecordNormalized[]>('/api/user/menu');
 }

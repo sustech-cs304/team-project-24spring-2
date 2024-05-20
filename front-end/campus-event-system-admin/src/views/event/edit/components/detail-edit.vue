@@ -182,6 +182,12 @@
     };
   };
 
+  const getDiffMkd = () => {
+    const text = vditor.value.getValue();
+    if (text !== originText.value) return text;
+    return '';
+  };
+
   const customUploadUser = (option: any) => {
     const { onProgress, onError, onSuccess, fileItem, name } = option;
     const form = new FormData();
@@ -248,7 +254,6 @@
       const mkd = await getFile(formData.value.document_url);
       originText.value = mkd.data;
       vditor.value.setValue(originText.value);
-      console.log('setVditor', originText.value);
     } else {
       vditor.value.setValue('');
     }
@@ -283,14 +288,7 @@
     console.log('reset', originText.value);
   };
 
-  const submited = () => {
-    originCover.value = {
-      url: coverImage.value.url,
-    };
-    coverImage.value = originCover.value;
-    originText.value = vditor.value.getValue();
-    console.log('submited', originText.value);
-  };
+
   onMounted(async () => {});
 
   onUnmounted(() => {
@@ -300,12 +298,10 @@
   watch(
     () => formData.value,
     async (val) => {
-      console.log(val);
       if (val.image_url) {
         coverImage.value = {
           url: val.image_url,
         };
-        console.log(coverImage);
         originCover.value = coverImage.value;
       }
       vditor.value = new Vditor('vditor', {
@@ -325,11 +321,10 @@
   );
 
   defineExpose({
-    vditor,
     coverImage,
+    getDiffMkd,
     updateCover,
     reset,
-    submited
   });
 </script>
 
