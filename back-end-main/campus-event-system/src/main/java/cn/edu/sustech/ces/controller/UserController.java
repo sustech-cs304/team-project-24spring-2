@@ -49,6 +49,12 @@ public class UserController {
         return ResponseEntity.ok(userDetails.getUser());
     }
 
+    @PostMapping("/verify")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> verifyLoginState() {
+        return ResponseEntity.ok("Verified");
+    }
+
     @PostMapping("/get-user")
     public ResponseEntity<?> getUser(@RequestParam UUID userId) {
         User user = userService.getUserById(userId);
