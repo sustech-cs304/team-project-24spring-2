@@ -73,7 +73,7 @@ public class FileController {
                 }
                 weight += Integer.parseInt(globalSettingService.getSetting(GlobalSettingService.COMMENT_IMAGE_WEIGHT));
             } else if (type.startsWith("video")) {
-                if (!suffix.get().equalsIgnoreCase("mp4")) {
+                if (!suffix.get().equalsIgnoreCase("mp4") && !suffix.get().equalsIgnoreCase("mov") && !suffix.get().equalsIgnoreCase("avi") && !suffix.get().equalsIgnoreCase("wmv") && !suffix.get().equalsIgnoreCase("flv") && !suffix.get().equalsIgnoreCase("mkv") && !suffix.get().equalsIgnoreCase("webm")) {
                     return ResponseEntity.badRequest().body("File type not supported");
                 }
                 weight += Integer.parseInt(globalSettingService.getSetting(GlobalSettingService.COMMENT_VIDEO_WEIGHT));

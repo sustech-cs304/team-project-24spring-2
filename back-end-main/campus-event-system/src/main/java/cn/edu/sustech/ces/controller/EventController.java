@@ -7,6 +7,7 @@ import cn.edu.sustech.ces.enums.EventStatus;
 import cn.edu.sustech.ces.enums.PermissionGroup;
 import cn.edu.sustech.ces.service.GlobalSettingService;
 import cn.edu.sustech.ces.service.TicketService;
+import cn.edu.sustech.ces.service.UserService;
 import cn.edu.sustech.ces.service.minio.MinioService;
 import cn.edu.sustech.ces.utils.CESUtils;
 import com.alibaba.fastjson.JSONArray;
@@ -34,6 +35,7 @@ public class EventController {
     private final TicketService ticketService;
     private final MinioService minioService;
     private final GlobalSettingService globalSettingService;
+    private final UserService userService;
 
     @PostMapping("/create-event")
     @PreAuthorize("hasAnyRole('INSTITUTE_ADMIN', 'DEPARTMENT_ADMIN', 'SUPER_ADMIN')")
@@ -291,8 +293,16 @@ public class EventController {
         if (user.getPermissionGroup() == PermissionGroup.DEPARTMENT_ADMIN) {
             publisher = user.getId();
         } else {
+            if (request.getParameter("publisher_id") != null) {
+                publisher = UUID.fromString(request.getParameter("publisher_id"));
+            }
             if (request.getParameter("publisher") != null) {
-                publisher = UUID.fromString(request.getParameter("publisher"));
+                User publisherUser = userService.getUserByNickname(request.getParameter("publisher"));
+                if (publisherUser != null) {
+                    publisher = publisherUser.getId();
+                } else {
+                    return ResponseEntity.badRequest().body("Publisher Not Found");
+                }
             }
         }
 
