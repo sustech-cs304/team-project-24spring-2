@@ -399,22 +399,28 @@ public class EventController {
 
     @PostMapping("/audit-event")
     @PreAuthorize("hasAnyRole('INSTITUTE_ADMIN', 'SUPER_ADMIN')")
-    public ResponseEntity<Event> auditEvent(@RequestParam UUID eventId) {
+    public ResponseEntity<?> auditEvent(@RequestParam UUID eventId, @RequestParam boolean pass) {
 
         Event event = eventService.getEventById(eventId);
 
         if (event == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().body("Event Not Found");
         }
 
-        event.setStatus(EventStatus.PENDING);
-
-        if (event.getStartTime() > System.currentTimeMillis()) {
-            event.setStatus(EventStatus.IN_PROGRESS);
+        if (event.getStatus() != EventStatus.AUDITING) {
+            return ResponseEntity.badRequest().body("Event is not in auditing status");
         }
 
-        if (event.getEndTime() < System.currentTimeMillis()) {
-            event.setStatus(EventStatus.FINISHED);
+        if (pass) {
+            event.setStatus(EventStatus.PENDING);
+            if (event.getStartTime() > System.currentTimeMillis()) {
+                event.setStatus(EventStatus.IN_PROGRESS);
+            }
+            if (event.getEndTime() < System.currentTimeMillis()) {
+                event.setStatus(EventStatus.FINISHED);
+            }
+        } else {
+            event.setStatus(EventStatus.EDITING);
         }
 
         event = eventService.saveEvent(event);
