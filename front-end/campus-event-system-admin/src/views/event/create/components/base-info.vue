@@ -38,11 +38,8 @@
       <a-select
         v-model="formData.category"
         :placeholder="$t('event.placeholder.eventType')"
+        :options="categoryOptions"
       >
-        <a-option :value="0">社交</a-option>
-        <a-option :value="1">演唱会</a-option>
-        <a-option :value="2">体育运动</a-option>
-        <a-option :value="3">其他</a-option>
       </a-select>
     </a-form-item>
     <a-form-item
@@ -97,27 +94,49 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref } from 'vue';
+  import { ref, onBeforeMount } from 'vue';
   import { FormInstance } from '@arco-design/web-vue/es/form';
+  import { getSetting } from '@/api/global';
+  import { useI18n } from 'vue-i18n';
   import { EventBaseInfoModel } from '@/api/event';
+  import type { SelectOptionData } from '@arco-design/web-vue/es/select/interface';
   import MyMAP from '@/components/map/select-map.vue';
+  import { Notification } from '@arco-design/web-vue';
 
+  const { t } = useI18n();
   const emits = defineEmits(['changeStep']);
-  const formRef = ref<FormInstance>();
+  const formRef = ref<FormInstance>({});
   const formData = ref<EventBaseInfoModel>({
     title: '',
     category: '',
     time_range: [],
     address: '',
-    lng: 0,
-    lat: 0,
+    lng: NaN,
+    lat: NaN,
   });
 
+  const categoryOptions = ref<SelectOptionData[]>([]);
+
+  const getCategories = async () => {
+    const categories = await getSetting('categories');
+    categories.data.split(',').forEach((element: string) => {
+      categoryOptions.value.push({
+        label: t(`Event.Category.${element}`),
+        value: element,
+      });
+    });
+  };
   const onNextClick = async () => {
     const res = await formRef.value?.validate();
-    if (!res) {
-      emits('changeStep', 'forward', { ...formData.value });
+    if (res) return;
+    if (Number.isNaN(formData.value.lng) || Number.isNaN(formData.value.lat)) {
+      Notification.warning({
+        title: '请选择活动地点',
+        content: '请选择活动地点',
+      });
+      return;
     }
+    emits('changeStep', 'forward', { ...formData.value });
   };
 
   const onSelectedAddress = (form: any) => {
@@ -125,6 +144,9 @@
     formData.value.lng = form.lng;
     formData.value.lat = form.lat;
   };
+  onBeforeMount(() => {
+    getCategories();
+  });
 </script>
 
 <style scoped lang="less">

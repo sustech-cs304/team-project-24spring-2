@@ -12,27 +12,19 @@
           >
             <a-row :gutter="16">
               <a-col :span="12">
-                <a-form-item
-                  field="id"
-                  :label="$t('manageEventTable.form.publisher')"
-                >
+                <a-form-item field="id" :label="$t('search.Event.Publisher')">
                   <a-input
                     v-model="searchForm.publisher"
-                    :placeholder="
-                      $t('manageEventTable.form.publisher.placeholder')
-                    "
+                    :placeholder="$t('search.Event.Publisher.placeholder')"
                     allow-clear
                   />
                 </a-form-item>
               </a-col>
               <a-col :span="12">
-                <a-form-item
-                  field="title"
-                  :label="$t('manageEventTable.form.title')"
-                >
+                <a-form-item field="title" :label="$t('Event.Title')">
                   <a-input
                     v-model="searchForm.title"
-                    :placeholder="$t('manageEventTable.form.title.placeholder')"
+                    :placeholder="$t('search.Event.Title.placeholder')"
                     allow-clear
                   />
                 </a-form-item>
@@ -40,25 +32,22 @@
             </a-row>
             <a-row :gutter="16">
               <a-col :span="12">
-                <a-form-item
-                  field="contentType"
-                  :label="$t('manageEventTable.form.contentType')"
-                >
+                <a-form-item field="contentType" :label="$t('Event.Category')">
                   <a-select
                     v-model="searchForm.category"
                     :options="categoryOptions"
-                    :placeholder="$t('manageEventTable.form.selectDefault')"
+                    :placeholder="$t('search.event.selectDefault')"
                     allow-clear
                   />
                 </a-form-item>
               </a-col>
 
               <a-col :span="12">
-                <a-form-item field="status" :label="$t('EventStatus')">
+                <a-form-item field="status" :label="$t('Event.Status')">
                   <a-select
                     v-model="searchForm.statuses"
                     :options="statusOptions"
-                    :placeholder="$t('manageEventTable.form.selectDefault')"
+                    :placeholder="$t('search.event.selectDefault')"
                     allow-clear
                   />
                 </a-form-item>
@@ -73,13 +62,13 @@
               <template #icon>
                 <icon-search />
               </template>
-              {{ $t('manageEventTable.form.search') }}
+              {{ $t('search.event.search') }}
             </a-button>
             <a-button @click="reset">
               <template #icon>
                 <icon-refresh />
               </template>
-              {{ $t('manageEventTable.form.reset') }}
+              {{ $t('search.event.reset') }}
             </a-button>
           </a-space>
         </a-col>
@@ -94,7 +83,7 @@
               </template>
               {{ $t('manageEventTable.operation.create') }}
             </a-button>
-            <a-upload action="/">
+            <!-- <a-upload action="/">
               <template #upload-button>
                 <a-button>
                   {{ $t('manageEventTable.operation.import') }}
@@ -107,7 +96,7 @@
                 <icon-download />
               </template>
               {{ $t('manageEventTable.operation.download') }}
-            </a-button>
+            </a-button> -->
           </a-space>
         </a-col>
         <a-col
@@ -220,12 +209,16 @@
             <icon-close-circle />
           </span>
 
-          {{ $t(`EventStatus.${record.status}`) }}
+          {{ $t(`Event.Status.${record.status}`) }}
         </template>
 
         <template #operations="{ record }">
           <space>
-            <a-button :v-permission="['ADMIN', 'SUPER_ADMIN']" size="small">
+            <a-button
+              :v-permission="['ADMIN', 'SUPER_ADMIN']"
+              size="small"
+              @click.prevent="conEventView(record.id)"
+            >
               {{ $t('manageEventTable.columns.operations.view') }}
             </a-button>
             <a-button
@@ -233,6 +226,7 @@
               size="small"
               type="primary"
               style="margin-left: 8px"
+              :disabled="record.status !== 'EDITING'"
               @click.prevent="onEventEditClicked(record.id)"
             >
               {{ $t('manageEventTable.columns.operations.edit') }}
@@ -353,7 +347,7 @@
     const categories = await getSetting('categories');
     categories.data.split(',').forEach((element: string) => {
       categoryOptions.value.push({
-        label: t(`EventCategory.${element}`),
+        label: t(`Event.Category.${element}`),
         value: element,
       });
     });
@@ -363,7 +357,7 @@
   const statusOptions = computed<SelectOptionData[]>(() => {
     return status.map((item) => {
       return {
-        label: t(`EventStatus.${item}`),
+        label: t(`Event.Status.${item}`),
         value: item,
       };
     });
@@ -458,6 +452,15 @@
       );
     }
     return newArray;
+  };
+
+  const conEventView = (uuid: string) => {
+    router.push({
+      path: '/event/audit',
+      query: {
+        uuid,
+      },
+    });
   };
 
   const onEventEditClicked = (uuid: string) => {

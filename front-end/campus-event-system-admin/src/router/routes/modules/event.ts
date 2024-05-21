@@ -33,9 +33,9 @@ const EVENTS: AppRouteRecordRaw = {
       },
     },
     {
-      path: 'audit',
-      name: 'EventAudit',
-      component: () => import('@/views/event/audit/index.vue'),
+      path: 'audit-manage',
+      name: 'EventAuditManage',
+      component: () => import('@/views/event/audit-manage/index.vue'),
       meta: {
         locale: 'menu.event.audit',
         requiresAuth: true,
@@ -55,7 +55,7 @@ const EVENTS: AppRouteRecordRaw = {
     {
       path: 'edit',
       name: 'EventEdit',
-      component: () => import('@/views/event/edit/index.vue'),
+      component: () => import('@/views/event/edit-page/index.vue'),
       meta: {
         locale: 'menu.event.edit',
         requiresAuth: true,
@@ -63,6 +63,28 @@ const EVENTS: AppRouteRecordRaw = {
         roles: ['ADMIN', 'SUPER_ADMIN'],
       },
     },
+    {
+        path: 'audit',
+        name: 'EventAudit',
+        component: () => import('@/views/event/audit-page/index.vue'),
+        meta: {
+          locale: 'menu.event.audit',
+          requiresAuth: true,
+          hideInMenu: true,
+          roles: ['ADMIN', 'SUPER_ADMIN'],
+        },
+      },
+      {
+        path: 'view',
+        name: 'EventView',
+        component: () => import('@/views/event/view/index.vue'),
+        meta: {
+          locale: 'menu.event.audit',
+          requiresAuth: true,
+          hideInMenu: true,
+          roles: ['ADMIN', 'SUPER_ADMIN'],
+        },
+      },
   ],
 };
 
