@@ -12,7 +12,7 @@
         />
         <a-upload
           action="/"
-          :fileList="coverImage ? [coverImage] : []"
+          :fileList="coverImage as any ? [coverImage  as any] : []"
           :show-file-list="false"
           :custom-request="fakeUpload"
           @change="onSelectedImage"
@@ -20,7 +20,7 @@
           class="cover-upload"
         >
           <template #upload-button>
-            <div class="cover-upload-done" v-if="coverImage">
+            <div class="cover-upload-done" v-if="coverImage.url != ''">
               <img :src="coverImage.url" class="cover-upload-list-image" />
               <div class="cover-upload-list-mask">
                 <IconEdit
@@ -97,7 +97,10 @@
   import { watch } from 'vue';
   import { onUnmounted } from 'vue';
 
-  const coverImage = ref();
+  const coverImage = ref({
+    url: '',
+    blob: null,
+  });
   const vditor = ref();
   const setted = false;
   const originText = ref('');
@@ -134,6 +137,9 @@
     if (url && !blob) {
       return '';
     }
+    if (blob == null) {
+      return '';
+    }
 
     const newCover = new File([blob], 'cover.png', {
       type: 'image/png',
@@ -144,7 +150,7 @@
       usage: 'event',
       eventId: formData.value.uuid,
     });
-
+    coverImage.value.blob = null;
     return resCover.data;
   };
 
@@ -250,7 +256,7 @@
     }
   };
   const setVditor = async () => {
-    if (formData.value.document_url) {
+    if (formData.value.document_url !== '') {
       const mkd = await getFile(formData.value.document_url);
       originText.value = mkd.data;
       vditor.value.setValue(originText.value);
@@ -288,7 +294,6 @@
     console.log('reset', originText.value);
   };
 
-
   onMounted(async () => {});
 
   onUnmounted(() => {
@@ -298,10 +303,8 @@
   watch(
     () => formData.value,
     async (val) => {
-      if (val.image_url) {
-        coverImage.value = {
-          url: val.image_url,
-        };
+      if (val.image_url !== '' && val.image_url) {
+        coverImage.value.url = val.image_url;
         originCover.value = coverImage.value;
       }
       vditor.value = new Vditor('vditor', {

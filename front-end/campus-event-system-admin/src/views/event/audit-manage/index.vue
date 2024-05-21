@@ -12,27 +12,19 @@
           >
             <a-row :gutter="16">
               <a-col :span="12">
-                <a-form-item
-                  field="id"
-                  :label="$t('manageEventTable.form.publisher')"
-                >
+                <a-form-item field="id" :label="$t('search.Event.Publisher')">
                   <a-input
                     v-model="searchForm.publisher"
-                    :placeholder="
-                      $t('manageEventTable.form.publisher.placeholder')
-                    "
+                    :placeholder="$t('search.Event.Publisher.placeholder')"
                     allow-clear
                   />
                 </a-form-item>
               </a-col>
               <a-col :span="12">
-                <a-form-item
-                  field="title"
-                  :label="$t('manageEventTable.form.title')"
-                >
+                <a-form-item field="title" :label="$t('Event.Title')">
                   <a-input
                     v-model="searchForm.title"
-                    :placeholder="$t('manageEventTable.form.title.placeholder')"
+                    :placeholder="$t('search.Event.Title.placeholder')"
                     allow-clear
                   />
                 </a-form-item>
@@ -40,14 +32,11 @@
             </a-row>
             <a-row :gutter="16">
               <a-col :span="12">
-                <a-form-item
-                  field="contentType"
-                  :label="$t('manageEventTable.form.contentType')"
-                >
+                <a-form-item field="contentType" :label="$t('Event.Category')">
                   <a-select
                     v-model="searchForm.category"
                     :options="categoryOptions"
-                    :placeholder="$t('manageEventTable.form.selectDefault')"
+                    :placeholder="$t('search.event.selectDefault')"
                     allow-clear
                   />
                 </a-form-item>
@@ -62,13 +51,13 @@
               <template #icon>
                 <icon-search />
               </template>
-              {{ $t('manageEventTable.form.search') }}
+              {{ $t('search.event.search') }}
             </a-button>
             <a-button @click="reset">
               <template #icon>
                 <icon-refresh />
               </template>
-              {{ $t('manageEventTable.form.reset') }}
+              {{ $t('search.event.reset') }}
             </a-button>
           </a-space>
         </a-col>
@@ -77,12 +66,12 @@
       <a-row style="margin-bottom: 16px">
         <a-col :span="12">
           <a-space>
-            <a-button type="primary">
+            <!-- <a-button type="primary">
               <template #icon>
                 <icon-download />
               </template>
               {{ $t('manageEventTable.operation.download') }}
-            </a-button>
+            </a-button> -->
           </a-space>
         </a-col>
         <a-col
@@ -240,6 +229,16 @@
   const pagination = reactive({
     ...basePagination,
   });
+
+  const auditEvent = (uuid: string) => {
+    router.push({
+      path: '/event/audit',
+      query: {
+        uuid,
+        usage: 'AUDITING',
+      },
+    });
+  };
   const densityList = computed(() => [
     {
       name: t('manageEventTable.size.mini'),
@@ -299,7 +298,7 @@
     const categories = await getSetting('categories');
     categories.data.split(',').forEach((element: string) => {
       categoryOptions.value.push({
-        label: t(`EventCategory.${element}`),
+        label: t(`Event.Category.${element}`),
         value: element,
       });
     });
@@ -311,7 +310,7 @@
       const newParam = Object.fromEntries(
         Object.entries(params).filter(([_, v]) => v !== '')
       ) as EventParams;
-      newParam.statuses = 'EDITING';
+      newParam.statuses = 'AUDITING';
       const queryParams = {
         ...newParam,
         page: params.page - 1,
@@ -328,6 +327,7 @@
       renderData.value = res.data;
       pagination.current = params.page;
       pagination.total = resLen.data;
+      getCategories();
     } catch (err) {
       // you can report use errorHandler or other
     } finally {
@@ -340,10 +340,6 @@
       ...searchForm.value,
       ...defaultPagenation,
     } as unknown as EventParams);
-  };
-
-  const auditEvent = (uuid: string) => {
-    console.log(uuid);
   };
 
   const onPageChange = (current: number) => {

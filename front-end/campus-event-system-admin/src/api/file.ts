@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 export function uploadFile(
   data: FormData,
@@ -11,7 +11,8 @@ export function uploadFile(
   });
 }
 
-export function getFile(url: string) {
+export function getFile(url: string | undefined) {
+  if (!url) return {} as Promise<AxiosResponse<any, any>>;
   return axios.get(url);
 }
 

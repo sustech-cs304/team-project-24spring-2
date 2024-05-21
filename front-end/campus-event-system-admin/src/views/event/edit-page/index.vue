@@ -35,6 +35,9 @@
         </a-col>
       </a-row>
       <a-card class="actions">
+        <a-button type="primary" @click="goBack" style="float: left">
+          {{ $t('basicProfile.goBack') }}
+        </a-button>
         <a-space>
           <a-button @click="reset">
             <template #icon>
@@ -48,7 +51,7 @@
             </template>
             {{ $t('eventEdit.save') }}
           </a-button>
-          <a-button type="primary">
+          <a-button type="primary" @click="submitPublish">
             {{ $t('eventEdit.submit') }}
           </a-button>
         </a-space>
@@ -60,6 +63,7 @@
 <script lang="ts" setup>
   //   import QualityInspection from './components/quality-inspection.vue';
   import { onBeforeMount, ref } from 'vue';
+  import { useRouter } from 'vue-router';
   import { Notification } from '@arco-design/web-vue';
   import { useI18n } from 'vue-i18n';
   import {
@@ -68,6 +72,7 @@
     getEventInfo,
     getTicketInfo,
     updateEvent,
+    publishEvent,
   } from '@/api/event';
   import { uploadFile, getFile } from '@/api/file';
   import { keys } from 'lodash';
@@ -78,6 +83,7 @@
 
   const be = ref();
   const ie = ref();
+  const router = useRouter();
 
   const { loading, setLoading } = useLoading(true);
 
@@ -136,7 +142,8 @@
 
   const updateMkd = async () => {
     const mkdText = ie.value.getDiffMkd();
-    if (mkdText !== '') {
+    if (mkdText !== '' && mkdText) {
+      console.log('mkdText', mkdText);
       const newMkd = new File([mkdText], 'content.md', {
         type: 'text/markdown',
       });
@@ -162,7 +169,7 @@
       const sendData = ref<EventUpdateModel>({} as EventUpdateModel);
 
       if (formData.value.title !== originData.value.title) {
-        sendData.value.title = originData.value.title;
+        sendData.value.title = formData.value.title;
       }
       if (
         formData.value.time_range[0].toString() !==
@@ -218,6 +225,27 @@
       console.log(e);
     }
   };
+
+  const submitPublish = async () => {
+    try {
+      setLoading(true);
+      const res = publishEvent(uuid);
+      Notification.success({
+        title: 'Success',
+        content: '发布成功！',
+      });
+      fetchData();
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false);
+      goBack();
+    }
+  };
+  const goBack = () => {
+    router.go(-1);
+  };
+
   onBeforeMount(async () => {
     const res = await fetchData();
   });

@@ -44,10 +44,8 @@
                 <a-select
                   v-model="formData.category"
                   :placeholder="$t('event.placeholder.eventType')"
-                >
-                  <a-option value="resolution1">分辨率1</a-option>
-                  <a-option value="resolution2">分辨率2</a-option>
-                  <a-option value="resolution3">分辨率3</a-option>
+                  :options="categoryOptions"
+                  >
                 </a-select>
               </a-form-item>
             </a-col>
@@ -150,8 +148,11 @@
   import { FormInstance } from '@arco-design/web-vue/es/form';
   import createTicketButton from '@/components/ticket/create-ticket.vue';
   import MyMAP from '@/components/map/select-map.vue';
+  import { getSetting } from '@/api/global';
   import cloneDeep from 'lodash/cloneDeep';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
+  import type { SelectOptionData } from '@arco-design/web-vue/es/select/interface';
+  import { onBeforeMount } from 'vue';
 
   type SizeProps = 'mini' | 'small' | 'medium' | 'large';
   type Column = TableColumnData & { checked?: true };
@@ -174,7 +175,17 @@
   const cloneColumns = ref<Column[]>([]);
   const showColumns = ref<Column[]>([]);
   const size = ref<SizeProps>('medium');
+  const categoryOptions = ref<SelectOptionData[]>([]);
 
+  const getCategories = async () => {
+    const categories = await getSetting('categories');
+    categories.data.split(',').forEach((element: string) => {
+      categoryOptions.value.push({
+        label: t(`Event.Category.${element}`),
+        value: element,
+      });
+    });
+  };
   //   const formData = ref<originalEventCreationModel>(
   //
   //   );
@@ -289,6 +300,9 @@
     },
     { deep: true, immediate: true }
   );
+  onBeforeMount(() => {
+    getCategories();
+  });
 </script>
 
 <style scoped lang="less">
