@@ -162,6 +162,9 @@ public class UserController {
         if (request.containsKey("password")) {
             user.setPassword(passwordEncoder.encode(request.getString("password")));
         }
+        if (request.containsKey("phone")) {
+            user.setPhone(request.getString("phone"));
+        }
 
         userService.updateUser(user);
 
