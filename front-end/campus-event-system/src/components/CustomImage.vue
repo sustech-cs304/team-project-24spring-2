@@ -3,10 +3,12 @@
       :src="src"
       @error="handleImageError"
       :alt="alt"
+      :key="reloadKey"
     />
   </template>
   
   <script>
+
   export default {
     props: {
       src: {
@@ -26,7 +28,7 @@
       handleImageError(event) {
         console.log('Failed to load image:', event.target.src);
         event.target.src = this.fallbackSrc;
-      }
+      },
     }
   };
   </script>

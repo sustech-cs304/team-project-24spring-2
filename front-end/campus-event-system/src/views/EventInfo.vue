@@ -1,6 +1,8 @@
 <script>
 import {
   IconLocation,
+  IconStar,
+  IconStarFill,
 } from '@arco-design/web-vue/es/icon';
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
@@ -12,10 +14,15 @@ import { Message } from '@arco-design/web-vue';
 
 import utils from '../api/utils.ts';
 
+import MarkdownIt from 'markdown-it';
+
+
 export default {
   name: 'Events',
   components: {
     Comment,
+    IconStar,
+    IconStarFill,
     IconLocation,
     CustomImage
   },
@@ -30,7 +37,11 @@ export default {
     const uploadType = ref("image");
     const uploadProperty = ref({});
     const commentText = ref("");
+    const star = ref(false);
+    const markdownContent = ref("");
     uploadTypeChange();
+
+    const markdown = new MarkdownIt()
 
     const customRequest = (option) => {
       const {onProgress, onError, onSuccess, fileItem, name} = option
@@ -39,18 +50,33 @@ export default {
     };
 
     onMounted(async () => {
+      // loadMarkdown();
       await loadEventsInfo(route.query.id);
       if (eventInfo.value.tickets) {
         const ticketPromises = eventInfo.value.tickets.map(ticket_id => getTicketInfo(ticket_id));
         tickets.value = await Promise.all(ticketPromises);
       }
       await getComments(route.query.id);
+      console.log(eventInfo.value);  
+      markdownContent.value = getMarkdownConetent(eventInfo.value.document_url);
     });
 
     async function getTicketInfo(ticket_id) {
       const response = await axios.post(`/api/ticket/get-ticket?ticketId=${ticket_id}`);
       return response.data;
     }
+
+    function onStarChange(){
+      star.value = !star.value;
+    }
+
+    function getMarkdownConetent(url){
+      axios.get(url).then((response) => {
+        markdownContent.value = String(response.data);
+      });
+    }
+
+
 
     async function loadEventsInfo(eventId) {
       try {
@@ -155,7 +181,7 @@ export default {
       }
     }
 
-    return { eventInfo, tickets, selectedPrice, comments, totalComments, commentAttchments, uploadType, uploadProperty, commentText, loadEventsInfo , openAMap, uploadTypeChange, customRequest, makeComment };
+    return { markdown, eventInfo, tickets, selectedPrice, comments, totalComments, commentAttchments, uploadType, uploadProperty, star, commentText, markdownContent, loadEventsInfo , openAMap, uploadTypeChange, customRequest, makeComment, onStarChange };
   }
 };
 </script>
@@ -170,10 +196,22 @@ export default {
     <div class="main_container">
       <div class="upper_container">
         <div class="post_container">
-          <CustomImage :src="eventInfo.image_url" :fallbackSrc="'public/college.jpg'" alt="event image" class="event_post"/>
+          <CustomImage :src="eventInfo.image_url" :fallbackSrc="'college.jpg'" alt="event image" class="event_post"/>
         </div>
         <div class="details_container">
-          <h1>{{ eventInfo.title }}</h1>
+          <div class="title_container">
+            <h1>{{ eventInfo.title }}</h1>
+            <span class="action" key="star" @click="onStarChange">
+              <span v-if="star">
+                <IconStarFill :style="{ color: '#ffb400' }" />
+              </span>
+              <span v-else>
+                <IconStar />
+              </span>
+              {{ 0 + (star ? 1 : 0) }}
+            </span>
+          </div>
+   
           <p class="details_item">时间：{{ $formatDateTime(eventInfo.start_time) }} - {{ $formatDateTime(eventInfo.end_time) }}</p>
           <p class="details_item"> 
             地点：{{ eventInfo.location_name }}
@@ -186,10 +224,13 @@ export default {
             <a-radio-group type="button" v-model:checked="selectedPrice" >
               <a-radio v-for="ticket in tickets" :key="ticket.id" :value="ticket">{{ ticket.description  + " " + ticket.price }} 元</a-radio>
             </a-radio-group>
+
           </div>
+          
           <a-button type="primary" class="details_item">
             购票
           </a-button>
+
         </div>
       </div>
       <div class="lower_conatiner">
@@ -198,19 +239,20 @@ export default {
             <template #title>
               项目详情
             </template>
-            <div class="Description">
-              这里是项目详情
+            <div class="description_container">
+              <!-- 这里是项目详情 -->
+              <div v-html="markdown.render(markdownContent)" class="markdown-content"></div>
             </div>
           </a-tab-pane>
-          <a-tab-pane key="2">
+          <!-- <a-tab-pane key="2">
             <template #title>
               购票须知
             </template>
             <div class="Information">
               这里是购票须知
             </div>
-          </a-tab-pane>
-          <a-tab-pane key="3">
+          </a-tab-pane> -->
+          <a-tab-pane key="2">
             <template #title>
               评论
             </template>
@@ -253,11 +295,15 @@ export default {
     </div>
   </div>
 </template>
-r
+
 
 
 
 <style scoped>
+
+.description_container {
+  width: 80vh;
+}
 
 .outline_container {
   margin-top: 2vh;
@@ -322,5 +368,24 @@ r
   width: 80%;
   height: 100%;
   
+}
+
+.action {
+  display: inline-block;
+  padding: 0 4px;
+  color: var(--color-text-1);
+  line-height: 24px;
+  background: transparent;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+.action:hover {
+  background: var(--color-fill-3);
+}
+.title_container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>

@@ -91,11 +91,11 @@ export default {
   </div> -->
 
   <a-card :style="{ width: '800px' }">
-    <!-- <template #actions>
-      <span class="icon-hover"> <IconThumbUp/> </span>
-      <span class="icon-hover"> <IconShareInternal/> </span>
-      <span class="icon-hover"> <IconMore/> </span>
-    </template> -->
+    <!-- <template #actions> -->
+      <!-- <span class="icon-hover"> <IconThumbUp/> </span> -->
+      <!-- <span class="icon-hover"> <IconShareInternal/> </span> -->
+      <!-- <span class="icon-hover"> <IconMore/> </span> -->
+    <!-- </template> -->
     <template #cover>
       <div
           class="icon"
@@ -103,7 +103,7 @@ export default {
       >
         <CustomImage
             :src="event.image_url"
-            :fallbackSrc="'public/test.png'"
+            :fallbackSrc="'test.png'"
             :style="{ width: '100%', transform: 'translateY(-20px)' }"
             alt="event image"
         />

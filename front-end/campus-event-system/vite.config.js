@@ -24,6 +24,11 @@ export default defineConfig({
         target: 'http://localhost:19000/images/',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/images/, '')
+      },
+      '/documents': {
+        target: 'http://localhost:19000/documents/',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/documents/, '')
       }
     }
   }

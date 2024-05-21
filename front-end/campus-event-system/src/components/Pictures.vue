@@ -12,7 +12,7 @@
       <div class="image-container">
         <CustomImage
             :src="image"
-            :fallbackSrc="'public/college.jpg'"
+            :fallbackSrc="'college.jpg'"
             alt="carousel image"
             class="carousel-image"
         />
