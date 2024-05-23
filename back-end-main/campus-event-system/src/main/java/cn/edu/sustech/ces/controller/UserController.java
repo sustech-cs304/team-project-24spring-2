@@ -14,6 +14,7 @@ import cn.edu.sustech.ces.service.minio.MinioService;
 import cn.edu.sustech.ces.utils.CESUtils;
 import com.alibaba.fastjson.JSONObject;
 import lombok.AllArgsConstructor;
+import okhttp3.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.SecurityConfig;
@@ -72,6 +73,16 @@ public class UserController {
         response.put("avatar_url", avatarUrl);
         response.put("permission_group", permissionGroup);
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/get-full-user")
+    @PreAuthorize("hasAnyRole('INSTITUTE_ADMIN', 'SUPER_ADMIN')")
+    public ResponseEntity<?> getFullUser(@RequestParam UUID userId) {
+        User user = userService.getUserById(userId);
+        if (user == null) {
+            return ResponseEntity.badRequest().body("User Not Found");
+        }
+        return ResponseEntity.ok(user);
     }
 
     @PostMapping("/get-user-name")
