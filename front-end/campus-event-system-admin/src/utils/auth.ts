@@ -19,6 +19,7 @@ const setToken = (token: string, expire: number) => {
 
 const clearToken = () => {
   localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(TOKEN_EXPIRE);
 };
 
 

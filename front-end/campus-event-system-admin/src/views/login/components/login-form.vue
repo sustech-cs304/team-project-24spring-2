@@ -103,7 +103,7 @@
       try {
         await userStore.login(values as LoginData);
         const { redirect, ...othersQuery } = router.currentRoute.value.query;
-        router.push({
+        router.replace({
           name: (redirect as string) || 'Workplace',
           query: {
             ...othersQuery,

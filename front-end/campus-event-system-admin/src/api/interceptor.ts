@@ -2,7 +2,8 @@ import axios from 'axios';
 import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { Message, Modal, Notification } from '@arco-design/web-vue';
 import { useUserStore } from '@/store';
-import { getToken } from '@/utils/auth';
+import { getToken, clearToken } from '@/utils/auth';
+import router from '@/router';
 
 export interface HttpResponse<T = unknown> {
   status: number;
@@ -24,20 +25,28 @@ axios.interceptors.request.use(
     }
     if (token) {
       if (expire && new Date().getTime() > Number(expire)) {
-        Modal.error({
+        Notification.error({
           title: '登录过期',
-          content: '登录已过期，请重新登录',
-          onOk: () => {
-            useUserStore().logoutCallBack();
+          content: '登录过期，请重新登录',
+        });
+        useUserStore().logoutCallBack();
+        const currentRoute = router.currentRoute.value;
+        // setTimeout(() => {
+        router.push({
+          name: 'login',
+          query: {
+            ...router.currentRoute.value.query,
+            redirect: currentRoute.name as string,
           },
         });
+        // }, 1000);
       }
+
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
   (error) => {
-    // do something
     return Promise.reject(error);
   }
 );
@@ -49,16 +58,16 @@ axios.interceptors.response.use(
   (error) => {
     const { status, statusText, data } = error.response;
 
-    if (status === 403) {
+    if (status === 403 ) {
       Message.error({
         content: '操作权限不足',
         duration: 3 * 1000,
-    });
+      });
     } else if (status === 500) {
       Message.error({
         content: data || statusText,
         duration: 3 * 1000,
-    });
+      });
     } else {
       Message.error({
         content: data || statusText,

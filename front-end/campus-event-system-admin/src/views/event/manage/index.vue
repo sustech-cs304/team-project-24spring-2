@@ -151,9 +151,9 @@
                       >
                       </a-checkbox>
                     </div>
-                    <div class="title">
+                    <!-- <div class="title">
                       {{ item.title === '#' ? '序列号' : item.title }}
-                    </div>
+                    </div> -->
                   </div>
                 </div>
               </template>
@@ -216,7 +216,7 @@
         </template>
 
         <template #operations="{ record }">
-          <space>
+          <a-space>
             <a-button
               :v-permission="['ADMIN', 'SUPER_ADMIN']"
               size="small"
@@ -228,13 +228,12 @@
               :v-permission="['ADMIN', 'SUPER_ADMIN']"
               size="small"
               type="primary"
-              style="margin-left: 8px"
               :disabled="record.status !== 'EDITING'"
               @click.prevent="onEventEditClicked(record.id)"
             >
               {{ $t('manageEventTable.columns.operations.edit') }}
             </a-button>
-          </space>
+          </a-space>
         </template>
       </a-table>
     </a-card>

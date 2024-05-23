@@ -174,7 +174,7 @@
         </template>
 
         <template #operations="{ record }">
-          <space>
+          <a-space>
             <a-button
               :v-permission="['ADMIN', 'SUPER_ADMIN']"
               size="small"
@@ -183,7 +183,7 @@
             >
               {{ $t('manageEventTable.columns.operations.audit') }}
             </a-button>
-          </space>
+          </a-space>
         </template>
       </a-table>
     </a-card>
