@@ -2,8 +2,8 @@
   <a-button type="primary" @click="open">{{ $t('选择地点') }}</a-button>
 
   <a-modal
-    class="dialog companygoodsLog"
     v-model:visible="visible"
+    class="dialog companygoodsLog"
     title="位置选择"
     style="border-radius: 4px"
     top="100px"
@@ -55,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, onMounted, onUnmounted } from 'vue';
+  import { ref, onUnmounted } from 'vue';
   //    import { ElMessage } from 'element-plus';
 
   import AMapLoader from '@amap/amap-jsapi-loader';
@@ -86,7 +86,6 @@
   const visible: any = ref(false);
   const areaList: any = ref([]);
   const areaValue = ref('');
-  const selectedValue: any = ref();
 
   let map: any = null;
   const loading: any = ref(false);
@@ -115,7 +114,7 @@
     };
 
     const lnglat = [lng, lat];
-    geoCoder.getAddress(lnglat, function (status: any, result: any) {
+    geoCoder.getAddress(lnglat, (status: any, result: any) => {
       if (status === 'complete' && result.info === 'OK') {
         const { province, city, district } = result.regeocode.addressComponent;
         const { formattedAddress: formated } = result.regeocode;
@@ -152,48 +151,46 @@
         'AMap.ToolBar',
         'AMap.Scale',
       ], //  需要使用的的插件列表，如比例尺'AMap.Scale'等
-    })
-      .then((AMap: any) => {
-        aMap = AMap;
-        map = new AMap.Map('selectPointMap', {
-          //  设置地图容器id
-          zoom: 16, //  初始化地图级别
-          center: [113.99986, 22.598965], //  初始化地图中心点位置
-        });
-        AutoComplete = new AMap.AutoComplete({
-          city: '深圳',
-        });
-        geoCoder = new AMap.Geocoder({
-          city: '深圳', // 城市设为北京，默认：“全国”
-          radius: 1000, // 范围，默认：500
-        });
-        toolbar = new AMap.ToolBar();
-        scaler = new AMap.Scale();
-        map.addControl(scaler);
-        map.addControl(toolbar);
-        map.on('click', (e: any) => {
-          addmark(e.lnglat.getLng(), e.lnglat.getLat(), AMap);
-        });
-
-        if (props.address) {
-          currentSelect({
-            location: {
-              lat: props.lat,
-              lng: props.lng,
-            },
-          });
-        }
-      })
-      .catch((e) => {
-        console.log(e);
+    }).then((AMap: any) => {
+      aMap = AMap;
+      map = new AMap.Map('selectPointMap', {
+        //  设置地图容器id
+        zoom: 16, //  初始化地图级别
+        center: [113.99986, 22.598965], //  初始化地图中心点位置
       });
+      AutoComplete = new AMap.AutoComplete({
+        city: '深圳',
+      });
+      geoCoder = new AMap.Geocoder({
+        city: '深圳', // 城市设为北京，默认：“全国”
+        radius: 1000, // 范围，默认：500
+      });
+      toolbar = new AMap.ToolBar();
+      scaler = new AMap.Scale();
+      map.addControl(scaler);
+      map.addControl(toolbar);
+      map.on('click', (e: any) => {
+        addmark(e.lnglat.getLng(), e.lnglat.getLat(), AMap);
+      });
+
+      if (props.address) {
+        currentSelect({
+          location: {
+            lat: props.lat,
+            lng: props.lng,
+          },
+        });
+      }
+    });
+    //   .catch((e) => {
+    //     // handle error
+    // });
   };
 
   const remoteMethod = (searchValue: any) => {
     if (searchValue !== '') {
       setTimeout(() => {
         AutoComplete.search(searchValue, (status: any, result: any) => {
-          console.log(result, status);
           if (result.tips?.length) {
             areaList.value = result?.tips;
           }
@@ -223,7 +220,7 @@
   defineExpose({
     open,
   });
-  onMounted(() => {});
+  //   onMounted(() => {});
   onUnmounted(() => {
     map?.destroy();
   });

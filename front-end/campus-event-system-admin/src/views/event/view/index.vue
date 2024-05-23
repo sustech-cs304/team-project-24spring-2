@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <Breadcrumb :items="['menu.profile', 'menu.profile.basic']" />
+    <Breadcrumb :items="['menu.event', 'menu.event.view']" />
     <a-space direction="vertical" :size="16" fill>
       <a-card class="general-card">
         <template #title>
@@ -40,7 +40,6 @@
   import useLoading from '@/hooks/loading';
   import { getFile } from '@/api/file';
   import VueMarkdown from 'vue3-markdown-it';
-
   import {
     originalEventCreationModel,
     getEventInfo,
@@ -129,6 +128,7 @@
   }
   .markdown {
     width: 100%;
+    padding: 50px;
     align-items: center;
     border-radius: 8px;
     min-height: 200px;

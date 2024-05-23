@@ -11,30 +11,45 @@
           <a-card :title="$t('menu.event.edit')">
             <a-row justify="space-between">
               <a-col :span="24">
-                <a-tabs :default-active-tab="1" type="rounded">
-                  <a-tab-pane key="1" :title="$t('eventEdit.tab.title.basic')">
-                    <baseEdit
-                      ref="be"
-                      v-model:form="formData"
-                      v-model:mod="modification"
-                    />
-                  </a-tab-pane>
-                  <a-tab-pane key="2" :title="$t('eventEdit.tab.title.detail')">
-                    <infoEdit
-                      ref="ie"
-                      :cover-image="formData.image_url"
-                      :markdown-doc="formData.document_url"
-                      v-model:form="formData"
-                      v-model:mod="modification"
-                    />
-                  </a-tab-pane>
-                </a-tabs>
+                <div v-if="pageStep === 1">
+                  <a-tabs :default-active-tab="1" type="rounded">
+                    <a-tab-pane
+                      key="1"
+                      :title="$t('eventEdit.tab.title.basic')"
+                    >
+                      <baseEdit
+                        ref="be"
+                        v-model:form="formData"
+                        v-model:mod="modification"
+                      />
+                    </a-tab-pane>
+                    <a-tab-pane
+                      key="2"
+                      :title="$t('eventEdit.tab.title.detail')"
+                    >
+                      <infoEdit
+                        ref="ie"
+                        v-model:form="formData"
+                        v-model:mod="modification"
+                        :cover-image="formData.image_url"
+                        :markdown-doc="formData.document_url"
+                      />
+                    </a-tab-pane>
+                  </a-tabs>
+                </div>
+
+                <div v-else-if="pageStep === 2">
+                  <successPage
+                    @back-to-manage="goBack"
+                    @view-event="viewEvent"
+                  />
+                </div>
               </a-col>
             </a-row>
           </a-card>
         </a-col>
       </a-row>
-      <a-card class="actions">
+      <a-card v-if="pageStep === 1" class="actions">
         <a-button type="primary" @click="goBack" style="float: left">
           {{ $t('basicProfile.goBack') }}
         </a-button>
@@ -51,12 +66,24 @@
             </template>
             {{ $t('eventEdit.save') }}
           </a-button>
-          <a-button type="primary" @click="submitPublish">
+          <a-button type="primary" @click="confirmVis = true">
             {{ $t('eventEdit.submit') }}
           </a-button>
         </a-space>
       </a-card>
     </a-spin>
+
+    <a-modal
+      v-model:visible="confirmVis"
+      @cancel="handleCancel"
+      :on-before-ok="handleBeforeOk"
+      unmountOnClose
+    >
+      <template #title> {{ $t('Event.edit.submit') }} </template>
+      <div>
+        {{ $t('Event.edit.submit.info') }}
+      </div>
+    </a-modal>
   </div>
 </template>
 
@@ -80,6 +107,7 @@
   import useLoading from '@/hooks/loading';
   import baseEdit from './components/base-edit.vue';
   import infoEdit from './components/detail-edit.vue';
+  import successPage from './components/success.vue';
 
   const be = ref();
   const ie = ref();
@@ -98,6 +126,7 @@
   const modification = ref({});
   const args = new URLSearchParams(window.location.search);
   const uuid = args.get('uuid') as string;
+  const confirmVis = ref(false);
 
   const fetchData = async () => {
     setLoading(true);
@@ -133,6 +162,14 @@
         time_range: [new Date(data.start_time), new Date(data.end_time)],
         uuid,
       };
+      console.log(data.status)
+      if (data.status !== 'EDITING') {
+        Notification.warning({
+          title: '编辑失败',
+          content: '已经提交审核的活动无法再编辑',
+        });
+        viewEvent();
+      }
     } catch (err) {
       // operations
     } finally {
@@ -140,6 +177,20 @@
     }
   };
 
+  const pageStep = ref(1);
+
+  const handleCancel = () => {
+    confirmVis.value = false;
+  };
+
+  const handleBeforeOk = async () => {
+    await submitPublish();
+    return true;
+  };
+
+  const viewEvent = () => {
+    router.push(`/event/audit?uuid=${uuid}`);
+  };
   const updateMkd = async () => {
     const mkdText = ie.value.getDiffMkd();
     if (mkdText !== '' && mkdText) {
@@ -232,18 +283,21 @@
       const res = publishEvent(uuid);
       Notification.success({
         title: 'Success',
-        content: '发布成功！',
+        content: '提交审核成功！',
       });
-      fetchData();
     } catch (e) {
       console.log(e);
     } finally {
       setLoading(false);
-      goBack();
+      goSuccess();
     }
   };
   const goBack = () => {
     router.go(-1);
+  };
+
+  const goSuccess = () => {
+    pageStep.value = 2;
   };
 
   onBeforeMount(async () => {

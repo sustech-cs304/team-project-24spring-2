@@ -94,17 +94,8 @@ export interface PolicyListRes {
   total: number;
 }
 
-export function queryInspectionList() {
-  return axios.get('/api/list/quality-inspection');
-}
 
-export function queryTheServiceList() {
-  return axios.get('/api/list/the-service');
-}
 
-export function queryRulesPresetList() {
-  return axios.get('/api/list/rules-preset');
-}
 export function CreateEventApi(data: EventCreationModel) {
   return axios.post('/api/event/create-event', data);
 }
@@ -138,6 +129,7 @@ export function getTicketInfo(uuid: string) {
 }
 
 export function listEvent(params: EventParams) {
+    
   return axios.post<EventRecord[]>(
     '/api/event/list-events',
     {},
@@ -162,6 +154,19 @@ export function updateEvent(uuid: string, data: EventUpdateModel) {
   return axios.post('/api/event/update-event', data, {
     params: {
       eventId: uuid,
+    },
+  });
+}
+
+export function auditEvent(
+  uuid: string,
+  pass: 'true' | 'false',
+  reason: string,
+  ) {
+  return axios.post('/api/event/audit-event', reason, {
+    params: {
+      eventId: uuid,
+      pass,
     },
   });
 }

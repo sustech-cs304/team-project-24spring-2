@@ -31,7 +31,7 @@
   import { useI18n } from 'vue-i18n';
   import { Notification } from '@arco-design/web-vue';
   import { ImageInterceptor, deteleFile } from '@/api/file';
-  
+
   const emits = defineEmits(['deleteImage']);
 
   const props = defineProps({
@@ -68,7 +68,7 @@
   };
 
   const deleteImage = async (url: string) => {
-      emits('deleteImage', url);
+    emits('deleteImage', url);
   };
 </script>
 

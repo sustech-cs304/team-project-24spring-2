@@ -2,15 +2,15 @@
   <div class="success-wrap">
     <a-result
       status="success"
-      :title="$t('stepForm.success.title')"
-      :subtitle="$t('stepForm.success.subTitle')"
+      :title="$t('Event.edit.submit.success')"
+      :subtitle="$t('Event.edit.submit.success.info')"
     />
     <a-space :size="16">
       <a-button key="view" type="primary" @click="onView">
-        {{ $t('stepForm.button.view') }}
+        {{ $t('Event.View') }}
       </a-button>
-      <a-button key="again" type="secondary" @click="oneMore">
-        {{ $t('stepForm.button.again') }}
+      <a-button key="again" type="secondary" @click="goBack">
+        {{ $t('Event.edit.submit.goback') }}
       </a-button>
     </a-space>
 
@@ -28,20 +28,21 @@
 
 <script lang="ts" setup>
 
-  const emits = defineEmits(['changeStep', 'editEvent']);
+  const emits = defineEmits(['backToManage', 'viewEvent']);
 
-  const oneMore = () => {
-    emits('changeStep', 1);
+  const goBack = () => {
+    emits('backToManage', 1);
   };
   const onView = () => {
-    emits('editEvent');
-    
+    emits('viewEvent');
   }
 </script>
 
 <style scoped lang="less">
   .success-wrap {
     text-align: center;
+    margin-top: 100px;
+    margin-bottom: 100px;
   }
   :deep(.arco-result) {
     padding-top: 0;

@@ -11,26 +11,26 @@
             label-align="left"
           >
             <a-row :gutter="16">
-              <a-col :span="12">
+              <!-- <a-col :span="12">
                 <a-form-item field="id" :label="$t('search.Event.Publisher')">
                   <a-input
                     v-model="searchForm.publisher"
                     :placeholder="$t('search.Event.Publisher.placeholder')"
                     allow-clear
+                    @change="search"
                   />
                 </a-form-item>
-              </a-col>
+              </a-col> -->
               <a-col :span="12">
                 <a-form-item field="title" :label="$t('Event.Title')">
                   <a-input
                     v-model="searchForm.title"
                     :placeholder="$t('search.Event.Title.placeholder')"
                     allow-clear
+                    @change="search"
                   />
                 </a-form-item>
               </a-col>
-            </a-row>
-            <a-row :gutter="16">
               <a-col :span="12">
                 <a-form-item field="contentType" :label="$t('Event.Category')">
                   <a-select
@@ -38,10 +38,12 @@
                     :options="categoryOptions"
                     :placeholder="$t('search.event.selectDefault')"
                     allow-clear
+                    @change="search"
                   />
                 </a-form-item>
               </a-col>
-
+            </a-row>
+            <a-row :gutter="16">
               <a-col :span="12">
                 <a-form-item field="status" :label="$t('Event.Status')">
                   <a-select
@@ -49,6 +51,7 @@
                     :options="statusOptions"
                     :placeholder="$t('search.event.selectDefault')"
                     allow-clear
+                    @change="search"
                   />
                 </a-form-item>
               </a-col>

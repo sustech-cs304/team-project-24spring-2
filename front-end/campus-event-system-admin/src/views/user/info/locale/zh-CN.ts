@@ -12,4 +12,17 @@ export default {
   'userInfo.nodata': '暂无数据',
   'userInfo.visits.unit': '人次',
   'userInfo.visits.lastMonth': '较上月',
+
+  'User.info': '用户信息',
+  'User.info.nickname': '昵称',
+  'User.info.realname': '姓名',
+  'User.info.email': '邮箱',
+  'User.info.phone': '电话',
+  'User.info.description': '描述',
+  'User.info.description.empty': '暂无描述',
+
+  'User.info.gender': '性别',
+  'User.info.gender.wierd': '外星人',
+  'User.info.gender.male': '男',
+  'User.info.gender.female': '女'
 };

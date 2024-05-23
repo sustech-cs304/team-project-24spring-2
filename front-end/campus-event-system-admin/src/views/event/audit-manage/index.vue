@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <Breadcrumb :items="['menu.event', 'menu.event.manage']" />
-    <a-card class="general-card" :title="$t('menu.event.manage')">
+    <a-card class="general-card" :title="$t('Event.AuditManage')">
       <a-row>
         <a-col :flex="1">
           <a-form
@@ -12,11 +12,12 @@
           >
             <a-row :gutter="16">
               <a-col :span="12">
-                <a-form-item field="id" :label="$t('search.Event.Publisher')">
+                <a-form-item field="publisher" :label="$t('search.Event.Publisher')">
                   <a-input
                     v-model="searchForm.publisher"
                     :placeholder="$t('search.Event.Publisher.placeholder')"
                     allow-clear
+                    @change="search"
                   />
                 </a-form-item>
               </a-col>
@@ -26,6 +27,7 @@
                     v-model="searchForm.title"
                     :placeholder="$t('search.Event.Title.placeholder')"
                     allow-clear
+                    @change="search"
                   />
                 </a-form-item>
               </a-col>
@@ -38,6 +40,7 @@
                     :options="categoryOptions"
                     :placeholder="$t('search.event.selectDefault')"
                     allow-clear
+                    @change="search"
                   />
                 </a-form-item>
               </a-col>
@@ -336,6 +339,7 @@
   };
 
   const search = () => {
+    console.log(searchForm.value);
     fetchData({
       ...searchForm.value,
       ...defaultPagenation,

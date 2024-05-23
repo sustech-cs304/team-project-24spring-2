@@ -26,7 +26,7 @@ export function logout() {
   return true;
 }
 
-export function getUserInfo() {
+export function getMyProfile() {
   return axios.post<UserState>('/api/user/profile');
 }
 
