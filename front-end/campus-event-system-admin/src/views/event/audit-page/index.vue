@@ -106,7 +106,7 @@
             <div class="actions">
               <a-space>
                 <a-button type="primary" @click="onAuditEvent">
-                  {{ $t('eventEdit.submit') }}
+                  {{ $t('Event.Audit.submit') }}
                 </a-button>
               </a-space>
             </div>

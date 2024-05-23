@@ -45,7 +45,7 @@
                   v-model="formData.category"
                   :placeholder="$t('event.placeholder.eventType')"
                   :options="categoryOptions"
-                  >
+                >
                 </a-select>
               </a-form-item>
             </a-col>
@@ -67,6 +67,7 @@
                   format="YYYY-MM-DD HH:mm"
                   type="datetime"
                   show-time
+                  :disabledDate="(current) => dayjs(current).isBefore(dayjs())"
                 />
               </a-form-item>
             </a-col>
@@ -153,6 +154,7 @@
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
   import type { SelectOptionData } from '@arco-design/web-vue/es/select/interface';
   import { onBeforeMount } from 'vue';
+  import dayjs from 'dayjs';
 
   type SizeProps = 'mini' | 'small' | 'medium' | 'large';
   type Column = TableColumnData & { checked?: true };

@@ -9,6 +9,7 @@ export interface LoginData {
 
 export interface LoginRes {
   access_token: string;
+  expire_time: number;
   token_type: string;
   user: UserState;
 }

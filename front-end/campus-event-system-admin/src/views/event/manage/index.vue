@@ -416,6 +416,7 @@
 
   const reset = () => {
     searchForm.value = {} as EventParams;
+    search();
   };
 
   const handleSelectDensity = (

@@ -96,4 +96,5 @@ export default {
   'Event.Audit.submit.success': '提交审核结果成功',
   'Event.Audit.submit.success.info': '审核结果已由系统发送至发布者邮箱',
   'Event.Audit.submit.goback': '返回上层',
+  'Event.Audit.submit': '提交',
 };

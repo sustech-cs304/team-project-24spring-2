@@ -57,6 +57,7 @@
         v-model="formData.time_range"
         format="YYYY-MM-DD HH:mm"
         type="datetime"
+        :disabledDate="(current) => dayjs(current).isBefore(dayjs())"
       />
     </a-form-item>
     <a-form-item
@@ -102,10 +103,11 @@
   import type { SelectOptionData } from '@arco-design/web-vue/es/select/interface';
   import MyMAP from '@/components/map/select-map.vue';
   import { Notification } from '@arco-design/web-vue';
+  import dayjs from 'dayjs';
 
   const { t } = useI18n();
   const emits = defineEmits(['changeStep']);
-  const formRef = ref<FormInstance>({});
+  const formRef = ref<FormInstance>({} as FormInstance);
   const formData = ref<EventBaseInfoModel>({
     title: '',
     category: '',

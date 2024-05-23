@@ -1,6 +1,6 @@
 import axios from 'axios';
 import type { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { Message, Modal } from '@arco-design/web-vue';
+import { Message, Modal, Notification } from '@arco-design/web-vue';
 import { useUserStore } from '@/store';
 import { getToken } from '@/utils/auth';
 
@@ -17,15 +17,21 @@ if (import.meta.env.VITE_API_BASE_URL) {
 
 axios.interceptors.request.use(
   (config: AxiosRequestConfig) => {
-    // let each request carry token
-    // this example using the JWT token
-    // Authorization is a custom headers key
-    // please modify it according to the actual situation
-    const token = getToken();
+    const { token, expire } = getToken();
+
     if (!config.headers) {
       config.headers = {};
     }
     if (token) {
+      if (expire && new Date().getTime() > Number(expire)) {
+        Modal.error({
+          title: '登录过期',
+          content: '登录已过期，请重新登录',
+          onOk: () => {
+            useUserStore().logoutCallBack();
+          },
+        });
+      }
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
@@ -38,14 +44,27 @@ axios.interceptors.request.use(
 // add response interceptors
 axios.interceptors.response.use(
   (response: AxiosResponse<HttpResponse>) => {
-    const res = response.data;
-      return response;
+    return response;
   },
   (error) => {
-    Message.error({
-      content: error.msg || 'Request Error',
-      duration: 5 * 1000,
+    const { status, statusText, data } = error.response;
+
+    if (status === 403) {
+      Message.error({
+        content: '操作权限不足',
+        duration: 3 * 1000,
     });
+    } else if (status === 500) {
+      Message.error({
+        content: data || statusText,
+        duration: 3 * 1000,
+    });
+    } else {
+      Message.error({
+        content: data || statusText,
+        duration: 3 * 1000,
+      });
+    }
     return Promise.reject(error);
   }
 );

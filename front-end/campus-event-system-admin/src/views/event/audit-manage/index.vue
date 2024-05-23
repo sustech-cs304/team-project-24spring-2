@@ -12,7 +12,10 @@
           >
             <a-row :gutter="16">
               <a-col :span="12">
-                <a-form-item field="publisher" :label="$t('search.Event.Publisher')">
+                <a-form-item
+                  field="publisher"
+                  :label="$t('search.Event.Publisher')"
+                >
                   <a-input
                     v-model="searchForm.publisher"
                     :placeholder="$t('search.Event.Publisher.placeholder')"
@@ -356,6 +359,7 @@
 
   const reset = () => {
     searchForm.value = {} as EventParams;
+    search();
   };
 
   const handleSelectDensity = (
