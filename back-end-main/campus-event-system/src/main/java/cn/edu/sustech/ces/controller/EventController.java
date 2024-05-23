@@ -425,7 +425,7 @@ public class EventController {
             if (publisher != null && publisher.getEmail() != null) {
                 String message = "";
                 if (pass) {
-                    message = "Your event " + event.getTitle() + " has been approved.";
+                    message = "Your event " + event.getTitle() + " has been approved. Message: " + body.getString("reason");
                 } else {
                     message = "Your event " + event.getTitle() + " has been rejected. Reason: " + body.getString("reason");
                 }
