@@ -411,7 +411,7 @@ public class EventController {
 
         if (pass) {
             event.setStatus(EventStatus.PENDING);
-            if (event.getStartTime() > System.currentTimeMillis()) {
+            if (event.getStartTime() < System.currentTimeMillis()) {
                 event.setStatus(EventStatus.IN_PROGRESS);
             }
             if (event.getEndTime() < System.currentTimeMillis()) {
