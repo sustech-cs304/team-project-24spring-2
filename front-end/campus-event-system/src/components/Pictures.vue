@@ -39,7 +39,8 @@ defineExpose({ images: props.images })
 <style scoped>
 .image-container {
   width: 100%; 
-  height: auto; 
+  height: 100%; 
+  display: flex; /* Center the image inside the container */
   justify-content: center;
   align-items: center;
   overflow: hidden; 
@@ -47,9 +48,8 @@ defineExpose({ images: props.images })
 
 .carousel-image {
   width: 100%;
-  height: auto;
-  object-fit: cover; 
-  border-radius: 0px; 
+  height: 100%;
+  object-fit: cover; /* Adjust based on your needs: 'cover', 'contain', 'fill', 'scale-down' */
   transition: transform 0.5s ease; 
 }
 

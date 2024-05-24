@@ -29,7 +29,13 @@ export default defineConfig({
         target: 'http://localhost:19000/documents/',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/documents/, '')
-      }
+      },
+      '/comments': {
+        target: 'http://localhost:19000/comments/',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/comments/, '')
+      },
+
     }
   }
   
