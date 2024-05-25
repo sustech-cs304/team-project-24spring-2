@@ -27,5 +27,12 @@ export default {
   'User.info.gender.wierd': '外星人',
   'User.info.gender.male': '男',
   'User.info.gender.female': '女',
-  'User.info.gender.other': '武装直升机'
+  'User.info.gender.other': '武装直升机',
+
+  'User.permission.group': '权限组',
+  'User.permission.group.USER': '用户',
+  'User.permission.group.DEPARTMENT_ADMIN': '部门管理员',
+  'User.permission.group.INSTITUTE_ADMIN': '学院管理员',
+  'User.permission.group.SUPER_ADMIN': '超级管理员',
+  
 };

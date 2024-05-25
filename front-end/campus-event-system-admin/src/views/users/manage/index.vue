@@ -1,84 +1,35 @@
 <template>
   <div class="container">
-    <Breadcrumb :items="['menu.users', 'menu.users.manage']" />
-    <a-card class="general-card" :title="$t('menu.users.manage')">
+    <Breadcrumb :items="['menu.user', 'menu.user.manage']" />
+    <a-card class="general-card" :title="$t('User.Manage')">
       <a-row>
         <a-col :flex="1">
           <a-form
-            :model="formModel"
+            :model="searchForm"
             :label-col-props="{ span: 6 }"
             :wrapper-col-props="{ span: 18 }"
             label-align="left"
           >
             <a-row :gutter="16">
-              <a-col :span="8">
-                <a-form-item
-                  field="number"
-                  :label="$t('manageUsersTable.form.number')"
-                >
+              <a-col :span="24">
+                <a-form-item field="nickname" :label="$t('User.info.nickname')">
                   <a-input
-                    v-model="formModel.number"
-                    :placeholder="
-                      $t('manageUsersTable.form.number.placeholder')
-                    "
+                    v-model="searchForm.nickname"
+                    :placeholder="$t('search.User.nickname.placeholder')"
+                    allow-clear
+                    @change="search"
                   />
                 </a-form-item>
               </a-col>
-              <a-col :span="8">
-                <a-form-item
-                  field="name"
-                  :label="$t('manageUsersTable.form.name')"
-                >
+            </a-row>
+            <a-row :gutter="16">
+              <a-col :span="24">
+                <a-form-item field="nickname" :label="$t('User.info.email')">
                   <a-input
-                    v-model="formModel.name"
-                    :placeholder="$t('manageUsersTable.form.name.placeholder')"
-                  />
-                </a-form-item>
-              </a-col>
-              <a-col :span="8">
-                <a-form-item
-                  field="contentType"
-                  :label="$t('manageUsersTable.form.contentType')"
-                >
-                  <a-select
-                    v-model="formModel.contentType"
-                    :options="contentTypeOptions"
-                    :placeholder="$t('manageUsersTable.form.selectDefault')"
-                  />
-                </a-form-item>
-              </a-col>
-              <a-col :span="8">
-                <a-form-item
-                  field="filterType"
-                  :label="$t('manageUsersTable.form.filterType')"
-                >
-                  <a-select
-                    v-model="formModel.filterType"
-                    :options="filterTypeOptions"
-                    :placeholder="$t('manageUsersTable.form.selectDefault')"
-                  />
-                </a-form-item>
-              </a-col>
-              <a-col :span="8">
-                <a-form-item
-                  field="createdTime"
-                  :label="$t('manageUsersTable.form.createdTime')"
-                >
-                  <a-range-picker
-                    v-model="formModel.createdTime"
-                    style="width: 100%"
-                  />
-                </a-form-item>
-              </a-col>
-              <a-col :span="8">
-                <a-form-item
-                  field="status"
-                  :label="$t('manageUsersTable.form.status')"
-                >
-                  <a-select
-                    v-model="formModel.status"
-                    :options="statusOptions"
-                    :placeholder="$t('manageUsersTable.form.selectDefault')"
+                    v-model="searchForm.email"
+                    :placeholder="$t('search.Event.Publisher.placeholder')"
+                    allow-clear
+                    @change="search"
                   />
                 </a-form-item>
               </a-col>
@@ -92,13 +43,13 @@
               <template #icon>
                 <icon-search />
               </template>
-              {{ $t('manageUsersTable.form.search') }}
+              {{ $t('search.event.search') }}
             </a-button>
             <a-button @click="reset">
               <template #icon>
                 <icon-refresh />
               </template>
-              {{ $t('manageUsersTable.form.reset') }}
+              {{ $t('search.event.reset') }}
             </a-button>
           </a-space>
         </a-col>
@@ -107,26 +58,12 @@
       <a-row style="margin-bottom: 16px">
         <a-col :span="12">
           <a-space>
-            <a-button type="primary" @click="create">
-              <template #icon>
-                <icon-plus />
-              </template>
-              {{ $t('manageUsersTable.operation.create') }}
-            </a-button>
-            <a-upload action="/">
-              <template #upload-button>
-                <a-button>
-                  {{ $t('manageUsersTable.operation.import') }}
-                </a-button>
-              </template>
-            </a-upload>
-
-            <a-button>
+            <!-- <a-button type="primary">
               <template #icon>
                 <icon-download />
               </template>
-              {{ $t('manageUsersTable.operation.download') }}
-            </a-button>
+              {{ $t('manageEventTable.operation.download') }}
+            </a-button> -->
           </a-space>
         </a-col>
         <a-col
@@ -135,10 +72,10 @@
         >
           <a-button @click="search">
             <template #icon> <icon-refresh /> </template>
-            {{ $t('manageUsersTable.actions.refresh') }}
+            {{ $t('manageEventTable.actions.refresh') }}
           </a-button>
           <a-dropdown @select="handleSelectDensity">
-            <a-tooltip :content="$t('manageUsersTable.actions.density')">
+            <a-tooltip :content="$t('manageEventTable.actions.density')">
               <div class="action-icon"><icon-line-height size="18" /></div>
             </a-tooltip>
             <template #content>
@@ -152,7 +89,7 @@
               </a-doption>
             </template>
           </a-dropdown>
-          <a-tooltip :content="$t('manageUsersTable.actions.columnSetting')">
+          <a-tooltip :content="$t('manageEventTable.actions.columnSetting')">
             <a-popover
               trigger="click"
               position="bl"
@@ -201,52 +138,42 @@
         <template #index="{ rowIndex }">
           {{ rowIndex + 1 + (pagination.current - 1) * pagination.pageSize }}
         </template>
-        <template #contentType="{ record }">
+
+        <template #title="{ record }">
+          {{ record.title }}
+        </template>
+
+        <template #start_time="{ record }">
+          {{ longTime2String(record.start_time) }}
+        </template>
+
+        <template #end_time="{ record }">
+          {{ longTime2String(record.end_time) }}
+        </template>
+
+        <template #location_name="{ record }">
+          {{ record.location_name }}
+        </template>
+
+        <template #count="{ record }">
+          {{ record.count + ' / ' + record.capacity }}
+        </template>
+
+        <template #operations="{ record }">
           <a-space>
-            <a-avatar
-              v-if="record.contentType === 'img'"
-              :size="16"
-              shape="square"
-            >
-              <img
-                alt="avatar"
-                src="//p3-armor.byteimg.com/tos-cn-i-49unhts6dw/581b17753093199839f2e327e726b157.svg~tplv-49unhts6dw-image.image"
-              />
-            </a-avatar>
-            <a-avatar
-              v-else-if="record.contentType === 'horizontalVideo'"
-              :size="16"
-              shape="square"
-            >
-              <img
-                alt="avatar"
-                src="//p3-armor.byteimg.com/tos-cn-i-49unhts6dw/77721e365eb2ab786c889682cbc721c1.svg~tplv-49unhts6dw-image.image"
-              />
-            </a-avatar>
-            <a-avatar v-else :size="16" shape="square">
-              <img
-                alt="avatar"
-                src="//p3-armor.byteimg.com/tos-cn-i-49unhts6dw/ea8b09190046da0ea7e070d83c5d1731.svg~tplv-49unhts6dw-image.image"
-              />
-            </a-avatar>
-            {{ $t(`manageUsersTable.form.contentType.${record.contentType}`) }}
+            <!-- <a-button size="small" type="primary" @click.prevent="">
+              {{ $t('manageUserTable.columns.operation') }}
+            </a-button> -->
+            <a-select @change.prevent="changeUserPermission(record.id, '')">
+              <a-option
+                v-for="(item, index) in roleList"
+                :key="index"
+                :value="item"
+              >
+                {{ $t(`User.permission.group.${item}`) }}
+              </a-option>
+            </a-select>
           </a-space>
-        </template>
-        <template #filterType="{ record }">
-          {{ $t(`manageUsersTable.form.filterType.${record.filterType}`) }}
-        </template>
-        <template #status="{ record }">
-          <span v-if="record.status === 'offline'" class="circle"></span>
-          <span v-else class="circle pass"></span>
-          {{ $t(`manageUsersTable.form.status.${record.status}`) }}
-        </template>
-        <template #operations>
-          <a-button v-permission="['admin']" type="text" size="small">
-            {{ $t('manageUsersTable.columns.operations.view') }}
-          </a-button>
-          <a-button v-permission="['admin']" type="text" size="small">
-            {{ $t('manageUsersTable.columns.operations.edit') }}
-          </a-button>
         </template>
       </a-table>
     </a-card>
@@ -255,35 +182,33 @@
 
 <script lang="ts" setup>
   import { useRouter } from 'vue-router';
-  import { computed, ref, reactive, watch, nextTick } from 'vue';
+  import { computed, ref, reactive, watch, nextTick, onBeforeMount } from 'vue';
   import { useI18n } from 'vue-i18n';
   import useLoading from '@/hooks/loading';
-  import { queryUsersList, UsersRecord, UsersParams } from '@/api/users';
-
+  import { roleList } from '@/store/modules/user';
+  import {
+    listUsers,
+    listUsersSize,
+    UsersRecord,
+    UsersParams,
+  } from '@/api/users';
+  import { getSetting } from '@/api/global';
   import { Pagination } from '@/types/global';
   import type { SelectOptionData } from '@arco-design/web-vue/es/select/interface';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
   import cloneDeep from 'lodash/cloneDeep';
   import Sortable from 'sortablejs';
+  import { keys } from 'lodash';
 
   type SizeProps = 'mini' | 'small' | 'medium' | 'large';
   type Column = TableColumnData & { checked?: true };
 
   const router = useRouter();
-  const generateFormModel = () => {
-    return {
-      number: '',
-      name: '',
-      contentType: '',
-      filterType: '',
-      createdTime: [],
-      status: '',
-    };
-  };
+
   const { loading, setLoading } = useLoading(true);
   const { t } = useI18n();
   const renderData = ref<UsersRecord[]>([]);
-  const formModel = ref(generateFormModel());
+  const searchForm = ref<UsersParams>({} as UsersParams);
   const cloneColumns = ref<Column[]>([]);
   const showColumns = ref<Column[]>([]);
 
@@ -291,116 +216,113 @@
 
   const basePagination: Pagination = {
     current: 1,
-    pageSize: 20,
+    pageSize: 10,
+  };
+
+  const defaultPagenation = {
+    page: basePagination.current,
+    size: basePagination.pageSize,
   };
   const pagination = reactive({
     ...basePagination,
   });
+
+  //   const auditEvent = (uuid: string) => {
+  //     router.push({
+  //       path: '/event/audit',
+  //       query: {
+  //         uuid,
+  //         usage: 'AUDITING',
+  //       },
+  //     });
+  //   };
+  const changeUserPermission = (uuid: string, group: string) => {
+    router.push({
+      path: '/user/permission',
+      query: {
+        userId: uuid,
+        permissionGroup: group,
+      },
+    });
+  };
+
   const densityList = computed(() => [
     {
-      name: t('manageUsersTable.size.mini'),
+      name: t('manageEventTable.size.mini'),
       value: 'mini',
     },
     {
-      name: t('manageUsersTable.size.small'),
+      name: t('manageEventTable.size.small'),
       value: 'small',
     },
     {
-      name: t('manageUsersTable.size.medium'),
+      name: t('manageEventTable.size.medium'),
       value: 'medium',
     },
     {
-      name: t('manageUsersTable.size.large'),
+      name: t('manageEventTable.size.large'),
       value: 'large',
     },
   ]);
   const columns = computed<TableColumnData[]>(() => [
     {
-      title: t('manageUsersTable.columns.index'),
+      title: t('manageEventTable.columns.index'),
       dataIndex: 'index',
       slotName: 'index',
     },
     {
-      title: t('manageUsersTable.columns.number'),
-      dataIndex: 'number',
+      title: t('manageEventTable.columns.title'),
+      dataIndex: 'title',
+    },
+
+    {
+      title: t('manageEventTable.columns.startTime'),
+      dataIndex: 'start_time',
+      slotName: 'start_time',
     },
     {
-      title: t('manageUsersTable.columns.name'),
-      dataIndex: 'name',
+      title: t('manageEventTable.columns.endTime'),
+      dataIndex: 'end_time',
+      slotName: 'end_time',
+    },
+
+    {
+      title: t('manageEventTable.columns.location'),
+      dataIndex: 'location_name',
+      slotName: 'location_name',
     },
     {
-      title: t('manageUsersTable.columns.contentType'),
-      dataIndex: 'contentType',
-      slotName: 'contentType',
-    },
-    // {
-    //   title: t('manageUsersTable.columns.supervisor'),
-    //   dataIndex: 'supervisor',
-    // },
-    {
-      title: t('manageUsersTable.columns.startTime'),
-      dataIndex: 'startTime',
-    },
-    {
-      title: t('manageUsersTable.columns.endTime'),
-      dataIndex: 'endTime',
-    },
-    {
-      title: t('manageUsersTable.columns.status'),
-      dataIndex: 'status',
-      slotName: 'status',
-    },
-    {
-      title: t('manageUsersTable.columns.operations'),
+      title: t('manageEventTable.columns.operations'),
       dataIndex: 'operations',
       slotName: 'operations',
       align: 'center',
     },
   ]);
 
-  const contentTypeOptions = computed<SelectOptionData[]>(() => [
-    {
-      label: t('manageUsersTable.form.contentType.img'),
-      value: 'img',
-    },
-    {
-      label: t('manageUsersTable.form.contentType.horizontalVideo'),
-      value: 'horizontalVideo',
-    },
-    {
-      label: t('manageUsersTable.form.contentType.verticalVideo'),
-      value: 'verticalVideo',
-    },
-  ]);
-  const filterTypeOptions = computed<SelectOptionData[]>(() => [
-    {
-      label: t('manageUsersTable.form.filterType.artificial'),
-      value: 'artificial',
-    },
-    {
-      label: t('manageUsersTable.form.filterType.rules'),
-      value: 'rules',
-    },
-  ]);
-  const statusOptions = computed<SelectOptionData[]>(() => [
-    {
-      label: t('manageUsersTable.form.status.online'),
-      value: 'online',
-    },
-    {
-      label: t('manageUsersTable.form.status.offline'),
-      value: 'offline',
-    },
-  ]);
-  const fetchData = async (
-    params: UsersParams = { current: 1, pageSize: 20 }
-  ) => {
+  const fetchData = async (params: UsersParams = { page: 1, size: 20 }) => {
     setLoading(true);
     try {
-      const { data } = await queryUsersList(params);
-      renderData.value = data.list;
-      pagination.current = params.current;
-      pagination.total = data.total;
+      const newParam = Object.fromEntries(
+        Object.entries(params).filter(([_, v]) => v !== '')
+      ) as UsersParams;
+      const queryParams = {
+        ...newParam,
+        page: params.page - 1,
+      };
+      const sizeParams = {
+        ...newParam,
+      } as any;
+
+      delete sizeParams.page;
+      delete sizeParams.size;
+
+      const resLen = await listUsersSize(sizeParams);
+      const res = await listUsers(queryParams);
+
+      console.log(res.data);
+      renderData.value = res.data;
+      pagination.current = params.page;
+      pagination.total = resLen.data;
     } catch (err) {
       // you can report use errorHandler or other
     } finally {
@@ -409,24 +331,24 @@
   };
 
   const search = () => {
+    console.log(searchForm.value);
     fetchData({
-      ...basePagination,
-      ...formModel.value,
+      ...searchForm.value,
+      ...defaultPagenation,
     } as unknown as UsersParams);
   };
 
-  const create = () => {
-    // openWindow('/users/create');
-    router.push('/users/create');
-  };
-
   const onPageChange = (current: number) => {
-    fetchData({ ...basePagination, current });
+    fetchData({
+      ...searchForm.value,
+      ...defaultPagenation,
+      page: current,
+    });
   };
 
-  fetchData();
   const reset = () => {
-    formModel.value = generateFormModel();
+    searchForm.value = {} as UsersParams;
+    search();
   };
 
   const handleSelectDensity = (
@@ -468,6 +390,23 @@
     return newArray;
   };
 
+  const onEventEditClicked = (uuid: string) => {
+    router.push({
+      path: '/event/edit',
+      query: {
+        uuid,
+      },
+    });
+  };
+
+  const longTime2String = (time: number) => {
+    const date = new Date(time);
+    const dateStr = `${date.getFullYear()}-${
+      date.getMonth() + 1
+    }-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    return dateStr;
+  };
+
   const popupVisibleChange = (val: boolean) => {
     if (val) {
       nextTick(() => {
@@ -494,11 +433,14 @@
     },
     { deep: true, immediate: true }
   );
+  onBeforeMount(() => {
+    fetchData();
+  });
 </script>
 
 <script lang="ts">
   export default {
-    name: 'UsersTable',
+    name: 'EventTable',
   };
 </script>
 
@@ -506,6 +448,7 @@
   .container {
     padding: 0 20px 20px 20px;
   }
+
   :deep(.arco-table-th) {
     &:last-child {
       .arco-table-th-item-title {
@@ -513,18 +456,22 @@
       }
     }
   }
+
   .action-icon {
     margin-left: 12px;
     cursor: pointer;
   }
+
   .active {
     color: #0960bd;
     background-color: #e3f4fc;
   }
+
   .setting {
     display: flex;
     align-items: center;
     width: 200px;
+
     .title {
       margin-left: 12px;
       cursor: pointer;

@@ -15,15 +15,14 @@ const data = Mock.mock({
       'supervisor|1': ['致新书院', '数学系', '个人-冯泽欣', '招生办'],
       'status|1': ['online', 'offline'],
       'filterType|1': ['artificial', 'rules'],
-      'startTime': Random.date(),
-      'endTime': Random.date(),
+      'createdTime': Random.datetime(),
     },
   ],
 });
 
 setupMock({
   setup() {
-    Mock.mock(new RegExp('/api/users/query_users'), (params: GetParams) => {
+    Mock.mock(new RegExp('/api/event/audit'), (params: GetParams) => {
       const { current = 1, pageSize = 10 } = qs.parseUrl(params.url).query;
       const p = current as number;
       const ps = pageSize as number;

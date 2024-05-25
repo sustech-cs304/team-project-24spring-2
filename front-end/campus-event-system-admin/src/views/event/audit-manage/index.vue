@@ -176,7 +176,6 @@
         <template #operations="{ record }">
           <a-space>
             <a-button
-              :v-permission="['ADMIN', 'SUPER_ADMIN']"
               size="small"
               type="primary"
               @click.prevent="auditEvent(record.id)"

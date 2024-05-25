@@ -4,9 +4,10 @@ import type { DescData } from '@arco-design/web-vue/es/descriptions/interface';
 import { UserState } from '@/store/modules/user/types';
 
 export interface UsersParams {
-  current: number;
-  pageSize: number;
-  search?: string;
+  size: number;
+  page: number;
+  email?: number;
+  nickname?: number;
 }
 
 export interface UsersRecord {
@@ -16,7 +17,7 @@ export interface UsersRecord {
   permission_group: string;
 }
 
-export function queryUsersList(params: UsersParams) {
+export function listUsers(params: UsersParams) {
   return axios.post(
     `/api/user/list-user`,
     {},
@@ -26,7 +27,7 @@ export function queryUsersList(params: UsersParams) {
   );
 }
 
-export function queryUsersListSize(params: UsersParams) {
+export function listUsersSize(params: UsersParams) {
   return axios.post(
     `/api/user/list-user-size`,
     {},

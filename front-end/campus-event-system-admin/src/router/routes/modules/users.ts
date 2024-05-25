@@ -23,16 +23,16 @@ const USERS: AppRouteRecordRaw = {
         roles: superPerm,
       },
     },
-    {
-      path: 'settings',
-      name: 'usersSettings',
-      component: () => import('@/views/users/settings/index.vue'),
-      meta: {
-        locale: 'menu.users.settings',
-        requiresAuth: true,
-        roles: superPerm,
-      },
-    },
+    // {
+    //   path: 'settings',
+    //   name: 'usersSettings',
+    //   component: () => import('@/views/users/settings/index.vue'),
+    //   meta: {
+    //     locale: 'menu.users.settings',
+    //     requiresAuth: true,
+    //     roles: superPerm,
+    //   },
+    // },
   ],
 };
 

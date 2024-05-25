@@ -68,25 +68,26 @@
   };
   const renderData = [
     {
-      label: 'userSetting.label.name',
-      value: userStore.name,
+      label: 'User.info.realname',
+      value: userStore.real_name,
     },
     {
-      label: 'userSetting.label.certification',
-      value: userStore.certification,
+      label: 'User.info.nickname',
+      value: userStore.nickname,
+    },
+    // {
+    //   label: 'userSetting.label.certification',
+    //   value: userStore.certification,
+    // },
+    {
+      label: 'User.info.email',
+      value: userStore.email,
     },
     {
-      label: 'userSetting.label.accountId',
-      value: userStore.accountId,
-    },
-    {
-      label: 'userSetting.label.phone',
+      label: 'User.info.phone',
       value: userStore.phone,
     },
-    {
-      label: 'userSetting.label.registrationDate',
-      value: userStore.registrationDate,
-    },
+
   ] as DescData[];
   const fileList = ref<FileItem[]>([file]);
   const uploadChange = (fileItemList: FileItem[], fileItem: FileItem) => {
