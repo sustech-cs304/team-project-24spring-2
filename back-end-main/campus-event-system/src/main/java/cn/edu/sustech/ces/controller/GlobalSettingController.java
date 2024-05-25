@@ -17,7 +17,7 @@ public class GlobalSettingController {
     private final GlobalSettingService globalSettingService;
 
     @PostMapping("/get-setting")
-    @PreAuthorize("hasAnyRole('INSTITUTE_ADMIN', 'SUPER_ADMIN')")
+//    @PreAuthorize("hasAnyRole('INSTITUTE_ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<String> getSetting(@RequestParam  String key) {
         String setting = globalSettingService.getSetting(key);
         if (setting == null) {
