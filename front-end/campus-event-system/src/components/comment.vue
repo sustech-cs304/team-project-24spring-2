@@ -177,7 +177,7 @@ export default {
     <div class="actions">
       <span v-if="canDelete" class="action" key="delete" @click="deleteComment(comment.id)">
         <IconDelete />
-        Delete
+        删除
       </span>
     </div>
     <!-- </template> -->
