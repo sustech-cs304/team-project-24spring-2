@@ -10,13 +10,13 @@
       <a-col :span="24">
         <a-tabs default-active-key="1" type="rounded">
           <a-tab-pane key="1" :title="$t('userSetting.tab.basicInformation')">
-            <BasicInformation />
+            <BasicInfo v-model="userInfo" @save-basic="onSaveBasic" />
           </a-tab-pane>
           <a-tab-pane key="2" :title="$t('userSetting.tab.securitySettings')">
             <SecuritySettings />
           </a-tab-pane>
           <a-tab-pane key="3" :title="$t('userSetting.tab.certification')">
-            <Certification />
+            <!-- <Certification /> -->
           </a-tab-pane>
         </a-tabs>
       </a-col>
@@ -25,10 +25,69 @@
 </template>
 
 <script lang="ts" setup>
+  import { onBeforeMount } from 'vue';
+  import { UserState } from '@/store/modules/user/types';
+  import { useUserStore } from '@/store';
+  import { updateUser, updateUserForm } from '@/api/user';
+  import { Notification } from '@arco-design/web-vue';
+  import { keys } from 'lodash';
+  import { ref } from 'vue';
+
+  import useLoading from '@/hooks/loading';
   import UserPanel from './components/user-panel.vue';
-  import BasicInformation from './components/basic-information.vue';
+  import BasicInfo from './components/basic-info.vue';
   import SecuritySettings from './components/security-settings.vue';
-  import Certification from './components/certification.vue';
+  //   import Certification from './components/certification.vue';
+
+  const { loading, setLoading } = useLoading(true);
+  const userStore = useUserStore();
+  const userInfo = ref<UserState>({} as UserState);
+  const userInfoOrigin = ref<UserState>({} as UserState);
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      await userStore.info();
+      userInfo.value = { ...userStore.userInfo };
+      userInfoOrigin.value = { ...userStore.userInfo };
+
+      console.log(userInfo.value);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onSaveBasic = async () => {
+    const submition = ref<updateUserForm>({} as updateUserForm);
+
+    if (userInfo.value.phone !== userInfoOrigin.value.phone) {
+      submition.value.phone = userInfo.value.phone;
+    }
+    if (userInfo.value.description !== userInfoOrigin.value.description) {
+      submition.value.description = userInfo.value.description;
+    }
+
+    const updateKey = keys(submition.value);
+    if (updateKey.length === 0) {
+      Notification.info({
+        title: '没有更新',
+        content: '用户信息没有更新',
+      });
+    } else {
+      console.log(submition.value);
+      const res = await updateUser(submition.value);
+      console.log(res);
+      Notification.success({
+        title: '更新成功',
+        content: '用户信息更新成功',
+      });
+      fetchData();
+    }
+  };
+  onBeforeMount(() => {
+    fetchData();
+  });
 </script>
 
 <script lang="ts">

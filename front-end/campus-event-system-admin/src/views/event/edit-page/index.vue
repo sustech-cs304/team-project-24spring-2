@@ -285,11 +285,11 @@
         title: 'Success',
         content: '提交审核成功！',
       });
+      goSuccess();
     } catch (e) {
       console.log(e);
     } finally {
       setLoading(false);
-      goSuccess();
     }
   };
   const goBack = () => {

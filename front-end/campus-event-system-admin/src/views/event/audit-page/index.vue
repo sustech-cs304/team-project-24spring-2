@@ -160,6 +160,7 @@
   );
 
   const publisherInfo = ref<UserState>({} as UserState);
+  
   const ViewEvent = () => {
     router.push(`/event/view?uuid=${uuid}`);
   };
@@ -190,8 +191,8 @@
       console.log(data.status);
       if (data.status !== 'AUDITING' && usage === 'AUDITING') {
         Notification.warning({
-          title: '编辑失败',
-          content: '已经提交审核的活动无法再编辑',
+          title: '审核失败',
+          content: '已经提交审核的活动无法再进入审核',
         });
         ViewEvent();
       }
@@ -250,9 +251,18 @@
     try {
       setLoading(true);
       const res = await auditEvent(uuid, review.value.ac as any, reply);
+      goSuccess();
+      Notification.success({
+        title: 'Success',
+        content: '审核结果提交成功',
+      });
+    } catch (err) {
+      Notification.error({
+        title: 'Error',
+        content: '审核失败',
+      });
     } finally {
       setLoading(false);
-      goSuccess();
     }
   };
 </script>

@@ -7,6 +7,7 @@ import {
 } from '@/api/user';
 import { setToken, clearToken } from '@/utils/auth';
 import { removeRouteListener } from '@/utils/route-listener';
+import { assign } from 'lodash';
 import { UserState } from './types';
 import useAppStore from '../app';
 
@@ -25,7 +26,18 @@ const useUserStore = defineStore('user', {
 
   getters: {
     userInfo(state: UserState): UserState {
-      return { ...state };
+      const newinfo = {
+        id: state.id,
+        nickname: state.nickname,
+        real_name: state.real_name,
+        description: state.description,
+        email: state.email,
+        phone: state.phone,
+        gender: state.gender,
+        permission_group: state.permission_group,
+        avatar_url: state.avatar_url,
+      };
+      return { ...newinfo };
     },
   },
 

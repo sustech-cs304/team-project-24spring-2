@@ -1,3 +1,4 @@
+import { superPerm } from '@/store/modules/user/types';
 import { DEFAULT_LAYOUT } from '../base';
 import { AppRouteRecordRaw } from '../types';
 
@@ -19,7 +20,7 @@ const USERS: AppRouteRecordRaw = {
       meta: {
         locale: 'menu.users.manage',
         requiresAuth: true,
-        roles: ['admin'],
+        roles: superPerm,
       },
     },
     {
@@ -29,7 +30,7 @@ const USERS: AppRouteRecordRaw = {
       meta: {
         locale: 'menu.users.settings',
         requiresAuth: true,
-        roles: ['admin'],
+        roles: superPerm,
       },
     },
   ],

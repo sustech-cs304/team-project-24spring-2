@@ -163,7 +163,9 @@ export function auditEvent(
   pass: 'true' | 'false',
   reason: string,
   ) {
-  return axios.post('/api/event/audit-event', reason, {
+  return axios.post('/api/event/audit-event', {
+    reason
+  }, {
     params: {
       eventId: uuid,
       pass,

@@ -83,5 +83,5 @@ export default {
   ...localeUsersManage,
   ...localeUsersSettings,
   ...localeEventEdit,
-  ...localeEventAuditMange
+  ...localeEventAuditMange,
 };

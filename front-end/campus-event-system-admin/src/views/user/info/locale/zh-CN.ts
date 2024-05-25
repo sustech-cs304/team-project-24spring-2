@@ -13,7 +13,9 @@ export default {
   'userInfo.visits.unit': '人次',
   'userInfo.visits.lastMonth': '较上月',
 
+  'userSetting.basicInfo.phone.error': '请输入11位数字手机号',
   'User.info': '用户信息',
+  'User.info.avatar': '头像',
   'User.info.nickname': '昵称',
   'User.info.realname': '姓名',
   'User.info.email': '邮箱',
@@ -24,5 +26,6 @@ export default {
   'User.info.gender': '性别',
   'User.info.gender.wierd': '外星人',
   'User.info.gender.male': '男',
-  'User.info.gender.female': '女'
+  'User.info.gender.female': '女',
+  'User.info.gender.other': '武装直升机'
 };

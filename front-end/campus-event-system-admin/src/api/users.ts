@@ -3,6 +3,39 @@ import qs from 'query-string';
 import type { DescData } from '@arco-design/web-vue/es/descriptions/interface';
 import { UserState } from '@/store/modules/user/types';
 
+export interface UsersParams {
+  current: number;
+  pageSize: number;
+  search?: string;
+}
+
+export interface UsersRecord {
+  nickname: string;
+  email: string;
+  avatar_url: string;
+  permission_group: string;
+}
+
+export function queryUsersList(params: UsersParams) {
+  return axios.post(
+    `/api/user/list-user`,
+    {},
+    {
+      params,
+    }
+  );
+}
+
+export function queryUsersListSize(params: UsersParams) {
+  return axios.post(
+    `/api/user/list-user-size`,
+    {},
+    {
+      params,
+    }
+  );
+}
+
 export function getUserInfo(uuid: string) {
   return axios.post(
     `/api/user/get-full-user`,
@@ -16,15 +49,13 @@ export function getUserInfo(uuid: string) {
 }
 
 export function changeUserPerm(uuid: string) {
-    return axios.post<UserState>(
-      `/api/get-full-info`,
-      {},
-      {
-        params: {
-          userId: uuid,
-        },
-      }
-    );
-  }
-  
-  
+  return axios.post<UserState>(
+    `/api/get-full-info`,
+    {},
+    {
+      params: {
+        userId: uuid,
+      },
+    }
+  );
+}

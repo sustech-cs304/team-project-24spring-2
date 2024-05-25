@@ -1,5 +1,6 @@
 export default {
   'menu.user.setting': '用户设置',
+
   'userSetting.menu.title.info': '个人信息',
   'userSetting.menu.title.account': '账号设置',
   'userSetting.menu.title.password': '密码',
@@ -17,6 +18,9 @@ export default {
   'userSetting.save': '保存',
   'userSetting.cancel': '取消',
   'userSetting.reset': '重置',
+
+  'userSetting.basicInfo.placeholder.gender': '请选择性别',
+
   // new
   'userSetting.label.certification': '实名认证',
   'userSetting.label.phone': '手机号码',
@@ -39,10 +43,10 @@ export default {
   'userSetting.form.error.area.required': '请选择所在区域',
   'userSetting.basicInfo.form.label.address': '具体地址',
   'userSetting.basicInfo.placeholder.address': '请输入您的地址',
-  'userSetting.basicInfo.form.label.profile': '个人简介',
-  'userSetting.basicInfo.placeholder.profile':
+  'userSetting.basicInfo.form.label.description': '个人简介',
+  'userSetting.basicInfo.placeholder.description':
     '请输入您的个人简介，最多不超过200字。',
-  'userSetting.form.error.profile.maxLength': '最多不超过200字',
+  'userSetting.form.error.description.maxLength': '最多不超过200字',
   'userSetting.SecuritySettings.form.label.password': '登录密码',
   'userSetting.SecuritySettings.placeholder.password':
     '已设置。密码至少6位字符，支持数字、字母和除空格外的特殊字符，且必须同时包含数字和大小写字母。',

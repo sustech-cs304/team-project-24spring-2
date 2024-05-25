@@ -14,6 +14,11 @@ export interface LoginRes {
   user: UserState;
 }
 
+export interface updateUserForm {
+  phone?: string;
+  description?: string;
+}
+
 export function login(data: LoginData) {
   const formal = {
     user_input: data.username,
@@ -31,7 +36,9 @@ export function getMyProfile() {
   return axios.post<UserState>('/api/user/profile');
 }
 
-
+export function updateUser(params: updateUserForm) {
+  return axios.post('/api/user/update-profile', { ...params });
+}
 
 export function getMenuList() {
   return axios.post<RouteRecordNormalized[]>('/api/user/menu');

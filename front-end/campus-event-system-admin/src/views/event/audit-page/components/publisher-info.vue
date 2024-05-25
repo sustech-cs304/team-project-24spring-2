@@ -43,9 +43,9 @@
           已认证
         </a-tag>
         <span v-else-if="data.label === 'User.info.gender'">
-          <div v-if="value === 'MALE'"> </div>
-          <div v-else-if="value == 'FEMALE'"> </div>
-          <div v-else-if="value == 'OTHER'"> </div>
+          <div v-if="value === 'MALE'"> {{$t('User.info.gender.male')}} </div>
+          <div v-else-if="value == 'FEMALE'"> {{$t('User.info.gender.female')}} </div>
+          <div v-else-if="value == 'OTHER'">  {{$t('User.info.gender.other')}} </div>
           <div v-else>
             <icon-public />
             {{ $t('User.info.gender.wierd') }}

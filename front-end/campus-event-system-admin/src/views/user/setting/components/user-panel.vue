@@ -64,7 +64,7 @@
   const file = {
     uid: '-2',
     name: 'avatar.png',
-    url: userStore.avatar,
+    url: userStore.avatar_url,
   };
   const renderData = [
     {

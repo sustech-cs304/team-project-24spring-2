@@ -1,3 +1,4 @@
+import { basicPerm, auditPerm, superPerm } from '@/store/modules/user/types';
 import { DEFAULT_LAYOUT } from '../base';
 import { AppRouteRecordRaw } from '../types';
 
@@ -19,7 +20,7 @@ const EVENTS: AppRouteRecordRaw = {
       meta: {
         locale: 'menu.event.manage',
         requiresAuth: true,
-        roles: ['ADMIN', 'SUPER_ADMIN'],
+        roles: basicPerm,
       },
     },
     {
@@ -29,7 +30,7 @@ const EVENTS: AppRouteRecordRaw = {
       meta: {
         locale: 'menu.event.create',
         requiresAuth: true,
-        roles: ['ADMIN', 'SUPER_ADMIN'],
+        roles: basicPerm,
       },
     },
     {
@@ -39,19 +40,10 @@ const EVENTS: AppRouteRecordRaw = {
       meta: {
         locale: 'menu.event.audit',
         requiresAuth: true,
-        roles: ['ADMIN', 'SUPER_ADMIN'],
+        roles: basicPerm,
       },
     },
-    {
-      path: 'settings',
-      name: 'EventSettings',
-      component: () => import('@/views/event/settings/index.vue'),
-      meta: {
-        locale: 'menu.event.settings',
-        requiresAuth: true,
-        roles: ['SUPER_ADMIN'],
-      },
-    },
+
     {
       path: 'edit',
       name: 'EventEdit',
@@ -60,9 +52,10 @@ const EVENTS: AppRouteRecordRaw = {
         locale: 'menu.event.edit',
         requiresAuth: true,
         hideInMenu: true,
-        roles: ['ADMIN', 'SUPER_ADMIN'],
+        roles: basicPerm,
       },
     },
+
     {
       path: 'audit',
       name: 'EventAudit',
@@ -71,7 +64,7 @@ const EVENTS: AppRouteRecordRaw = {
         locale: 'menu.event.audit',
         requiresAuth: true,
         hideInMenu: true,
-        roles: ['ADMIN', 'SUPER_ADMIN'],
+        roles: auditPerm,
       },
     },
     {
@@ -82,7 +75,18 @@ const EVENTS: AppRouteRecordRaw = {
         locale: 'menu.event.audit',
         requiresAuth: true,
         hideInMenu: true,
-        roles: ['ADMIN', 'SUPER_ADMIN'],
+        roles: basicPerm,
+      },
+    },
+
+    {
+      path: 'settings',
+      name: 'EventSettings',
+      component: () => import('@/views/event/settings/index.vue'),
+      meta: {
+        locale: 'menu.event.settings',
+        requiresAuth: true,
+        roles: superPerm,
       },
     },
   ],

@@ -22,8 +22,8 @@ export default {
   'Event.Status.EDIT': '编辑',
   'Event.Status.AUDIT': '审核',
   'Event.Status.PEND': '等待',
-  'Event.Status.ONLINE': '上线',
-  'Event.Status.FINISH': '下线',
+  'Event.Status.ONLINE': '进行中',
+  'Event.Status.FINISH': '结束',
 
 
   'Event.ID': '活动ID',

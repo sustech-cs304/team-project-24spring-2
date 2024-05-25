@@ -27,7 +27,6 @@
 
       <template #operations="{ record }">
         <a-button
-          v-permission="['admin']"
           type="text"
           size="small"
           @click.prevent="onDeleteTicket(record.id)"
