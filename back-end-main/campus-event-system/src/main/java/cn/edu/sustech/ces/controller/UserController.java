@@ -69,7 +69,7 @@ public class UserController {
         }
         String nickName = user.getNickname();
         String avatarUrl = user.getAvatarUrl();
-        int permissionGroup = user.getPermissionGroup().ordinal();
+        PermissionGroup permissionGroup = user.getPermissionGroup();
         String email = user.getEmail();
         Long birthday = user.getBirthday();
         UserGender gender = user.getGender();
@@ -234,7 +234,7 @@ public class UserController {
 
     @PostMapping("/change-permission")
     @PreAuthorize("hasAnyRole('INSTITUTE_ADMIN', 'SUPER_ADMIN')")
-    public ResponseEntity<?> changePermission(@RequestParam UUID userId, @RequestParam Integer permissionGroup) {
+    public ResponseEntity<?> changePermission(@RequestParam UUID userId, @RequestParam PermissionGroup permissionGroup) {
         User currentUser = CESUtils.getAuthorizedUser();
         User user = userService.getUserById(userId);
         if (user == null) {
@@ -243,7 +243,7 @@ public class UserController {
         if (currentUser.getPermissionGroup().ordinal() <= user.getPermissionGroup().ordinal()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        user.setPermissionGroup(PermissionGroup.values()[permissionGroup]);
+        user.setPermissionGroup(permissionGroup);
         userService.updateUser(user);
         return ResponseEntity.ok(user);
     }
