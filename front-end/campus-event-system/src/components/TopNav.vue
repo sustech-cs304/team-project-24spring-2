@@ -12,7 +12,8 @@ import {
   IconExport,
   IconSort,
 } from '@arco-design/web-vue/es/icon';
-import { useRoute, useRouter } from 'vue-router';  // Import routing composable
+import { useRoute, useRouter } from 'vue-router';
+import utils from '../api/utils.ts';
 
 export default {
   name: "TopNav",
@@ -30,18 +31,24 @@ export default {
     IconSort,
   },
   setup() {
-    const router = useRouter();  // Use the useRouter composable for navigation
+    const router = useRouter();
 
     const navigate = (path) => {
       router.push(path);
     }
 
-    // Check if the user is logged in by looking for the access_token in localStorage
-    const isLoggedIn = () => {
-      return !!localStorage.getItem('access_token');
+    function verifyLoginState(post) {
+      return utils.verifyLoginState(post);
     }
 
-    return { navigate, isLoggedIn };
+    function logout() {
+      utils.logout();
+      router.push('/').then(() => {
+        window.location.reload();
+      });
+    }
+
+    return { navigate, verifyLoginState, logout };
   }
 }
 </script>
@@ -59,14 +66,14 @@ export default {
       <a href="#" class="nav-item" @click="navigate('/events')">
         <icon-apps />更多 
       </a>
-      <a v-if="isLoggedIn()" href="#" class="nav-item" @click="navigate('/userinfo')">
+      <a v-if="verifyLoginState(false)" href="#" class="nav-item" @click="navigate('/userinfo')">
         <icon-user />个人信息 
       </a>
-      <a v-if="isLoggedIn()" href="#" class="nav-item" @click="navigate('/login')">
-        <icon-export />登出 
+      <a v-if="verifyLoginState(false)" href="#" class="nav-item" @click="logout()">
+        <icon-export />登出
       </a>
       <a v-else href="#" class="nav-item" @click="navigate('/login')">
-        <icon-user />登录 
+        <icon-user />登录
       </a>
     </div>
   </div>

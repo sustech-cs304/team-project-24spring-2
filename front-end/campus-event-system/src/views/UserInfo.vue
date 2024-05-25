@@ -16,13 +16,13 @@ export default {
     const user = ref({});
 
     const form = reactive({
-      nickname: '', // Username
-      email: '', // New field for Email
-      phone: '', // New field for Telephone Number
-      realName: '', // New field for Real Name
-      birthday: '', // New field for Birthday
-      description: '', // New field for Description
-      gender: '', // New
+      nickname: '',
+      email: '',
+      phone: '',
+      realName: '',
+      birthday: '',
+      description: '',
+      gender: '',
     })
 
     const password = ref('');
@@ -142,37 +142,37 @@ export default {
       <div class="details">
         <a-space direction="vertical" size="large" :style="{width: '600px'}" >
           <a-form :model="form" :layout=horizontal>
-            <a-form-item label="Real Name">
+            <a-form-item label="真实姓名">
               <a-input v-model="form.realName" :disabled=true />
             </a-form-item>
-            <a-form-item label="Nickname">
+            <a-form-item label="昵称">
               <a-input v-model="form.nickname" :disabled=true  />
             </a-form-item>
-            <a-form-item label="Gender">
+            <a-form-item label="性别">
               <a-radio-group v-model="form.gender">
-                <a-radio value="MALE">Male</a-radio>
-                <a-radio value="FEMALE">Female</a-radio>
-                <a-radio value="OTHER">Other</a-radio>
+                <a-radio value="MALE">男</a-radio>
+                <a-radio value="FEMALE">女</a-radio>
+                <a-radio value="OTHER">未指定</a-radio>
               </a-radio-group>
             </a-form-item>
-            <a-form-item label="Birthday">
+            <a-form-item label="生日">
               <a-date-picker v-model="form.birthday" />
             </a-form-item>
 
-            <a-form-item label="Email">
-              <a-input v-model="form.email" placeholder="Please enter your email..." />
+            <a-form-item label="邮箱">
+              <a-input v-model="form.email" placeholder="" :disabled=true />
             </a-form-item>
-            <a-form-item label="Telephone">
-              <a-input v-model="form.phone" placeholder="Please enter your telephone number..." />
+            <a-form-item label="电话">
+              <a-input v-model="form.phone" placeholder="" />
             </a-form-item>
-            <a-form-item label="Description">
-              <a-input v-model="form.description" placeholder="Please enter your description..." />
+            <a-form-item label="个人简介">
+              <a-input v-model="form.description" placeholder="" />
             </a-form-item>
-            <a-form-item label="Password">
-              <a-input-password v-model="password" placeholder="Please enter your description..." />
+            <a-form-item label="修改密码">
+              <a-input-password v-model="password" placeholder="" />
             </a-form-item>
-            <a-form-item label="confirmPassword">
-              <a-input-password v-model="confirmPassword" placeholder="Please enter your description..." />
+            <a-form-item label="重复密码">
+              <a-input-password v-model="confirmPassword" placeholder="" />
             </a-form-item>
             <a-form-item>
               <a-button type="primary" @click="updateUser">保存</a-button>

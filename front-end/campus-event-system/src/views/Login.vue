@@ -60,7 +60,6 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { Message } from '@arco-design/web-vue';
 import { onMounted } from 'vue';
-// import { toRaw } from 'vue';
 
 
 export default {
@@ -70,14 +69,16 @@ export default {
     const router = useRouter();
     async function handleSubmit() {
       try {
-        // console.log(loginForm.value);
         const response = await axios.post(`/api/user/login`, loginForm.value);
-        console.log('登录成功:', response.data);
         localStorage.setItem('access_token', response.data.access_token);
         localStorage.setItem('token_type', response.data.token_type);
         localStorage.setItem('expire_time', response.data.expire_time);
         localStorage.setItem('uuid', response.data.user.id);
-        router.push('/');
+        localStorage.setItem('permission_group', response.data.user.permission_group);
+        router.push('/').then(() => {
+          window.location.reload();
+          Message.success('登录成功');
+        });
       } catch (error) {
         Message.error('登录失败');
       }

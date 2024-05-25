@@ -1,6 +1,14 @@
 
 import axios from 'axios';
 
+function logout() {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('token_type');
+    localStorage.removeItem('expire_time');
+    localStorage.removeItem('uuid');
+    localStorage.removeItem('permission_group');
+}
+
 function verifyLoginState(access : boolean) : boolean {
     if (!localStorage.getItem('access_token') || !localStorage.getItem('token_type')) {
         return false;
@@ -31,4 +39,4 @@ function verifyLoginState(access : boolean) : boolean {
     return true;
 }
 
-export default { verifyLoginState };
+export default { verifyLoginState, logout };

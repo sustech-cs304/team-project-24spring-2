@@ -1,16 +1,19 @@
 
 <script>
-import { ref , toRefs, onMounted} from 'vue';
+import { ref, toRefs, onMounted} from 'vue';
+
 import {
   IconHeart,
   IconMessage,
   IconStar,
   IconStarFill,
   IconHeartFill,
+  IconDelete
 } from '@arco-design/web-vue/es/icon';
 import CustomImage from './CustomImage.vue';
 import axios from 'axios';
 import Pictures from './Pictures.vue';
+import { Message } from '@arco-design/web-vue';
 
 export default {
   name: 'Comment',
@@ -20,16 +23,24 @@ export default {
     IconStar,
     IconStarFill,
     IconHeartFill,
+    IconDelete,
     CustomImage,
     Pictures,
   },
   props: {
     comment: {
       required: true,
+    },
+    delete: {
+      required: false,
+      default: false,
     }
   },
-  setup(props) {
-    const { comment } = toRefs(props);
+  emits: ['delete'],
+  setup(props, { emit }) {
+    const propsRef = toRefs(props);
+    const comment = propsRef.comment;
+    const canDelete = propsRef.delete;
     const user = ref({});
     const attachment = ref([]);
     const hasAttachment = ref(false);
@@ -42,12 +53,11 @@ export default {
     };
     const onStarChange = () => {
       star.value = !star.value;
-
     };
 
 
     const fetchUser = async (userId) => {
-      const response = await axios.post(`/api/user/get-user?userId=${userId}`);
+      let response = await axios.post(`/api/user/get-user?userId=${userId}`);
       return response.data;
     };
 
@@ -64,7 +74,7 @@ export default {
 
         if (attachment.value.length > 0) {
           hasAttachment.value = true;
-          const suffix = attachment.value[0].split('.').pop().toLowerCase();
+          let suffix = attachment.value[0].split('.').pop().toLowerCase();
           isPicture.value = !videoExtensions.has(suffix);
         }
       } catch (error) {
@@ -74,9 +84,27 @@ export default {
 
 
     async function getAttachment(commentId) {
-      const response = await axios.post(`/api/comment/get-comment-attachments?commentId=${commentId}`);
-      console.log(response.data);
+      let response = await axios.post(`/api/comment/get-comment-attachments?commentId=${commentId}`);
       return response.data;
+    }
+
+    async function deleteComment(commentId) {
+      try {
+        let response = await axios.post(`/api/comment/delete-comment?commentId=${commentId}`, {}, {
+          headers: {
+            'Authorization': localStorage.getItem('token_type') + ' ' + localStorage.getItem('access_token')
+          }
+        });
+        if (response.status === 200) {
+          Message.success('删除成功');
+          emit('delete');
+        } else {
+          Message.error('删除失败');
+        }
+      } catch (error) {
+        Message.error('删除失败');
+        console.error('An error occurred:', error);
+      }
     }
 
     return {
@@ -88,7 +116,9 @@ export default {
       isPicture,
       hasAttachment,
       onLikeChange,
-      onStarChange
+      onStarChange,
+      canDelete,
+      deleteComment
     }
   },
 };
@@ -99,13 +129,31 @@ export default {
     :author="user.nickname"
     :content="comment.content"
     :datetime="$formatDateTime(comment.create_time)"
+    :style="{ font: '16px Arial, sans-serif' }"
   >
-
-
-
-
-    <!-- <template #actions>
-      <span class="action" key="heart" @click="onLikeChange">
+    <template #avatar>
+      <a-avatar>
+        <CustomImage
+          alt="avatar"
+          :src="'user.avatar_url'"
+          fallbackSrc="test1.jpeg"
+        />
+      </a-avatar>
+    </template>
+  </a-comment> 
+  <div v-if="hasAttachment&&isPicture" class="comment-pics">
+    <a-image-preview-group v-if="hasAttachment&&isPicture">
+      <a-image v-for="(img, index) in attachment" :key="index" :src="img" width="100" height="100" class="comment-picture"/>
+    </a-image-preview-group>
+  </div>
+  <div v-if="hasAttachment&&!isPicture" >
+    <video  controls :style="{ width: '400px', height: '300px' }" >
+      <source :src="attachment[0]">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+  <!-- <template #actions> -->
+      <!-- <span class="action" key="heart" @click="onLikeChange">
         <span v-if="like">
           <IconHeartFill :style="{ color: '#f53f3f' }" />
         </span>
@@ -125,34 +173,27 @@ export default {
       </span>
       <span class="action" key="reply">
         <IconMessage /> Reply
+      </span> -->
+    <div class="actions">
+      <span v-if="canDelete" class="action" key="delete" @click="deleteComment(comment.id)">
+        <IconDelete />
+        Delete
       </span>
-    </template> -->
-    <template #avatar>
-      <a-avatar>
-        <CustomImage
-          alt="avatar"
-          :src="'user.avatar_url'"
-          fallbackSrc="test1.jpeg"
-        />
-      </a-avatar>
-    </template>
-  </a-comment> 
-  <div  v-if="hasAttachment&&isPicture" class="attach">
-    <pictures   :images="attachment" />
-  </div>
-  <div v-if="hasAttachment&&!isPicture" >
-    <video  controls :style="{ width: '400px', height: '300px' }" >
-      <source :src="attachment[0]">
-      Your browser does not support the video tag.
-    </video>
-  </div>
-
-
+    </div>
+    <!-- </template> -->
   <a-divider />
 </template>
 
 
 <style scoped>
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5vh;
+  margin-left: 4.5vh;
+}
+
 .action {
   display: inline-block;
   padding: 0 4px;
@@ -162,17 +203,25 @@ export default {
   border-radius: 2px;
   cursor: pointer;
   transition: all 0.1s ease;
+
 }
+
 .action:hover {
   background: var(--color-fill-3);
 }
-.attach {
-  height: 30vh;
-  width: 30vw;
-  margin-top: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
+
+.comment-pics {
+  margin-left: 4.5vh;
+  margin-top: 0.1vh;
 }
+
+.comment-picture {
+  margin-top: 0.2vh;
+  cursor: pointer;
+}
+
+.comment-picture:hover {
+  filter: brightness(70%);
+}
+
 </style>
