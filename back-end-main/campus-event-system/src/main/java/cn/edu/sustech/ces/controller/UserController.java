@@ -237,12 +237,17 @@ public class UserController {
     @PreAuthorize("hasAnyRole('INSTITUTE_ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<?> changePermission(@RequestParam UUID userId, @RequestParam PermissionGroup permissionGroup) {
         User currentUser = CESUtils.getAuthorizedUser();
+
+        if (permissionGroup.ordinal() >= currentUser.getPermissionGroup().ordinal()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You can not change someone to a higher or equal permission group");
+        }
+
         User user = userService.getUserById(userId);
         if (user == null) {
             return ResponseEntity.badRequest().body("User Not Found");
         }
         if (currentUser.getPermissionGroup().ordinal() <= user.getPermissionGroup().ordinal()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You can not change the permission of users with higher or equal permission group");
         }
         user.setPermissionGroup(permissionGroup);
         userService.updateUser(user);
