@@ -388,4 +388,9 @@ export default {
   justify-content: space-between;
   align-items: center;
 }
+/* .markdown-content {
+
+width: 20vw;
+overflow: hidden;
+} */
 </style>

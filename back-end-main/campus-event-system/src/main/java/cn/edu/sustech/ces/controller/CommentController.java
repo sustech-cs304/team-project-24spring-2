@@ -107,6 +107,9 @@ public class CommentController {
         return ResponseEntity.ok(commentService.getCommentsByEventId(eventId));
     }
 
+    private static final String[] IMAGE_SUFFIX = {"jpg", "jpeg", "png", "gif", "bmp", "webp"};
+    private static final String[] VIDEO_SUFFIX = {"mp4", "avi", "mov", "wmv", "flv", "mkv", "rmvb", "webm"};
+
     @PostMapping("/get-comment-attachments")
     public ResponseEntity<?> getCommentAttachments(@RequestParam UUID commentId) {
         Comment comment = commentService.getCommentById(commentId);
@@ -122,7 +125,19 @@ public class CommentController {
                 return false;
             }
             suffix = Optional.of(suffix.get().toLowerCase());
-            return suffix.get().equalsIgnoreCase("jpg") || suffix.get().equalsIgnoreCase("jpeg") || suffix.get().equalsIgnoreCase("png") || suffix.get().equalsIgnoreCase("mp4");
+            return suffix.map(s -> {
+                for (String imageSuffix : IMAGE_SUFFIX) {
+                    if (s.equals(imageSuffix)) {
+                        return true;
+                    }
+                }
+                for (String videoSuffix : VIDEO_SUFFIX) {
+                    if (s.equals(videoSuffix)) {
+                        return true;
+                    }
+                }
+                return false;
+            }).orElse(false);
         }).map(item -> "/" + minioService.getCommentBucket() + "/" + item.objectName()).toList();
         return ResponseEntity.ok(urls);
     }

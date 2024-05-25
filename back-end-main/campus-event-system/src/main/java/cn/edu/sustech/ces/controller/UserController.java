@@ -15,6 +15,8 @@ import cn.edu.sustech.ces.utils.CESUtils;
 import com.alibaba.fastjson.JSONObject;
 import lombok.AllArgsConstructor;
 import okhttp3.Response;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.SecurityConfig;
@@ -68,10 +70,16 @@ public class UserController {
         String nickName = user.getNickname();
         String avatarUrl = user.getAvatarUrl();
         int permissionGroup = user.getPermissionGroup().ordinal();
+        String email = user.getEmail();
+        Long birthday = user.getBirthday();
+        UserGender gender = user.getGender();
         JSONObject response = new JSONObject();
         response.put("nickname", nickName);
         response.put("avatar_url", avatarUrl);
         response.put("permission_group", permissionGroup);
+        response.put("email", email);
+        response.put("birthday", birthday);
+        response.put("gender", gender);
         return ResponseEntity.ok(response);
     }
 
@@ -83,6 +91,19 @@ public class UserController {
             return ResponseEntity.badRequest().body("User Not Found");
         }
         return ResponseEntity.ok(user);
+    }
+
+    @PostMapping("/list-user-size")
+    @PreAuthorize("hasAnyRole('INSTITUTE_ADMIN', 'SUPER_ADMIN')")
+    public ResponseEntity<?> listUserSize(@RequestParam(required = false) String nickname, @RequestParam(required = false) String email) {
+        return ResponseEntity.ok(userService.listUserSize(nickname, email));
+    }
+
+    @PostMapping("/list-user")
+    @PreAuthorize("hasAnyRole('INSTITUTE_ADMIN', 'SUPER_ADMIN')")
+    public ResponseEntity<?> listUser(@RequestParam(required = false, defaultValue = "0") int page, @RequestParam(required = false, defaultValue = "10") int size, @RequestParam(required = false) String nickname, @RequestParam(required = false) String email) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(userService.listUser(pageable, nickname, email));
     }
 
     @PostMapping("/get-user-name")
