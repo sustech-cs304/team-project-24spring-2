@@ -91,6 +91,18 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    @PostMapping("/list-user-size")
+    @PreAuthorize("hasAnyRole('INSTITUTE_ADMIN', 'SUPER_ADMIN')")
+    public ResponseEntity<?> listUserSize(@RequestParam(required = false) String nickname, @RequestParam(required = false) String email) {
+        return ResponseEntity.ok(userService.listUserSize(nickname, email));
+    }
+
+    @PostMapping("/list-user")
+    @PreAuthorize("hasAnyRole('INSTITUTE_ADMIN', 'SUPER_ADMIN')")
+    public ResponseEntity<?> listUser(@RequestParam(required = false) String nickname, @RequestParam(required = false) String email) {
+        return ResponseEntity.ok(userService.listUser(nickname, email));
+    }
+
     @PostMapping("/get-user-name")
     public ResponseEntity<?> getUserByName(@RequestParam String nickname) {
         User user = userService.getUserByNickname(nickname);

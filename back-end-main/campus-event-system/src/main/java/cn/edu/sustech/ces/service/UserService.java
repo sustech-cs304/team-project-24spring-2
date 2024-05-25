@@ -97,4 +97,21 @@ public class UserService implements UserDetailsService {
         }
         return new CESUserDetails(user);
     }
+
+    public List<User> listUser(String nickname, String email) {
+        List<User> user = userRepository.findAll();
+        return user.stream().filter(u -> {
+            if (nickname != null && !u.getNickname().contains(nickname)) {
+                return false;
+            }
+            if (email != null && !u.getEmail().equals(email)) {
+                return false;
+            }
+            return true;
+        }).toList();
+    }
+
+    public Long listUserSize(String nickname, String email) {
+        return (long) listUser(nickname, email).size();
+    }
 }
