@@ -22,9 +22,9 @@ public final class CESUtils {
         return userDetails.getUser();
     }
 
-    public static <T> List<T> getPage(Pageable pageable, List<T> events) {
+    public static <T> List<T> getPage(Pageable pageable, List<T> list) {
         int start = (int) pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), events.size());
-        return events.subList(start, end);
+        int end = Math.min((start + pageable.getPageSize()), list.size());
+        return list.subList(start, end);
     }
 }

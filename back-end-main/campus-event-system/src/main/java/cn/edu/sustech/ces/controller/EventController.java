@@ -5,9 +5,7 @@ import cn.edu.sustech.ces.entity.Ticket;
 import cn.edu.sustech.ces.entity.User;
 import cn.edu.sustech.ces.enums.EventStatus;
 import cn.edu.sustech.ces.enums.PermissionGroup;
-import cn.edu.sustech.ces.service.GlobalSettingService;
-import cn.edu.sustech.ces.service.TicketService;
-import cn.edu.sustech.ces.service.UserService;
+import cn.edu.sustech.ces.service.*;
 import cn.edu.sustech.ces.service.minio.MinioService;
 import cn.edu.sustech.ces.utils.CESUtils;
 import com.alibaba.fastjson.JSONArray;
@@ -21,7 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import cn.edu.sustech.ces.service.EventService;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,6 +33,7 @@ public class EventController {
     private final MinioService minioService;
     private final GlobalSettingService globalSettingService;
     private final UserService userService;
+    private final MailService mailService;
 
     @PostMapping("/create-event")
     @PreAuthorize("hasAnyRole('INSTITUTE_ADMIN', 'DEPARTMENT_ADMIN', 'SUPER_ADMIN')")
@@ -309,7 +307,7 @@ public class EventController {
                 if (publisherUser != null) {
                     publisher = publisherUser.getId();
                 } else {
-                    return ResponseEntity.badRequest().body("Publisher Not Found");
+                    return ResponseEntity.ok(new ArrayList<>());
                 }
             }
         }
@@ -399,7 +397,7 @@ public class EventController {
 
     @PostMapping("/audit-event")
     @PreAuthorize("hasAnyRole('INSTITUTE_ADMIN', 'SUPER_ADMIN')")
-    public ResponseEntity<?> auditEvent(@RequestParam UUID eventId, @RequestParam boolean pass) {
+    public ResponseEntity<?> auditEvent(@RequestParam UUID eventId, @RequestParam boolean pass, @RequestBody(required = false) JSONObject body) {
 
         Event event = eventService.getEventById(eventId);
 
@@ -413,7 +411,7 @@ public class EventController {
 
         if (pass) {
             event.setStatus(EventStatus.PENDING);
-            if (event.getStartTime() > System.currentTimeMillis()) {
+            if (event.getStartTime() < System.currentTimeMillis()) {
                 event.setStatus(EventStatus.IN_PROGRESS);
             }
             if (event.getEndTime() < System.currentTimeMillis()) {
@@ -421,6 +419,18 @@ public class EventController {
             }
         } else {
             event.setStatus(EventStatus.EDITING);
+        }
+        if (body != null && body.containsKey("reason")) {
+            User publisher = userService.getUserById(event.getPublisher());
+            if (publisher != null && publisher.getEmail() != null) {
+                String message = "";
+                if (pass) {
+                    message = "Your event " + event.getTitle() + " has been approved. Message: " + body.getString("reason");
+                } else {
+                    message = "Your event " + event.getTitle() + " has been rejected. Reason: " + body.getString("reason");
+                }
+                mailService.sendSimpleMessage(publisher.getEmail(), "Event Audit Result", message);
+            }
         }
 
         event = eventService.saveEvent(event);

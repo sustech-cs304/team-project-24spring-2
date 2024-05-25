@@ -3,7 +3,6 @@
       :src="src"
       @error="handleImageError"
       :alt="alt"
-      :key="reloadKey"
     />
   </template>
   

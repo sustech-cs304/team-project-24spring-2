@@ -4,8 +4,11 @@ import cn.edu.sustech.ces.entity.*;
 import cn.edu.sustech.ces.enums.PermissionGroup;
 import cn.edu.sustech.ces.repository.UserRepository;
 import cn.edu.sustech.ces.security.CESUserDetails;
+import cn.edu.sustech.ces.utils.CESUtils;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -96,5 +99,26 @@ public class UserService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found with input: " + userInput);
         }
         return new CESUserDetails(user);
+    }
+
+    public List<User> listUser(String nickname, String email) {
+        List<User> user = userRepository.findAll();
+        return user.stream().filter(u -> {
+            if (nickname != null && !u.getNickname().contains(nickname)) {
+                return false;
+            }
+            if (email != null && !u.getEmail().equals(email)) {
+                return false;
+            }
+            return true;
+        }).toList();
+    }
+
+    public Long listUserSize(String nickname, String email) {
+        return (long) listUser(nickname, email).size();
+    }
+
+    public List<User> listUser(Pageable pageable, String nickname, String email) {
+        return CESUtils.getPage(pageable, listUser(nickname, email));
     }
 }
