@@ -23,15 +23,20 @@ public class Order {
     @UuidGenerator
     private UUID id;
 
+    @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private UUID ticketId;
 
+    @Column(nullable = false)
     private Double price;
 
+    @Column(nullable = false)
     private UUID payerId;
 
     @Enumerated(EnumType.ORDINAL)
+    @Column(nullable = false)
     private OrderStatus status;
 
     @Enumerated(EnumType.ORDINAL)

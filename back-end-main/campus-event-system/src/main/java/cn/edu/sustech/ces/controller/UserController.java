@@ -156,7 +156,8 @@ public class UserController {
                 registerDto.getEmail(),
                 passwordEncoder.encode(registerDto.getPassword()),
                 registerDto.getPhone(),
-                PermissionGroup.USER);
+                PermissionGroup.USER,
+                UserGender.OTHER);
         codeService.removeCode(registerDto.getEmail());
         return ResponseEntity.ok(newUser);
     }
