@@ -15,6 +15,8 @@ import cn.edu.sustech.ces.utils.CESUtils;
 import com.alibaba.fastjson.JSONObject;
 import lombok.AllArgsConstructor;
 import okhttp3.Response;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.SecurityConfig;
@@ -99,8 +101,9 @@ public class UserController {
 
     @PostMapping("/list-user")
     @PreAuthorize("hasAnyRole('INSTITUTE_ADMIN', 'SUPER_ADMIN')")
-    public ResponseEntity<?> listUser(@RequestParam(required = false) String nickname, @RequestParam(required = false) String email) {
-        return ResponseEntity.ok(userService.listUser(nickname, email));
+    public ResponseEntity<?> listUser(@RequestParam(required = false, defaultValue = "0") int page, @RequestParam(required = false, defaultValue = "10") int size, @RequestParam(required = false) String nickname, @RequestParam(required = false) String email) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(userService.listUser(pageable, nickname, email));
     }
 
     @PostMapping("/get-user-name")
