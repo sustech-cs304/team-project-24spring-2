@@ -3,7 +3,7 @@
     <Breadcrumb :items="['menu.user', 'menu.user.setting']" />
     <a-row style="margin-bottom: 16px">
       <a-col :span="24">
-        <UserPanel />
+        <UserPanel v-model="userInfo" />
       </a-col>
     </a-row>
     <a-row class="wrapper">
@@ -25,13 +25,12 @@
 </template>
 
 <script lang="ts" setup>
-  import { onBeforeMount } from 'vue';
   import { UserState } from '@/store/modules/user/types';
   import { useUserStore } from '@/store';
   import { updateUser, updateUserForm } from '@/api/user';
   import { Notification } from '@arco-design/web-vue';
   import { keys } from 'lodash';
-  import { ref } from 'vue';
+  import { ref,onBeforeMount } from 'vue';
 
   import useLoading from '@/hooks/loading';
   import UserPanel from './components/user-panel.vue';
@@ -67,6 +66,9 @@
     if (userInfo.value.description !== userInfoOrigin.value.description) {
       submition.value.description = userInfo.value.description;
     }
+    if (userInfo.value.gender !== userInfoOrigin.value.gender) {
+      submition.value.gender = userInfo.value.gender;
+    }
 
     const updateKey = keys(submition.value);
     if (updateKey.length === 0) {
@@ -75,9 +77,7 @@
         content: '用户信息没有更新',
       });
     } else {
-      console.log(submition.value);
       const res = await updateUser(submition.value);
-      console.log(res);
       Notification.success({
         title: '更新成功',
         content: '用户信息更新成功',

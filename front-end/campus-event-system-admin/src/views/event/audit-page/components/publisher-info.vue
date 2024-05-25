@@ -11,7 +11,12 @@
       >
         <img :src="props.userInfo.avatar_url" />
       </a-avatar>
-      <a-avatar :style="{ backgroundColor: '#3370ff' }" :size="100" class="avatar" v-else>
+      <a-avatar
+        :style="{ backgroundColor: '#3370ff' }"
+        :size="100"
+        class="avatar"
+        v-else
+      >
         <IconUser />
       </a-avatar>
     </div>
@@ -43,11 +48,17 @@
           已认证
         </a-tag>
         <span v-else-if="data.label === 'User.info.gender'">
-          <div v-if="value === 'MALE'"> {{$t('User.info.gender.male')}} </div>
-          <div v-else-if="value == 'FEMALE'"> {{$t('User.info.gender.female')}} </div>
-          <div v-else-if="value == 'OTHER'">  {{$t('User.info.gender.other')}} </div>
+          <div v-if="value === 'MALE'">
+            <icon-man /> {{ $t('User.info.gender.male') }}
+          </div>
+          <div v-else-if="value == 'FEMALE'">
+            <icon-woman />{{ $t('User.info.gender.female') }}
+          </div>
+          <div v-else-if="value == 'OTHER'">
+            <icon-user /> {{ $t('User.info.gender.other') }}
+          </div>
           <div v-else>
-            <icon-public />
+            <icon-robot />
             {{ $t('User.info.gender.wierd') }}
           </div>
         </span>

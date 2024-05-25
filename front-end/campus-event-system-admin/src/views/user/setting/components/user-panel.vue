@@ -51,48 +51,69 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref } from 'vue';
+  import { ref, computed } from 'vue';
   import type {
     FileItem,
     RequestOption,
   } from '@arco-design/web-vue/es/upload/interfaces';
   import { useUserStore } from '@/store';
-  import { userUploadApi } from '@/api/user-center';
+  import { uploadFile } from '@/api/file';
+  import { updateUserForm, updateUser } from '@/api/user';
   import type { DescData } from '@arco-design/web-vue/es/descriptions/interface';
+  import { Notification } from '@arco-design/web-vue';
 
   const userStore = useUserStore();
+
   const file = {
     uid: '-2',
     name: 'avatar.png',
     url: userStore.avatar_url,
   };
-  const renderData = [
-    {
-      label: 'User.info.realname',
-      value: userStore.real_name,
-    },
-    {
-      label: 'User.info.nickname',
-      value: userStore.nickname,
-    },
-    // {
-    //   label: 'userSetting.label.certification',
-    //   value: userStore.certification,
-    // },
-    {
-      label: 'User.info.email',
-      value: userStore.email,
-    },
-    {
-      label: 'User.info.phone',
-      value: userStore.phone,
-    },
+  const renderData = computed<DescData[]>(() => {
+    return [
+      {
+        label: 'User.info.realname',
+        value: userStore.real_name,
+      },
+      {
+        label: 'User.info.nickname',
+        value: userStore.nickname,
+      },
+      {
+        label: 'User.info.email',
+        value: userStore.email,
+      },
+      {
+        label: 'User.info.phone',
+        value: userStore.phone,
+      },
+    ];
+  });
 
-  ] as DescData[];
   const fileList = ref<FileItem[]>([file]);
   const uploadChange = (fileItemList: FileItem[], fileItem: FileItem) => {
     fileList.value = [fileItem];
   };
+
+  const updateAvatar = async (url: string) => {
+    const submition = ref<updateUserForm>({} as updateUserForm);
+    submition.value.avatar_url = url;
+    try {
+      const res = await updateUser(submition.value);
+      if (res) {
+        Notification.success({
+          title: '更新成功',
+          content: '头像更新成功',
+        });
+      }
+    } catch (error) {
+      Notification.error({
+        title: '更新失败',
+        content: '头像更新失败',
+      });
+    }
+  };
+
   const customRequest = (options: RequestOption) => {
     // docs: https://axios-http.com/docs/cancellation
     const controller = new AbortController();
@@ -120,11 +141,16 @@
         // https://github.com/axios/axios/issues/1630
         // https://github.com/nuysoft/Mock/issues/127
 
-        const res = await userUploadApi(formData, {
+        const res = await uploadFile(
+          formData,
+          {
+            usage: 'avatar',
+          },
           controller,
-          onUploadProgress,
-        });
+          onUploadProgress
+        );
         onSuccess(res);
+        updateAvatar(res.data);
       } catch (error) {
         onError(error);
       }
@@ -135,6 +161,10 @@
       },
     };
   };
+
+  defineExpose({
+    userStore,
+  });
 </script>
 
 <style scoped lang="less">

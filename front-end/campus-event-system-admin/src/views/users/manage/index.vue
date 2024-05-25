@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <Breadcrumb :items="['menu.user', 'menu.user.manage']" />
+    <Breadcrumb :items="['menu.user', 'menu.users.manage']" />
     <a-card class="general-card" :title="$t('User.Manage')">
       <a-row>
         <a-col :flex="1">
@@ -24,10 +24,10 @@
             </a-row>
             <a-row :gutter="16">
               <a-col :span="24">
-                <a-form-item field="nickname" :label="$t('User.info.email')">
+                <a-form-item field="email" :label="$t('User.info.email')">
                   <a-input
                     v-model="searchForm.email"
-                    :placeholder="$t('search.Event.Publisher.placeholder')"
+                    :placeholder="$t('search.User.email.placeholder')"
                     allow-clear
                     @change="search"
                   />
@@ -139,36 +139,39 @@
           {{ rowIndex + 1 + (pagination.current - 1) * pagination.pageSize }}
         </template>
 
-        <template #title="{ record }">
-          {{ record.title }}
+        <template #nickname="{ record }">
+          {{ record.nickname }}
         </template>
 
-        <template #start_time="{ record }">
-          {{ longTime2String(record.start_time) }}
+        <template #email="{ record }">
+          {{ record.email }}
         </template>
 
-        <template #end_time="{ record }">
-          {{ longTime2String(record.end_time) }}
+        <template #phone="{ record }">
+          {{ record.phone }}
         </template>
 
-        <template #location_name="{ record }">
-          {{ record.location_name }}
+        <template #id="{ record }">
+          {{ record.id }}
         </template>
 
-        <template #count="{ record }">
-          {{ record.count + ' / ' + record.capacity }}
-        </template>
-
-        <template #operations="{ record }">
+        <template #permission_group="{ record }">
           <a-space>
-            <!-- <a-button size="small" type="primary" @click.prevent="">
-              {{ $t('manageUserTable.columns.operation') }}
-            </a-button> -->
-            <a-select @change.prevent="changeUserPermission(record.id, '')">
+            <a-select
+              v-model="record.permission_group"
+              :style="{ width: '120px' }"
+              :disabled="
+                roleList.indexOf(userStore.permission_group) <=
+                roleList.indexOf(record.permission_group)
+              "
+            >
               <a-option
                 v-for="(item, index) in roleList"
                 :key="index"
                 :value="item"
+                :disabled="
+                  roleList.indexOf(userStore.permission_group) <= index
+                "
               >
                 {{ $t(`User.permission.group.${item}`) }}
               </a-option>
@@ -177,6 +180,34 @@
         </template>
       </a-table>
     </a-card>
+
+    <a-card class="actions">
+      <a-space>
+        <a-button @click="resetUser">
+          <template #icon>
+            <icon-redo />
+          </template>
+          {{ $t('eventEdit.reset') }}
+        </a-button>
+        <a-button type="primary" @click="onClickSave">
+          <template #icon>
+            <icon-save />
+          </template>
+          {{ $t('User.permission.save') }}
+        </a-button>
+      </a-space>
+    </a-card>
+    <a-modal
+      v-model:visible="confirmVis"
+      @cancel="handleCancel"
+      :on-before-ok="handleBeforeOk"
+      unmountOnClose
+    >
+      <template #title> {{ $t('User.permModify.title') }} </template>
+      <div>
+        {{ $t('User.permModify.info') }}
+      </div>
+    </a-modal>
   </div>
 </template>
 
@@ -185,12 +216,14 @@
   import { computed, ref, reactive, watch, nextTick, onBeforeMount } from 'vue';
   import { useI18n } from 'vue-i18n';
   import useLoading from '@/hooks/loading';
-  import { roleList } from '@/store/modules/user';
+  import { roleList, rootUserID } from '@/store/modules/user/types';
+  import { Notification } from '@arco-design/web-vue';
   import {
     listUsers,
     listUsersSize,
     UsersRecord,
     UsersParams,
+    changeUserPerm,
   } from '@/api/users';
   import { getSetting } from '@/api/global';
   import { Pagination } from '@/types/global';
@@ -199,15 +232,19 @@
   import cloneDeep from 'lodash/cloneDeep';
   import Sortable from 'sortablejs';
   import { keys } from 'lodash';
+  import { useUserStore } from '@/store';
 
   type SizeProps = 'mini' | 'small' | 'medium' | 'large';
   type Column = TableColumnData & { checked?: true };
 
   const router = useRouter();
+  const confirmVis = ref(false);
+  const userStore = useUserStore();
 
   const { loading, setLoading } = useLoading(true);
   const { t } = useI18n();
   const renderData = ref<UsersRecord[]>([]);
+  const originData = ref<UsersRecord[]>([]);
   const searchForm = ref<UsersParams>({} as UsersParams);
   const cloneColumns = ref<Column[]>([]);
   const showColumns = ref<Column[]>([]);
@@ -227,23 +264,62 @@
     ...basePagination,
   });
 
-  //   const auditEvent = (uuid: string) => {
-  //     router.push({
-  //       path: '/event/audit',
-  //       query: {
-  //         uuid,
-  //         usage: 'AUDITING',
-  //       },
-  //     });
-  //   };
-  const changeUserPermission = (uuid: string, group: string) => {
-    router.push({
-      path: '/user/permission',
-      query: {
-        userId: uuid,
-        permissionGroup: group,
-      },
+  const resetUser = () => {
+    console.log(renderData.value);
+    for (let i = 0; i < renderData.value.length; i += 1) {
+      renderData.value[i].permission_group =
+        originData.value[i].permission_group;
+    }
+    console.log(renderData.value);
+  };
+
+  const handleCancel = () => {
+    confirmVis.value = false;
+  };
+
+  const handleBeforeOk = async () => {
+    await traversalModified();
+    return true;
+  };
+
+  const onClickSave = () => {
+    for (let i = 0; i < renderData.value.length; i += 1) {
+      if (
+        renderData.value[i].permission_group !==
+        originData.value[i].permission_group
+      ) {
+        confirmVis.value = true;
+        return;
+      }
+    }
+    Notification.info({
+      title: '没有更新',
+      content: '用户权限没有更新',
     });
+  };
+  const traversalModified = async () => {
+    const submitData = [];
+    for (let i = 0; i < renderData.value.length; i += 1) {
+      if (
+        renderData.value[i].permission_group !==
+        originData.value[i].permission_group
+      ) {
+        submitData.push(renderData.value[i]);
+      }
+    }
+
+    const promises = Object.values(submitData).map((user) => {
+      return changeUserPermission(user.id, user.permission_group);
+    });
+    const res = await Promise.all(promises);
+    Notification.success({
+      title: '更新成功',
+      content: '用户权限更新成功',
+    });
+  };
+
+  const changeUserPermission = (uuid: string, group: string) => {
+    return changeUserPerm(uuid, group);
   };
 
   const densityList = computed(() => [
@@ -271,31 +347,30 @@
       slotName: 'index',
     },
     {
-      title: t('manageEventTable.columns.title'),
-      dataIndex: 'title',
+      title: t('User.info.id'),
+      dataIndex: 'id',
+    },
+    {
+      title: t('User.info.nickname'),
+      dataIndex: 'nickname',
     },
 
     {
-      title: t('manageEventTable.columns.startTime'),
-      dataIndex: 'start_time',
-      slotName: 'start_time',
-    },
-    {
-      title: t('manageEventTable.columns.endTime'),
-      dataIndex: 'end_time',
-      slotName: 'end_time',
+      title: t('User.info.email'),
+      dataIndex: 'email',
     },
 
     {
-      title: t('manageEventTable.columns.location'),
-      dataIndex: 'location_name',
-      slotName: 'location_name',
+      title: t('User.info.phone'),
+      dataIndex: 'phone',
     },
+
     {
-      title: t('manageEventTable.columns.operations'),
-      dataIndex: 'operations',
-      slotName: 'operations',
+      title: t('User.info.permission_group'),
+      dataIndex: 'permission_group',
+      slotName: 'permission_group',
       align: 'center',
+      width: 160,
     },
   ]);
 
@@ -321,6 +396,7 @@
 
       console.log(res.data);
       renderData.value = res.data;
+      originData.value = cloneDeep(res.data);
       pagination.current = params.page;
       pagination.total = resLen.data;
     } catch (err) {
@@ -476,5 +552,14 @@
       margin-left: 12px;
       cursor: pointer;
     }
+  }
+
+  .actions {
+    position: flex;
+    height: 65px;
+    margin-top: 10px;
+    // margin:  auto;
+    background: var(--color-bg-2);
+    text-align: right;
   }
 </style>

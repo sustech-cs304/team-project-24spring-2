@@ -1,5 +1,5 @@
 export default {
-  'menu.user.manage': '用户管理',
+  'menu.users.manage': '用户管理',
   'User.Manage': '用户管理',
 
   'search.User.nickname.placeholder': '按昵称搜索',

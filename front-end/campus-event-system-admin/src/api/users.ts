@@ -6,12 +6,14 @@ import { UserState } from '@/store/modules/user/types';
 export interface UsersParams {
   size: number;
   page: number;
-  email?: number;
-  nickname?: number;
+  email?: string;
+  nickname?: string;
 }
 
 export interface UsersRecord {
+  id: string;
   nickname: string;
+  phone: string;
   email: string;
   avatar_url: string;
   permission_group: string;
@@ -49,13 +51,14 @@ export function getUserInfo(uuid: string) {
   );
 }
 
-export function changeUserPerm(uuid: string) {
+export function changeUserPerm(uuid: string, perm: string) {
   return axios.post<UserState>(
-    `/api/get-full-info`,
+    `/api/user/change-permission`,
     {},
     {
       params: {
         userId: uuid,
+        permissionGroup: perm,
       },
     }
   );

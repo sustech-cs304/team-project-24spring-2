@@ -140,16 +140,22 @@
     if (blob == null) {
       return '';
     }
+    const controller = new AbortController();
 
     const newCover = new File([blob], 'cover.png', {
       type: 'image/png',
     });
     const coverData = new FormData();
     coverData.append('file', newCover);
-    const resCover = await uploadFile(coverData, {
-      usage: 'event',
-      eventId: formData.value.uuid,
-    });
+
+    const resCover = await uploadFile(
+      coverData,
+      {
+        usage: 'event',
+        eventId: formData.value.uuid,
+      },
+      controller
+    );
     coverImage.value.blob = null;
     return resCover.data;
   };
@@ -196,6 +202,7 @@
 
   const customUploadUser = (option: any) => {
     const { onProgress, onError, onSuccess, fileItem, name } = option;
+    const controller = new AbortController();
     const form = new FormData();
     form.append('file', fileItem.file);
     uploadFile(
@@ -203,6 +210,7 @@
       {
         usage: 'user',
       },
+      controller,
       (e: any) => {
         onProgress({ percent: e.loaded / e.total }, e);
       }

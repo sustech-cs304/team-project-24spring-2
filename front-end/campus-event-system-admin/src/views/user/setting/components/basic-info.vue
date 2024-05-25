@@ -31,11 +31,16 @@
       <a-select
         v-model="formData.gender"
         :placeholder="$t('userSetting.basicInfo.placeholder.area')"
-        disabled
       >
-        <a-option value="MALE"> {{ $t('User.info.gender.male') }}</a-option>
-        <a-option value="FEMALE"> {{ $t('User.info.gender.female') }}</a-option>
-        <a-option value="OTHER"> {{ $t('User.info.gender.other') }}</a-option>
+        <a-option value="MALE">
+          <icon-man />{{ $t('User.info.gender.male') }}</a-option
+        >
+        <a-option value="FEMALE">
+          <icon-woman />{{ $t('User.info.gender.female') }}</a-option
+        >
+        <a-option value="OTHER">
+          <icon-user />{{ $t('User.info.gender.other') }}</a-option
+        >
       </a-select>
     </a-form-item>
     <a-form-item field="email" :label="$t('User.info.email')" disabled>

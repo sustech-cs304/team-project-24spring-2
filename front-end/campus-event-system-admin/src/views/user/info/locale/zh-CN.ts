@@ -15,11 +15,13 @@ export default {
 
   'userSetting.basicInfo.phone.error': '请输入11位数字手机号',
   'User.info': '用户信息',
+  'User.info.id': '用户唯一特征码',
   'User.info.avatar': '头像',
   'User.info.nickname': '昵称',
   'User.info.realname': '姓名',
   'User.info.email': '邮箱',
   'User.info.phone': '电话',
+  'User.info.permission_group': '权限组',
   'User.info.description': '描述',
   'User.info.description.empty': '暂无描述',
 
@@ -34,5 +36,8 @@ export default {
   'User.permission.group.DEPARTMENT_ADMIN': '部门管理员',
   'User.permission.group.INSTITUTE_ADMIN': '学院管理员',
   'User.permission.group.SUPER_ADMIN': '超级管理员',
-  
+  'User.permission.save': '保存更改',
+
+  'User.permModify.title': '保存权限更改',
+  'User.permModify.info': '确认进行权限修改吗？此操作可能造成不可预料的后果。',
 };

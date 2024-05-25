@@ -3,12 +3,15 @@ import axios, { AxiosResponse } from 'axios';
 export function uploadFile(
   data: FormData,
   params: any,
+  controller: AbortController,
   uploadProgress: (event: any) => void = () => {}
 ) {
   return axios.post('/api/file/upload', data, {
     params,
+    signal: controller.signal,
     onUploadProgress: uploadProgress,
-  });
+    
+  },);
 }
 
 export function getFile(url: string | undefined) {

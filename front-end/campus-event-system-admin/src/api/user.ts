@@ -17,6 +17,8 @@ export interface LoginRes {
 export interface updateUserForm {
   phone?: string;
   description?: string;
+  avatar_url?: string;
+  gender?: string;
 }
 
 export function login(data: LoginData) {

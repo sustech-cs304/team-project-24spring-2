@@ -162,7 +162,7 @@
         time_range: [new Date(data.start_time), new Date(data.end_time)],
         uuid,
       };
-      console.log(data.status)
+      console.log(data.status);
       if (data.status !== 'EDITING') {
         Notification.warning({
           title: '编辑失败',
@@ -198,12 +198,17 @@
       const newMkd = new File([mkdText], 'content.md', {
         type: 'text/markdown',
       });
+      const controller = new AbortController();
       const mkdData = new FormData();
       mkdData.append('file', newMkd);
-      const resMkd = await uploadFile(mkdData, {
-        usage: 'event',
-        eventId: uuid,
-      });
+      const resMkd = await uploadFile(
+        mkdData,
+        {
+          usage: 'event',
+          eventId: uuid,
+        },
+        controller
+      );
       return resMkd.data;
     }
     return '';
