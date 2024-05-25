@@ -2,6 +2,7 @@ package cn.edu.sustech.ces.service;
 
 import cn.edu.sustech.ces.entity.*;
 import cn.edu.sustech.ces.enums.PermissionGroup;
+import cn.edu.sustech.ces.enums.UserGender;
 import cn.edu.sustech.ces.repository.UserRepository;
 import cn.edu.sustech.ces.security.CESUserDetails;
 import cn.edu.sustech.ces.utils.CESUtils;
@@ -26,7 +27,7 @@ public class UserService implements UserDetailsService {
 
     public User registerUser(String nickname, String realName, String description,
                              String email, String encryptedPassword, String phone,
-                             PermissionGroup group) {
+                             PermissionGroup group, UserGender gender) {
         User user = new User();
         user.setNickname(nickname);
         user.setRealName(realName);
@@ -35,6 +36,7 @@ public class UserService implements UserDetailsService {
         user.setPassword(encryptedPassword);
         user.setPhone(phone);
         user.setPermissionGroup(group);
+        user.setGender(gender);
         userRepository.save(user);
         return user;
     }
@@ -104,13 +106,17 @@ public class UserService implements UserDetailsService {
     public List<User> listUser(String nickname, String email) {
         List<User> user = userRepository.findAll();
         return user.stream().filter(u -> {
-            if (nickname != null && !u.getNickname().contains(nickname)) {
+            try {
+                if (nickname != null && !u.getNickname().contains(nickname)) {
+                    return false;
+                }
+                if (email != null && (u.getEmail() == null || !u.getEmail().equals(email))) {
+                    return false;
+                }
+                return true;
+            } catch (Exception e) {
                 return false;
             }
-            if (email != null && !u.getEmail().equals(email)) {
-                return false;
-            }
-            return true;
         }).toList();
     }
 

@@ -1,14 +1,9 @@
 package cn.edu.sustech.ces.service;
 
-import cn.edu.sustech.ces.entity.Order;
-import cn.edu.sustech.ces.entity.Ticket;
-import cn.edu.sustech.ces.entity.User;
-import cn.edu.sustech.ces.entity.UserTicket;
+import cn.edu.sustech.ces.entity.*;
+import cn.edu.sustech.ces.enums.EventStatus;
 import cn.edu.sustech.ces.enums.OrderStatus;
-import cn.edu.sustech.ces.repository.OrderRepository;
-import cn.edu.sustech.ces.repository.TicketRepository;
-import cn.edu.sustech.ces.repository.UserRepository;
-import cn.edu.sustech.ces.repository.UserTicketRepository;
+import cn.edu.sustech.ces.repository.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.transaction.Transactional;
@@ -16,6 +11,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -33,6 +29,7 @@ public class OrderService {
     private final UserTicketRepository userTicketRepository;
     private final EntityManager entityManager;
     private final ConcurrentHashMap<UUID, Lock> ticketLocks = new ConcurrentHashMap<>();
+    private final EventRepository eventRepository;
 
     public void saveOrder(Order order) {
         orderRepository.save(order);
@@ -132,11 +129,12 @@ public class OrderService {
     @Transactional
     public Order lockAndMakeOrder(UUID userId, UUID ticketId) {
         Lock lock = ticketLocks.computeIfAbsent(ticketId, k -> new ReentrantLock());
+        Ticket ticket = null;
         try {
             if (!lock.tryLock(10, TimeUnit.SECONDS)) {
                 return null;
             }
-            Ticket ticket = entityManager.find(Ticket.class, ticketId, LockModeType.OPTIMISTIC);
+            ticket = entityManager.find(Ticket.class, ticketId, LockModeType.OPTIMISTIC);
             if (ticket == null) {
                 return null;
             }
@@ -154,10 +152,18 @@ public class OrderService {
         } finally {
             lock.unlock();
         }
+
+        Optional<Event> event = eventRepository.findById(ticket.getEventId());
+        if (event.isEmpty() || (event.get().getStatus() != EventStatus.PENDING && event.get().getStatus() != EventStatus.IN_PROGRESS)){
+            return null;
+        }
+
         Order order = new Order();
+        order.setName(event.get().getTitle() + " " + ticket.getDescription());
         order.setPayerId(userId);
         order.setTicketId(ticketId);
         order.setStatus(OrderStatus.UNPAID);
+        order.setPrice(ticket.getPrice());
         order = orderRepository.save(order);
         return order;
     }
