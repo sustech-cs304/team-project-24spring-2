@@ -9,7 +9,7 @@ const USERS: AppRouteRecordRaw = {
   meta: {
     locale: 'menu.users',
     requiresAuth: true,
-    icon: 'icon-fire',
+    icon: 'icon-user-group',
     order: 1,
   },
   children: [

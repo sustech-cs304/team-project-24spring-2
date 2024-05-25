@@ -43,6 +43,9 @@
           >
             已认证
           </a-tag>
+
+          <div v-else-if="data.label === 'User.info.permission_group'"> 
+        {{ $t(`User.permission.group.${value}`) }}</div>
           <span v-else>{{ value }}</span>
         </template>
       </a-descriptions>
@@ -86,6 +89,10 @@
       {
         label: 'User.info.phone',
         value: userStore.phone,
+      },
+      {
+        label: 'User.info.permission_group',
+        value: userStore.permission_group,
       },
     ];
   });

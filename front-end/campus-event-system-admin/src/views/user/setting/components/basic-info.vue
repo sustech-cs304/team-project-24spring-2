@@ -56,7 +56,7 @@
       :rules="[
         {
           match: /^[0-9]{11}$/,
-          message: $t('userSetting.basicInfo.phone.error'),
+          message: $t('userSetting.basicInfo.error.phone'),
         },
       ]"
     >
@@ -108,7 +108,7 @@
     default: {} as UserState,
   });
 
-  const emits = defineEmits(['saveBasic']);
+  const emits = defineEmits(['saveBasic', 'resetInfo']);
 
   const onSave = async () => {
     const res = await formRef.value?.validate();
@@ -117,7 +117,7 @@
     }
   };
   const reset = async () => {
-    await formRef.value?.resetFields();
+    emits('resetInfo');
   };
 </script>
 

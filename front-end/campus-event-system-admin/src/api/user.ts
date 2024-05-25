@@ -27,6 +27,10 @@ export function login(data: LoginData) {
     password: data.password,
   };
   return axios.post<LoginRes>('/api/user/login', formal);
+
+
+
+  
 }
 
 export function logout() {

@@ -58,11 +58,16 @@ axios.interceptors.response.use(
   (error) => {
     const { status, statusText, data } = error.response;
 
-    if (status === 403 ) {
+    if (status === 401) {
       Message.error({
-        content: '操作权限不足',
+        content: '未登录或登录失败',
         duration: 3 * 1000,
       });
+    } else if (status === 403) {
+        Message.error({
+            content: '操作权限不足',
+            duration: 3 * 1000,
+          });
     } else if (status === 500) {
       Message.error({
         content: data || statusText,

@@ -13,7 +13,8 @@ export default {
   'userInfo.visits.unit': '人次',
   'userInfo.visits.lastMonth': '较上月',
 
-  'userSetting.basicInfo.phone.error': '请输入11位数字手机号',
+  'userSetting.basicInfo.placeholder.phone': '11位数字手机号',
+  'userSetting.basicInfo.error.phone': '请输入11位数字手机号',
   'User.info': '用户信息',
   'User.info.id': '用户唯一特征码',
   'User.info.avatar': '头像',

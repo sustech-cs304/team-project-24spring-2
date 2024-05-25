@@ -10,14 +10,14 @@
       <a-col :span="24">
         <a-tabs default-active-key="1" type="rounded">
           <a-tab-pane key="1" :title="$t('userSetting.tab.basicInformation')">
-            <BasicInfo v-model="userInfo" @save-basic="onSaveBasic" />
+            <BasicInfo v-model="userInfo" @save-basic="onSaveBasic" @reset-info="onResetInfo" />
           </a-tab-pane>
-          <a-tab-pane key="2" :title="$t('userSetting.tab.securitySettings')">
+          <!-- <a-tab-pane key="2" :title="$t('userSetting.tab.securitySettings')">
             <SecuritySettings />
-          </a-tab-pane>
-          <a-tab-pane key="3" :title="$t('userSetting.tab.certification')">
-            <!-- <Certification /> -->
-          </a-tab-pane>
+          </a-tab-pane> -->
+          <!-- <a-tab-pane key="3" :title="$t('userSetting.tab.certification')">
+            <Certification />
+          </a-tab-pane> -->
         </a-tabs>
       </a-col>
     </a-row>
@@ -84,6 +84,11 @@
       });
       fetchData();
     }
+  };
+
+
+  const onResetInfo = () => {
+    userInfo.value = { ...userInfoOrigin.value };
   };
   onBeforeMount(() => {
     fetchData();

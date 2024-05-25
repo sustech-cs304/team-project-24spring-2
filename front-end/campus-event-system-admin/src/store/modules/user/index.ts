@@ -73,10 +73,21 @@ const useUserStore = defineStore('user', {
         const token = res.data.access_token;
         const expire = res.data.expire_time;
 
+        if (res.data.user.permission_group === 'USER') {
+          throw new Error('普通用户无法登入后台管理界面');
+        }
+
         setToken(token, expire);
-      } catch (err) {
+      } catch (err: any) {
         clearToken();
-        console.log(err);
+        if (err.response) {
+          switch (err.response.status) {
+            case 401:
+              throw new Error('用户名或密码错误');
+            default:
+              throw new Error('未知错误');
+          }
+        }
         throw err;
       }
     },

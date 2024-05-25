@@ -33,16 +33,6 @@ const EVENTS: AppRouteRecordRaw = {
         roles: basicPerm,
       },
     },
-    {
-      path: 'audit-manage',
-      name: 'EventAuditManage',
-      component: () => import('@/views/event/audit-manage/index.vue'),
-      meta: {
-        locale: 'menu.event.audit',
-        requiresAuth: true,
-        roles: basicPerm,
-      },
-    },
 
     {
       path: 'edit',
@@ -55,7 +45,16 @@ const EVENTS: AppRouteRecordRaw = {
         roles: basicPerm,
       },
     },
-
+    {
+      path: 'audit-manage',
+      name: 'EventAuditManage',
+      component: () => import('@/views/event/audit-manage/index.vue'),
+      meta: {
+        locale: 'menu.event.audit',
+        requiresAuth: true,
+        roles: auditPerm,
+      },
+    },
     {
       path: 'audit',
       name: 'EventAudit',
