@@ -71,7 +71,7 @@ public class UserController {
         String avatarUrl = user.getAvatarUrl();
         int permissionGroup = user.getPermissionGroup().ordinal();
         String email = user.getEmail();
-        long birthday = user.getBirthday();
+        Long birthday = user.getBirthday();
         UserGender gender = user.getGender();
         JSONObject response = new JSONObject();
         response.put("nickname", nickName);
