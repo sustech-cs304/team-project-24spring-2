@@ -47,7 +47,6 @@
     settings: SettingRecord[];
   }>();
 
-  const { loading, setLoading } = useLoading();
 </script>
 
 <style scoped lang="less">

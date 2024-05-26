@@ -106,7 +106,6 @@
       setLoading(true);
       const res = await getSettings();
       settingsList.value = res.data;
-      settingsList.value.sort();
       settingsList.value = settingsList.value.map((item) => {
         const p = getSettingProps(item.key);
         return {
@@ -120,6 +119,9 @@
 
       settingsList.value = settingsList.value.filter((item) => {
         return item.description?.includes(searchKeyWord);
+      });
+      settingsList.value.sort((a, b) => {
+        return a.key.localeCompare(b.key);
       });
     } finally {
       setLoading(false);
