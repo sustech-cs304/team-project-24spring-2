@@ -77,7 +77,7 @@
 
         {
           label: t('Event.Category'),
-          value: t(`Event.Category.${renderData.category}`),
+          value: renderData.category,
         },
         {
           label: t('Event.Address'),

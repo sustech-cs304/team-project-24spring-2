@@ -82,4 +82,6 @@ export default {
   'userSetting.certification.columns.operation': '操作',
   'userSetting.certification.button.check': '查看',
   'userSetting.certification.button.withdraw': '撤回',
+
+
 };

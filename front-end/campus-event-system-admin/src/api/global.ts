@@ -1,9 +1,24 @@
 import axios from 'axios';
 
+
+
+export interface SettingRecord {
+    key: string;
+    value: string;
+    type?: string;
+    range?: string;
+    title?: string;
+    description?: string;
+}
+
 export function getSettings() {
-  return axios.post('/api/global/get-settings');
+  return axios.post<SettingRecord[]>('/api/global/get-settings');
 }
 
 export function getSetting(key: string) {
   return axios.post('/api/global/get-setting', {}, { params: { key } });
+}
+
+export function setSetting(key: string, value: string) {
+  return axios.post('/api/global/set-setting', { key, value });
 }

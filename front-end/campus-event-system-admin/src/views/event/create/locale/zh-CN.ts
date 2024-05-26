@@ -20,7 +20,7 @@ export default {
   'event.label.eventName': '活动名称',
   'event.placeholder.eventName': '输入活动名称',
   'event.error.eventName.required': '请输入活动名称',
-  'event.error.eventName.pattern': '输入汉字、字母或数字，最多20字符',
+  'event.error.eventName.pattern': '请输入最少1个最多20个字符',
 
 
   'event.label.eventType': '活动类型',

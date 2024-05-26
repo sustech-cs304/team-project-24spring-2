@@ -23,11 +23,30 @@
       />
     </a-form-item>
 
-    <a-form-item field="realname" :label="$t('User.info.realname')" disabled>
-      <a-input v-model="formData.nickname" />
+    <a-form-item
+      field="real_name"
+      :label="$t('User.info.realname')"
+      :rules="[
+        {
+          required: true,
+          message: $t('userSetting.form.error.realname.required'),
+        },
+      ]"
+      disabled
+    >
+      <a-input v-model="formData.real_name" />
     </a-form-item>
 
-    <a-form-item field="gender" :label="$t('User.info.gender')">
+    <a-form-item
+      field="gender"
+      :rules="[
+        {
+          required: true,
+          message: $t('userSetting.form.error.gender.required'),
+        },
+      ]"
+      :label="$t('User.info.gender')"
+    >
       <a-select
         v-model="formData.gender"
         :placeholder="$t('userSetting.basicInfo.placeholder.area')"
@@ -54,6 +73,10 @@
       field="phone"
       :label="$t('User.info.phone')"
       :rules="[
+        {
+          required: true,
+          message: $t('userSetting.form.error.phone.required'),
+        },
         {
           match: /^[0-9]{11}$/,
           message: $t('userSetting.basicInfo.error.phone'),

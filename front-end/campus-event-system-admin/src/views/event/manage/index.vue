@@ -218,14 +218,12 @@
         <template #operations="{ record }">
           <a-space>
             <a-button
-              :v-permission="['ADMIN', 'SUPER_ADMIN']"
               size="small"
               @click.prevent="conEventView(record.id)"
             >
               {{ $t('manageEventTable.columns.operations.view') }}
             </a-button>
             <a-button
-              :v-permission="['ADMIN', 'SUPER_ADMIN']"
               size="small"
               type="primary"
               :disabled="record.status !== 'EDITING'"
@@ -310,28 +308,32 @@
       slotName: 'index',
     },
     {
-      title: t('manageEventTable.columns.title'),
+      title: t('Event.Title'),
       dataIndex: 'title',
+    },
+    {
+      title: t('Event.Category'),
+      dataIndex: 'category',
     },
 
     {
-      title: t('manageEventTable.columns.startTime'),
+      title: t('Event.StartTime'),
       dataIndex: 'start_time',
       slotName: 'start_time',
     },
     {
-      title: t('manageEventTable.columns.endTime'),
+      title: t('Event.EndTime'),
       dataIndex: 'end_time',
       slotName: 'end_time',
     },
 
     {
-      title: t('manageEventTable.columns.location'),
+      title: t('Event.Address'),
       dataIndex: 'location_name',
       slotName: 'location_name',
     },
     {
-      title: t('manageEventTable.columns.status'),
+      title: t('Event.Status'),
       dataIndex: 'status',
       slotName: 'status',
     },
@@ -349,7 +351,8 @@
     const categories = await getSetting('categories');
     categories.data.split(',').forEach((element: string) => {
       categoryOptions.value.push({
-        label: t(`Event.Category.${element}`),
+        // label: t(`Event.Category.${element}`),
+        label: element,
         value: element,
       });
     });

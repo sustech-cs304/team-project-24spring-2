@@ -157,6 +157,10 @@
           {{ record.title }}
         </template>
 
+        <template #category="{ record }">
+          {{ record.category }}
+        </template>
+
         <template #start_time="{ record }">
           {{ longTime2String(record.start_time) }}
         </template>
@@ -269,23 +273,27 @@
       slotName: 'index',
     },
     {
-      title: t('manageEventTable.columns.title'),
+      title: t('Event.Title'),
       dataIndex: 'title',
+    },
+    {
+      title: t('Event.Category'),
+      dataIndex: 'category',
     },
 
     {
-      title: t('manageEventTable.columns.startTime'),
+      title: t('Event.StartTime'),
       dataIndex: 'start_time',
       slotName: 'start_time',
     },
     {
-      title: t('manageEventTable.columns.endTime'),
+      title: t('Event.EndTime'),
       dataIndex: 'end_time',
       slotName: 'end_time',
     },
 
     {
-      title: t('manageEventTable.columns.location'),
+      title: t('Event.Address'),
       dataIndex: 'location_name',
       slotName: 'location_name',
     },

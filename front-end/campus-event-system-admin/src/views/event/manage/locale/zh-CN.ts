@@ -29,9 +29,9 @@ export default {
   'Event.ID': '活动ID',
 
   'Event.Category': '活动类型',
-  'Event.Category.course': '课程',
-  'Event.Category.music': '音乐',
-  'Event.Category.activity': '活动',
+//   'Event.Category.course': '课程',
+//   'Event.Category.music': '音乐',
+//   'Event.Category.activity': '活动',
 
   'Event.Address': '活动地点',
   'Event.Address.map': '活动地图',
@@ -93,8 +93,13 @@ export default {
   'Event.Audit.select.accept': '通过',
   'Event.Audit.select.reject': '拒绝',
   'Event.Audit.action': '审核',
+  'Event.Audit.submit': '提交审核结果',
+  'Event.Audit.submit.info': '您确定提交审核结果吗？提交后将无法再次进行审核！',
   'Event.Audit.submit.success': '提交审核结果成功',
   'Event.Audit.submit.success.info': '审核结果已由系统发送至发布者邮箱',
   'Event.Audit.submit.goback': '返回上层',
   'Event.Audit.submit': '提交',
+
+  'Event.Settings.change': '修改设置',
+  'Event.Settings.description': '暂无描述',
 };

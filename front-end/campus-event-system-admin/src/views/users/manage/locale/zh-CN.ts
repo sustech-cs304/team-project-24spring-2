@@ -5,6 +5,11 @@ export default {
   'search.User.nickname.placeholder': '按昵称搜索',
   'search.User.email.placeholder': '按邮箱搜索',
 
+  'userSetting.form.error.realname.required': '请输入真实姓名',
+  'userSetting.form.error.gender.required': '请选择性别',
+  'userSetting.form.error.phone.required': '请输入电话号码',
+
+
   'manageUserTable.columns.operation': '修改权限组',
 
 

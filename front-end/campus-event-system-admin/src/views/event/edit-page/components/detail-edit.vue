@@ -99,7 +99,7 @@
 
   const coverImage = ref({
     url: '',
-    blob: null,
+    blob: null as any,
   });
   const vditor = ref();
   const setted = false;

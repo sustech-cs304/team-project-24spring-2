@@ -105,7 +105,7 @@
 
             <div class="actions">
               <a-space>
-                <a-button type="primary" @click="onAuditEvent">
+                <a-button type="primary" @click="confirmVis = true">
                   {{ $t('Event.Audit.submit') }}
                 </a-button>
               </a-space>
@@ -119,6 +119,17 @@
         <successPage @back-to-manage="goBack" @view-event="goAuditEvent" />
       </a-card>
     </div>
+    <a-modal
+      v-model:visible="confirmVis"
+      @cancel="handleCancel"
+      :on-before-ok="handleBeforeOk"
+      unmountOnClose
+    >
+      <template #title> {{ $t('Event.Audit.submit') }} </template>
+      <div>
+        {{ $t('Event.Audit.submit.info') }}
+      </div>
+    </a-modal>
   </div>
 </template>
 
@@ -144,6 +155,7 @@
 
   const router = useRouter();
   const { loading, setLoading } = useLoading(true);
+  const confirmVis = ref(false);
 
   const step = ref(0);
   const pageStep = ref(1);
@@ -159,10 +171,19 @@
     {} as originalEventCreationModel
   );
 
+  const handleCancel = () => {
+    confirmVis.value = false;
+  };
+
+  const handleBeforeOk = () => {
+    confirmVis.value = false;
+    onAuditEvent();
+  };
+
   const publisherInfo = ref<UserState>({} as UserState);
-  
+
   const ViewEvent = () => {
-    router.push(`/event/view?uuid=${uuid}`);
+    router.replace(`/event/view?uuid=${uuid}`);
   };
   const goAuditEvent = () => {
     router.push(`/event/audit?uuid=${uuid}`);

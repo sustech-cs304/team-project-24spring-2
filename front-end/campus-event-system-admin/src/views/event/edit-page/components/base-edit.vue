@@ -16,7 +16,7 @@
                     message: $t('event.error.eventName.required'),
                   },
                   {
-                    match: /^[a-zA-Z0-9\u4e00-\u9fa5]{1,20}$/,
+                    match: /^.{1,20}$/,
                     message: $t('event.error.eventName.pattern'),
                   },
                 ]"
@@ -67,7 +67,7 @@
                   format="YYYY-MM-DD HH:mm"
                   type="datetime"
                   show-time
-                  :disabledDate="(current) => dayjs(current).isBefore(dayjs())"
+                  :disabledDate="(current) => dayjs(current).isAfter(dayjs())"
                 />
               </a-form-item>
             </a-col>

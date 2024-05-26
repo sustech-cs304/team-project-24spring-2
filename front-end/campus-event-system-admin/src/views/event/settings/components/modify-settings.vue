@@ -6,7 +6,7 @@
     <a-row class="list-row" :gutter="24">
       <a-col
         v-for="item in renderData"
-        :key="item.id"
+        :key="item.key"
         :xs="12"
         :sm="12"
         :md="12"
@@ -16,13 +16,8 @@
         class="list-col"
         style="min-height: 140px"
       >
-        <CardWrap
-          :loading="loading"
-          :title="item.title"
-          :description="item.description"
-          :default-value="item.enable"
-          :action-type="item.actionType"
-          :tag-text="$t('cardList.preset.tag')"
+        <SettingCard
+          :setting="item"
         >
           <template #skeleton>
             <a-skeleton :animation="true">
@@ -30,22 +25,41 @@
               <a-skeleton-line :widths="['40%']" :rows="1" />
             </a-skeleton>
           </template>
-        </CardWrap>
+        </SettingCard>
       </a-col>
     </a-row>
   </div>
 </template>
 
 <script lang="ts" setup>
-  import { queryRulesPresetList, ServiceRecord } from '@/api/list';
+  import { onBeforeMount, ref } from 'vue';
+  import {
+    SettingRecord,
+    getSettings,
+    getSetting,
+    setSetting,
+  } from '@/api/global';
   import useRequest from '@/hooks/request';
-  import CardWrap from './card-wrap.vue';
+  import useLoading from '@/hooks/loading';
+  import SettingCard from './setting-card.vue';
 
-  const defaultValue: ServiceRecord[] = new Array(6).fill({});
-  const { loading, response: renderData } = useRequest<ServiceRecord[]>(
-    queryRulesPresetList,
-    defaultValue
-  );
+  const defaultValue: SettingRecord[] = new Array(6).fill({} as SettingRecord);
+  const renderData = ref<SettingRecord[]>(defaultValue);
+  const { loading, setLoading } = useLoading();
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const res = await getSettings();
+      renderData.value = res.data;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  onBeforeMount(async () => {
+    await fetchData();
+  });
 </script>
 
 <style scoped lang="less"></style>

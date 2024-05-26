@@ -8,11 +8,11 @@
             <a-col :span="24">
               <a-tabs :default-active-tab="1" type="rounded">
                 <a-tab-pane key="1" :title="$t('eventSettings.tab.title.all')">
-                  <QualityInspection />
-                  <TheService />
-                  <RulesPreset />
+                  <!-- <QualityInspection /> -->
+                  <!-- <TheService /> -->
+                  <ModifySettings />
                 </a-tab-pane>
-                <a-tab-pane
+                <!-- <a-tab-pane
                   key="2"
                   :title="$t('eventSettings.tab.title.content')"
                 >
@@ -28,8 +28,8 @@
                   key="4"
                   :title="$t('eventSettings.tab.title.preset')"
                 >
-                  <RulesPreset />
-                </a-tab-pane>
+                  <RulesPreset /> -->
+                <!-- </a-tab-pane> -->
               </a-tabs>
             </a-col>
             <a-input-search
@@ -44,9 +44,9 @@
 </template>
 
 <script lang="ts" setup>
-  import QualityInspection from './components/quality-inspection.vue';
-  import TheService from './components/the-service.vue';
-  import RulesPreset from './components/rules-preset.vue';
+//   import QualityInspection from './components/quality-inspection.vue';
+//   import TheService from './components/the-service.vue';
+  import ModifySettings from './components/modify-settings.vue';
 </script>
 
 <script lang="ts">

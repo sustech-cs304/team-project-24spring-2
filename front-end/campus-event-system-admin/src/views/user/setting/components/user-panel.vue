@@ -156,6 +156,7 @@
           controller,
           onUploadProgress
         );
+        console.log(res.data)
         onSuccess(res);
         updateAvatar(res.data);
       } catch (error) {
