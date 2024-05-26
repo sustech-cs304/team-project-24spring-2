@@ -2,7 +2,7 @@
   <div class="login-container">
     <div class="login-card">
       <div class="login-header">
-        <h2>SUSTech Campus Events and Entertainment Center</h2>
+        <h2><strong>{{ "南方科技大学校园活动中心" }}</strong></h2>
       </div>
       <a-form @submit="handleSubmit" layout="vertical" :model="loginForm" :rules="rules" ref="form">
         <a-form-item label="用户名" prop="username">

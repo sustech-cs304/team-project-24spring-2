@@ -10,7 +10,7 @@ export default {
       <img src="../assets/bottomLOGO.png" alt="University Logo"/>
     </div>
     <div class="footer-info">
-      <p>Develop Team: Best-effort-team</p>
+      <p><a-tag color="#ED6C00" :style="{ scale: 1.2 }">{{ "Best-effort-team" }}</a-tag></p>
     </div>
   </div>
 </template>
@@ -32,6 +32,10 @@ export default {
 
 .footer-info p {
   font-size: 18px; /* Adjust font size */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
 </style>
