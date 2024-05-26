@@ -272,10 +272,7 @@ public class UserController {
         if (user.getUserTickets() == null) {
             return ResponseEntity.ok(new ArrayList<>());
         }
-        return ResponseEntity.ok(
-                user.getUserTickets().stream().map(ticketService::getTicketById)
-                        .toList()
-        );
+        return ResponseEntity.ok(userService.getUserTickets(user));
     }
 
 }
