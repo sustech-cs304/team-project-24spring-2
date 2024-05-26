@@ -178,7 +178,11 @@ export default {
       loadingComments.value = true
       try {
         let response = await axios.post(`/api/comment/get-comments?eventId=${eventId}`);
-        comments.value = response.data;
+        let commentData = response.data;
+        commentData.sort((a, b) => {
+          return b.create_time - a.create_time;
+        });
+        comments.value = commentData;
       } catch (error) {
         console.error(error);
       } finally {

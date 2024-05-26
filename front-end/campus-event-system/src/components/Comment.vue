@@ -135,7 +135,7 @@ export default {
       <a-avatar>
         <CustomImage
           alt="avatar"
-          :src="'user.avatar_url'"
+          :src="user.avatar_url"
           fallbackSrc="test1.jpeg"
         />
       </a-avatar>
