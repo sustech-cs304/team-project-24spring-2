@@ -5,6 +5,7 @@ import CustomImage from '@/components/CustomImage.vue';
 import { Message } from '@arco-design/web-vue';
 import { IconEdit } from '@arco-design/web-vue/es/icon';
 import OrderCard from '@/components/OrderCard.vue';
+import TicketCard from '@/components/TicketCard.vue';
 import utils from '@/api/utils.ts';
 import { useRouter } from 'vue-router';
 
@@ -14,6 +15,7 @@ export default {
     CustomImage,
     IconEdit,
     OrderCard,
+    TicketCard,
   },
   setup() {
 
@@ -34,6 +36,7 @@ export default {
     const password = ref('');
     const confirmPassword = ref('');
     const orders = ref([]);
+    const tickets = ref([]);
 
     onMounted(async () => {
       if (!utils.verifyLoginState(true)) {
@@ -51,7 +54,9 @@ export default {
       form.gender = user.value.gender;
 
       orders.value = await fetchOrders();
-      console.log(orders.value)
+      tickets.value = await fetchTickets();
+
+      console.log(tickets.value)
     });
 
     async function fetchOrders() {
@@ -68,6 +73,29 @@ export default {
         return b.order_create_time - a.order_create_time;
       });
       return ordersData;
+    }
+
+
+    async function fetchTickets() {
+      let response = await axios.post(`/api/user/get-tickets`, {},
+        {
+          headers: {
+            'Authorization': localStorage.getItem('token_type') + ' ' + localStorage.getItem('access_token')
+          }
+        }
+      );
+      let ticketData = response.data;
+      for (let i = 0; i < ticketData.length; i++) {
+        let response = await axios.post(`/api/ticket/get-ticket?ticketId=${ticketData[i].ticket_id}`);
+        ticketData[i].ticketInfo = response.data;
+        let event_response = await axios.post(`/api/event/get-event?eventId=${ticketData[i].ticketInfo.event_id}`);
+        ticketData[i].eventInfo = event_response.data;
+      }
+      console.log(ticketData);
+      ticketData.sort((a, b) => {
+        return b.eventInfo.endTime - a.eventInfo.endTime;
+      });
+      return ticketData;
     }
 
 
@@ -147,6 +175,7 @@ export default {
       form,
       user,
       orders,
+      tickets,
       password,
       confirmPassword,
       updateUser,
@@ -235,7 +264,8 @@ export default {
               票务
             </template>
             <div class="Information">
-              这里是票务
+              <!-- 这里是票务 -->
+              <TicketCard v-for="(item, index) in tickets" :key="index" :ticket="item" />
             </div>
           </a-tab-pane>
         </a-tabs>
