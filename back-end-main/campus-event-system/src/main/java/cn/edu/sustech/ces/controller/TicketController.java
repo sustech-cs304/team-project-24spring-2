@@ -27,17 +27,4 @@ public class TicketController {
         return ResponseEntity.ok(ticketService.getTicketById(ticketId));
     }
 
-    @PostMapping("/get-tickets")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> getTickets() {
-        User user = CESUtils.getAuthorizedUser();
-        if (user.getUserTickets() == null) {
-            return ResponseEntity.ok(new ArrayList<>());
-        }
-        return ResponseEntity.ok(
-                user.getUserTickets().stream().map(ticketService::getTicketById)
-                        .toList()
-        );
-    }
-
 }

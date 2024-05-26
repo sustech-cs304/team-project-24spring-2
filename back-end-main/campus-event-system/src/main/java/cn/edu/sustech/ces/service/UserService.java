@@ -4,6 +4,7 @@ import cn.edu.sustech.ces.entity.*;
 import cn.edu.sustech.ces.enums.PermissionGroup;
 import cn.edu.sustech.ces.enums.UserGender;
 import cn.edu.sustech.ces.repository.UserRepository;
+import cn.edu.sustech.ces.repository.UserTicketRepository;
 import cn.edu.sustech.ces.security.CESUserDetails;
 import cn.edu.sustech.ces.utils.CESUtils;
 import jakarta.transaction.Transactional;
@@ -23,6 +24,7 @@ import java.util.*;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final UserTicketRepository userTicketRepository;
 
 
     public User registerUser(String nickname, String realName, String description,
@@ -126,5 +128,12 @@ public class UserService implements UserDetailsService {
 
     public List<User> listUser(Pageable pageable, String nickname, String email) {
         return CESUtils.getPage(pageable, listUser(nickname, email));
+    }
+
+    public List<UserTicket> getUserTickets(User user) {
+        if (user == null) {
+            return null;
+        }
+        return user.getUserTickets().stream().map(userTicketRepository::findById).map(Optional::get).toList();
     }
 }
