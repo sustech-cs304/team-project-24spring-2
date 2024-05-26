@@ -21,7 +21,8 @@ public class GlobalSettingService {
     public static final String COMMENT_MAX_SIZE = "comment_max_size";
     public static final String CATEGORIES = "categories";
     public static final String MAX_PAGE_SIZE = "max_page_size";
-    public static final String[] DEFAULT_KEYS = {COMMENT_MAX_WEIGHT, COMMENT_IMAGE_WEIGHT, COMMENT_VIDEO_WEIGHT, CATEGORIES};
+    public static final String ORDER_EXPIRE_TIME = "order_expire_time";
+    public static final String[] DEFAULT_KEYS = {COMMENT_MAX_WEIGHT, COMMENT_IMAGE_WEIGHT, COMMENT_VIDEO_WEIGHT, CATEGORIES, ORDER_EXPIRE_TIME};
 
     @Cacheable(cacheNames = "globalSettings", key = "#key")
     public String getSetting(String key) {
@@ -47,7 +48,9 @@ public class GlobalSettingService {
             if (key.equals(CATEGORIES)) {
                 defaultValue = "course,activity,music";
             }
-
+            if (key.equals(ORDER_EXPIRE_TIME)) {
+                defaultValue = ""  + (1000 * 60 * 10);
+            }
             if (defaultValue != null) {
                 setting = new GlobalSetting(key, defaultValue);
                 globalSettingRepository.save(setting);
@@ -59,6 +62,9 @@ public class GlobalSettingService {
 
     @CachePut(cacheNames = "globalSettings", key = "#key")
     public String setSetting(String key, String value) {
+        if (key == null || key.isEmpty() || value == null || value.isEmpty()) {
+            return value;
+        }
         key = key.toLowerCase();
         globalSettingRepository.save(new GlobalSetting(key, value));
         return value;

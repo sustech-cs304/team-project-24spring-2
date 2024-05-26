@@ -159,6 +159,7 @@ public class OrderService {
         }
 
         Order order = new Order();
+        order.setOrderCreateTime(System.currentTimeMillis());
         order.setName(event.get().getTitle() + " " + ticket.getDescription());
         order.setPayerId(userId);
         order.setTicketId(ticketId);

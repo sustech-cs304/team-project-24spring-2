@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public final class CESUtils {
@@ -26,5 +27,11 @@ public final class CESUtils {
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), list.size());
         return list.subList(start, end);
+    }
+
+
+    public static String formatTime(long expireTime) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return sdf.format(expireTime);
     }
 }

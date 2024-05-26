@@ -46,4 +46,7 @@ public class Order {
 
     private Long purchaseCreateTime;
 
+    @Column(nullable = false)
+    private Long orderCreateTime;
+
 }
