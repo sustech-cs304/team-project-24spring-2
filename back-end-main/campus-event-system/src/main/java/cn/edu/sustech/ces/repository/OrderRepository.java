@@ -16,4 +16,6 @@ public interface OrderRepository extends ListCrudRepository<Order, UUID> {
     List<Order> findAllByPayerId(UUID userId);
 
     Optional<Order> findFirstByPayerIdAndStatusIn(UUID userId, Set<OrderStatus> unpaid);
+
+    List<Order> findAllByStatusAndOrderCreateTimeBefore(OrderStatus status, long currentTimeMillis);
 }

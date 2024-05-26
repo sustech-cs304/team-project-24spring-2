@@ -4,14 +4,22 @@ import axios from 'axios';
 import CustomImage from '@/components/CustomImage.vue';
 import { Message } from '@arco-design/web-vue';
 import { IconEdit } from '@arco-design/web-vue/es/icon';
+import OrderCard from '@/components/OrderCard.vue';
+import TicketCard from '@/components/TicketCard.vue';
+import utils from '@/api/utils.ts';
+import { useRouter } from 'vue-router';
 
 export default {
   name: "UserInfo",
   components: {
     CustomImage,
     IconEdit,
+    OrderCard,
+    TicketCard,
   },
   setup() {
+
+    const router = useRouter();
 
     const user = ref({});
 
@@ -27,8 +35,15 @@ export default {
 
     const password = ref('');
     const confirmPassword = ref('');
+    const orders = ref([]);
+    const tickets = ref([]);
 
     onMounted(async () => {
+      if (!utils.verifyLoginState(true)) {
+        router.push('/').then(() => {
+          window.location.reload();
+        });
+      }
       user.value = await fetchUser();
       form.realName = user.value.real_name;
       form.nickname = user.value.nickname;
@@ -37,7 +52,51 @@ export default {
       form.birthday = user.value.birthday;
       form.description = user.value.description;
       form.gender = user.value.gender;
+
+      orders.value = await fetchOrders();
+      tickets.value = await fetchTickets();
+
+      console.log(tickets.value)
     });
+
+    async function fetchOrders() {
+      let response = await axios.post(`/api/order/get-orders`, {},
+        {
+          headers: {
+            'Authorization': localStorage.getItem('token_type') + ' ' + localStorage.getItem('access_token')
+          }
+        }
+      );
+      let ordersData = response.data;
+      // sort by order_create_time
+      ordersData.sort((a, b) => {
+        return b.order_create_time - a.order_create_time;
+      });
+      return ordersData;
+    }
+
+
+    async function fetchTickets() {
+      let response = await axios.post(`/api/user/get-tickets`, {},
+        {
+          headers: {
+            'Authorization': localStorage.getItem('token_type') + ' ' + localStorage.getItem('access_token')
+          }
+        }
+      );
+      let ticketData = response.data;
+      for (let i = 0; i < ticketData.length; i++) {
+        let response = await axios.post(`/api/ticket/get-ticket?ticketId=${ticketData[i].ticket_id}`);
+        ticketData[i].ticketInfo = response.data;
+        let event_response = await axios.post(`/api/event/get-event?eventId=${ticketData[i].ticketInfo.event_id}`);
+        ticketData[i].eventInfo = event_response.data;
+      }
+      console.log(ticketData);
+      ticketData.sort((a, b) => {
+        return b.eventInfo.endTime - a.eventInfo.endTime;
+      });
+      return ticketData;
+    }
 
 
     const fetchUser = async () => {
@@ -111,9 +170,12 @@ export default {
     }
 
 
+
     return {
       form,
       user,
+      orders,
+      tickets,
       password,
       confirmPassword,
       updateUser,
@@ -195,16 +257,15 @@ export default {
             <template #title>
               订单
             </template>
-            <div class="Information">
-              这里是订单
-            </div>
+            <OrderCard v-for="(item, index) in orders" :key="index" :order="item" />
           </a-tab-pane>
           <a-tab-pane key="3">
             <template #title>
               票务
             </template>
             <div class="Information">
-              这里是票务
+              <!-- 这里是票务 -->
+              <TicketCard v-for="(item, index) in tickets" :key="index" :ticket="item" />
             </div>
           </a-tab-pane>
         </a-tabs>

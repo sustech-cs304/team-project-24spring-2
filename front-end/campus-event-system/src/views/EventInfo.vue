@@ -117,7 +117,7 @@ export default {
     }
 
     async function makeComment() {
-      if (!utils.verifyLoginState(false)) {
+      if (!utils.verifyLoginState()) {
         Message.error('请先登录');
         return;
       }
@@ -178,7 +178,11 @@ export default {
       loadingComments.value = true
       try {
         let response = await axios.post(`/api/comment/get-comments?eventId=${eventId}`);
-        comments.value = response.data;
+        let commentData = response.data;
+        commentData.sort((a, b) => {
+          return b.create_time - a.create_time;
+        });
+        comments.value = commentData;
       } catch (error) {
         console.error(error);
       } finally {
@@ -195,7 +199,7 @@ export default {
     }
 
     function checkDeletePermission(comment) {
-      if (!utils.verifyLoginState(false)) {
+      if (!utils.verifyLoginState()) {
         return false;
       }
       let permission = localStorage.getItem('permission_group');
@@ -214,7 +218,7 @@ export default {
     }
 
     async function purchase() {
-      if (!utils.verifyLoginState(false)) {
+      if (!utils.verifyLoginState()) {
         Message.error('请先登录');
         return;
       }
@@ -242,6 +246,9 @@ export default {
               }
             }
           );
+          if (payResponse.status !== 200) {
+            throw new Error('支付订单失败');
+          }
           let payWindow = window.open("", "_blank");
           payWindow.document.write(payResponse.data);
         } else {

@@ -3,6 +3,7 @@ package cn.edu.sustech.ces.service;
 import cn.edu.sustech.ces.entity.*;
 import cn.edu.sustech.ces.enums.EventStatus;
 import cn.edu.sustech.ces.enums.OrderStatus;
+import cn.edu.sustech.ces.enums.PurchaseMethod;
 import cn.edu.sustech.ces.repository.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
@@ -79,24 +80,24 @@ public class OrderService {
     }
 
     @Transactional
-    public Order payOrder(UUID orderId) {
+    public Order payOrder(UUID orderId, PurchaseMethod method) {
         Order order = orderRepository.findById(orderId).orElse(null);
         if (order == null) {
             return null;
         }
         User user = userRepository.findById(order.getPayerId()).orElse(null);
-        return payOrder(user, order);
+        return payOrder(user, order, method);
     }
 
     @Transactional
-    public Order payOrder(UUID userId, UUID orderId) {
+    public Order payOrder(UUID userId, UUID orderId, PurchaseMethod method) {
         Order order = orderRepository.findById(orderId).orElse(null);
         User user = userRepository.findById(userId).orElse(null);
-        return payOrder(user, order);
+        return payOrder(user, order, method);
     }
 
     @Transactional
-    public Order payOrder(User user, Order order) {
+    public Order payOrder(User user, Order order, PurchaseMethod method) {
         if (user == null || order == null) {
             return null;
         }
@@ -107,6 +108,8 @@ public class OrderService {
         try {
             lock.lock();
             order.setStatus(OrderStatus.PAID);
+            order.setPurchaseFinishTime(System.currentTimeMillis());
+            order.setPurchaseMethod(method);
             Ticket ticket = entityManager.find(Ticket.class, order.getTicketId(), LockModeType.OPTIMISTIC);
             int number = ticket.getSoldAmount();
             ticket.setSoldAmount(number + 1);
@@ -159,6 +162,7 @@ public class OrderService {
         }
 
         Order order = new Order();
+        order.setOrderCreateTime(System.currentTimeMillis());
         order.setName(event.get().getTitle() + " " + ticket.getDescription());
         order.setPayerId(userId);
         order.setTicketId(ticketId);

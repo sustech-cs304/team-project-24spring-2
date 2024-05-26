@@ -264,7 +264,7 @@ public class EventController {
                 if (publisherUser != null) {
                     publisher = publisherUser.getId();
                 } else {
-                    return ResponseEntity.badRequest().body("Publisher Not Found");
+                    return ResponseEntity.ok(0);
                 }
             }
         }

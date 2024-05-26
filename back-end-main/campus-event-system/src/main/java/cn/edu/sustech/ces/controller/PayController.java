@@ -4,7 +4,10 @@ import cn.edu.sustech.ces.entity.Order;
 import cn.edu.sustech.ces.entity.User;
 import cn.edu.sustech.ces.enums.OrderStatus;
 import cn.edu.sustech.ces.enums.PurchaseMethod;
+import cn.edu.sustech.ces.service.GlobalSettingService;
+import cn.edu.sustech.ces.service.MailService;
 import cn.edu.sustech.ces.service.OrderService;
+import cn.edu.sustech.ces.service.UserService;
 import cn.edu.sustech.ces.service.alipay.AlipayConfig;
 import cn.edu.sustech.ces.utils.CESUtils;
 import com.alibaba.fastjson.JSONObject;
@@ -35,10 +38,18 @@ public class PayController {
 
     private final AlipayConfig alipayConfig;
 
+    private final GlobalSettingService globalSettingService;
+
+    private final UserService userService;
+    private final MailService mailService;
+
     @Autowired
-    public PayController(OrderService orderService, AlipayConfig alipayConfig) {
+    public PayController(OrderService orderService, AlipayConfig alipayConfig, GlobalSettingService globalSettingService, UserService userService, MailService mailService) {
         this.orderService = orderService;
         this.alipayConfig = alipayConfig;
+        this.globalSettingService = globalSettingService;
+        this.userService = userService;
+        this.mailService = mailService;
     }
 
     @PostMapping("/pay-order")
@@ -57,7 +68,7 @@ public class PayController {
             return ResponseEntity.badRequest().body("Order has been paid");
         }
         if (order.getPrice() == 0) {
-            return ResponseEntity.ok(completeOrder(order));
+            return ResponseEntity.ok(completeOrder(user, order, PurchaseMethod.CASH));
         }
         if (purchaseMethod == PurchaseMethod.ALIPAY) {
             AlipayClient alipayClient = new DefaultAlipayClient(alipayConfig.getAlipayGatewayUrl(),
@@ -73,6 +84,8 @@ public class PayController {
             jsonObject.put("total_amount", order.getPrice());
             jsonObject.put("subject", order.getName());
             jsonObject.put("body", order.getTicketId());
+            long expire_time = order.getOrderCreateTime() + Long.parseLong(globalSettingService.getSetting("order_expire_time")) - 1000 * 2;
+            jsonObject.put("time_expire", CESUtils.formatTime(expire_time));
 
             AlipayTradePagePayRequest alipayRequest = new AlipayTradePagePayRequest();
             alipayRequest.setNotifyUrl(alipayConfig.getAlipayNotifyUrl());
@@ -89,11 +102,16 @@ public class PayController {
         return ResponseEntity.badRequest().body("Not supported purchase method");
     }
 
-    private Order completeOrder(Order order) {
-        order.setStatus(OrderStatus.PAID);
-        order.setPurchaseFinishTime(System.currentTimeMillis());
+    private Order completeOrder(Order order, PurchaseMethod method) {
+        User user = userService.getUserById(order.getPayerId());
+        return completeOrder(user, order, method);
+    }
 
-        orderService.saveOrder(order);
+    private Order completeOrder(User user, Order order, PurchaseMethod method) {
+        order = orderService.payOrder(user, order, method);
+        if (user.getEmail() != null && !user.getEmail().isEmpty()) {
+            mailService.sendSimpleMessage(user.getEmail(), "[CES] Thanks for your purchase", "Your order \"" + order.getName() + "\" has been paid successfully!");
+        }
         return order;
     }
 
@@ -110,7 +128,7 @@ public class PayController {
                 String orderId = params.get("out_trade_no");
                 Order order = orderService.getOrder(UUID.fromString(orderId));
                 if (order != null) {
-                    completeOrder(order);
+                    completeOrder(order, PurchaseMethod.ALIPAY);
                 } else {
                     // TODO: maybe we can log error here?
                 }

@@ -265,4 +265,14 @@ public class UserController {
         return ResponseEntity.ok(urls);
     }
 
+    @PostMapping("/get-tickets")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> getTickets() {
+        User user = CESUtils.getAuthorizedUser();
+        if (user.getUserTickets() == null) {
+            return ResponseEntity.ok(new ArrayList<>());
+        }
+        return ResponseEntity.ok(userService.getUserTickets(user));
+    }
+
 }

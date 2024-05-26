@@ -12,8 +12,10 @@ import {
   IconExport,
   IconSort,
 } from '@arco-design/web-vue/es/icon';
-import { useRoute, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
+import { ref } from 'vue';
 import utils from '../api/utils.ts';
+import { onMounted } from 'vue';
 
 export default {
   name: "TopNav",
@@ -32,13 +34,14 @@ export default {
   },
   setup() {
     const router = useRouter();
+    const isLogin = ref(false);
+
+    onMounted(async () => {
+      isLogin.value = await utils.verifyLoginStateWithAccess();
+    });
 
     const navigate = (path) => {
       router.push(path);
-    }
-
-    function verifyLoginState(post) {
-      return utils.verifyLoginState(post);
     }
 
     function logout() {
@@ -48,7 +51,7 @@ export default {
       });
     }
 
-    return { navigate, verifyLoginState, logout };
+    return { isLogin, navigate, logout };
   }
 }
 </script>
@@ -64,12 +67,12 @@ export default {
         <icon-home />主页 
       </a>
       <a href="#" class="nav-item" @click="navigate('/events')">
-        <icon-apps />更多 
+        <icon-apps />更多
       </a>
-      <a v-if="verifyLoginState(false)" href="#" class="nav-item" @click="navigate('/userinfo')">
+      <a v-if="isLogin" href="#" class="nav-item" @click="navigate('/userinfo')">
         <icon-user />个人信息 
       </a>
-      <a v-if="verifyLoginState(false)" href="#" class="nav-item" @click="logout()">
+      <a v-if="isLogin" href="#" class="nav-item" @click="logout()">
         <icon-export />登出
       </a>
       <a v-else href="#" class="nav-item" @click="navigate('/login')">
