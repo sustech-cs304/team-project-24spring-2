@@ -5,7 +5,9 @@ import cn.edu.sustech.ces.entity.User;
 import cn.edu.sustech.ces.enums.OrderStatus;
 import cn.edu.sustech.ces.enums.PurchaseMethod;
 import cn.edu.sustech.ces.service.GlobalSettingService;
+import cn.edu.sustech.ces.service.MailService;
 import cn.edu.sustech.ces.service.OrderService;
+import cn.edu.sustech.ces.service.UserService;
 import cn.edu.sustech.ces.service.alipay.AlipayConfig;
 import cn.edu.sustech.ces.utils.CESUtils;
 import com.alibaba.fastjson.JSONObject;
@@ -38,11 +40,16 @@ public class PayController {
 
     private final GlobalSettingService globalSettingService;
 
+    private final UserService userService;
+    private final MailService mailService;
+
     @Autowired
-    public PayController(OrderService orderService, AlipayConfig alipayConfig, GlobalSettingService globalSettingService) {
+    public PayController(OrderService orderService, AlipayConfig alipayConfig, GlobalSettingService globalSettingService, UserService userService, MailService mailService) {
         this.orderService = orderService;
         this.alipayConfig = alipayConfig;
         this.globalSettingService = globalSettingService;
+        this.userService = userService;
+        this.mailService = mailService;
     }
 
     @PostMapping("/pay-order")
@@ -61,7 +68,7 @@ public class PayController {
             return ResponseEntity.badRequest().body("Order has been paid");
         }
         if (order.getPrice() == 0) {
-            return ResponseEntity.ok(completeOrder(order, PurchaseMethod.CASH));
+            return ResponseEntity.ok(completeOrder(user, order, PurchaseMethod.CASH));
         }
         if (purchaseMethod == PurchaseMethod.ALIPAY) {
             AlipayClient alipayClient = new DefaultAlipayClient(alipayConfig.getAlipayGatewayUrl(),
@@ -96,10 +103,15 @@ public class PayController {
     }
 
     private Order completeOrder(Order order, PurchaseMethod method) {
-        order.setStatus(OrderStatus.PAID);
-        order.setPurchaseFinishTime(System.currentTimeMillis());
-        order.setPurchaseMethod(method);
-        orderService.saveOrder(order);
+        User user = userService.getUserById(order.getPayerId());
+        return completeOrder(user, order, method);
+    }
+
+    private Order completeOrder(User user, Order order, PurchaseMethod method) {
+        order = orderService.payOrder(user, order, method);
+        if (user.getEmail() != null && !user.getEmail().isEmpty()) {
+            mailService.sendSimpleMessage(user.getEmail(), "[CES] Thanks for your purchase", "Your order \"" + order.getName() + "\" has been paid successfully!");
+        }
         return order;
     }
 
