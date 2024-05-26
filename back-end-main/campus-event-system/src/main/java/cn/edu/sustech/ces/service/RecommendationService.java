@@ -41,6 +41,6 @@ public class RecommendationService {
     }
 
     public List<Recommendation> getRecommendationsByUserID(UUID userID) {
-        return recommendationRepository.findAllByRecommend_id_User_id(userID);
+        return recommendationRepository.findAllByRecommendIdUserId(userID);
     }
 }

@@ -14,6 +14,6 @@ import java.util.UUID;
 @Getter
 @Embeddable
 public class RecommendationPK implements Serializable {
-    private UUID user_id;
-    private UUID event_id;
+    private UUID userId;
+    private UUID eventId;
 }
