@@ -36,6 +36,7 @@ public class TicketController {
         }
         return ResponseEntity.ok(
                 user.getUserTickets().stream().map(ticketService::getTicketById)
+                        .toList()
         );
     }
 
