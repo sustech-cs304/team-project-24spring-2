@@ -105,7 +105,7 @@
 
             <div class="actions">
               <a-space>
-                <a-button type="primary" @click="confirmVis = true">
+                <a-button type="primary" @click="onClickSubmit">
                   {{ $t('Event.Audit.submit') }}
                 </a-button>
               </a-space>
@@ -260,7 +260,7 @@
     pageStep.value = 2;
   };
 
-  const onAuditEvent = async () => {
+  const onClickSubmit = () => {
     if (review.value.ac !== 'true' && review.value.ac !== 'false') {
       Notification.warning({
         title: 'Warning',
@@ -268,6 +268,10 @@
       });
       return;
     }
+    confirmVis.value = true;
+  };
+
+  const onAuditEvent = async () => {
     const reply = review.value.reason === '' ? '无' : review.value.reason;
     try {
       setLoading(true);
