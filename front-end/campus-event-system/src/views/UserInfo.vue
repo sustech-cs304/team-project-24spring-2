@@ -4,14 +4,20 @@ import axios from 'axios';
 import CustomImage from '@/components/CustomImage.vue';
 import { Message } from '@arco-design/web-vue';
 import { IconEdit } from '@arco-design/web-vue/es/icon';
+import OrderCard from '@/components/OrderCard.vue';
+import utils from '@/api/utils.ts';
+import { useRouter } from 'vue-router';
 
 export default {
   name: "UserInfo",
   components: {
     CustomImage,
     IconEdit,
+    OrderCard,
   },
   setup() {
+
+    const router = useRouter();
 
     const user = ref({});
 
@@ -27,8 +33,14 @@ export default {
 
     const password = ref('');
     const confirmPassword = ref('');
+    const orders = ref([]);
 
     onMounted(async () => {
+      if (!utils.verifyLoginState(true)) {
+        router.push('/').then(() => {
+          window.location.reload();
+        });
+      }
       user.value = await fetchUser();
       form.realName = user.value.real_name;
       form.nickname = user.value.nickname;
@@ -37,7 +49,26 @@ export default {
       form.birthday = user.value.birthday;
       form.description = user.value.description;
       form.gender = user.value.gender;
+
+      orders.value = await fetchOrders();
+      console.log(orders.value)
     });
+
+    async function fetchOrders() {
+      let response = await axios.post(`/api/order/get-orders`, {},
+        {
+          headers: {
+            'Authorization': localStorage.getItem('token_type') + ' ' + localStorage.getItem('access_token')
+          }
+        }
+      );
+      let ordersData = response.data;
+      // sort by order_create_time
+      ordersData.sort((a, b) => {
+        return b.order_create_time - a.order_create_time;
+      });
+      return ordersData;
+    }
 
 
     const fetchUser = async () => {
@@ -111,9 +142,11 @@ export default {
     }
 
 
+
     return {
       form,
       user,
+      orders,
       password,
       confirmPassword,
       updateUser,
@@ -195,9 +228,7 @@ export default {
             <template #title>
               订单
             </template>
-            <div class="Information">
-              这里是订单
-            </div>
+            <OrderCard v-for="(item, index) in orders" :key="index" :order="item" />
           </a-tab-pane>
           <a-tab-pane key="3">
             <template #title>

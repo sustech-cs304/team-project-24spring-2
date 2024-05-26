@@ -6,7 +6,7 @@ import { parse } from 'vue/compiler-sfc';
 import utils from '@/api/utils';
 
 export default {
-    name: 'OrderCard',
+    name: 'TicketCard',
     components: {
     },
     props: {
