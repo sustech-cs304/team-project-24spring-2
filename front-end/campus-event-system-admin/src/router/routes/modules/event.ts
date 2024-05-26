@@ -77,17 +77,6 @@ const EVENTS: AppRouteRecordRaw = {
         roles: basicPerm,
       },
     },
-
-    {
-      path: 'settings',
-      name: 'EventSettings',
-      component: () => import('@/views/event/settings/index.vue'),
-      meta: {
-        locale: 'menu.event.settings',
-        requiresAuth: true,
-        roles: superPerm,
-      },
-    },
   ],
 };
 

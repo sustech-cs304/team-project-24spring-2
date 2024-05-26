@@ -56,58 +56,19 @@
     },
   });
 
-  const getSettingProps = (key: string) => {
-    switch (key) {
-      case 'categories':
-        return {
-          title: '活动类型',
-          description:
-            '设置可选的活动类型，决定了在创建和编辑过程中，部门负责人可以选择的活动类型',
-          type: 'Multi-Select-String',
-        };
-      case 'comment_max_weight':
-        return {
-          title: '评论最大权重',
-          description:
-            '设置评论的最大容量，决定了一条评论可以容下多少视频和图片内容，与图片视频权重一起设置可以达到限制的目的',
-          type: 'Input-Integer',
-        };
-      case 'comment_image_weight':
-        return {
-          title: '图片权重',
-          description:
-            '设置图片的权重，决定了一张图片占用的评论容量，通常设置为1',
-          type: 'Input-Integer',
-        };
-      case 'comment_video_weight':
-        return {
-          title: '视频权重',
-          description:
-            '设置视频的权重，决定了一段视频占用的评论容量，通常设置为9',
-          type: 'Input-Integer',
-        };
-      default:
-        return {
-          title: '未知',
-          description: '未知',
-          type: '未知',
-        };
-    }
-  };
 
   const renderData = computed<SettingRecord>(() => {
-    const p = getSettingProps(props.setting.key);
     return {
-      title: props.setting.title || p.title,
-      description: props.setting.description || p.description,
-      type: props.setting.type || p.type,
+      title: props.setting.title,
+      description: props.setting.description,
+      type: props.setting.type,
       value: props.setting.value,
       key: props.setting.key,
     };
   });
 
   const updateSetting = async (key: string, value: string) => {
-    console.log('update', key, value)
+    console.log('update', key, value);
     try {
       const res = await setSetting(key, value);
       Notification.success({

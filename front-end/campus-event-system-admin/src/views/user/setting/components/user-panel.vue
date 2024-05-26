@@ -10,11 +10,22 @@
         @change="uploadChange"
       >
         <template #upload-button>
-          <a-avatar :size="100" class="info-avatar">
+          <a-avatar v-if="userStore.avatar_url" :size="100" class="info-avatar">
             <template #trigger-icon>
               <icon-camera />
             </template>
-            <img v-if="fileList.length" :src="fileList[0].url" />
+            <img :src="userStore.avatar_url" />
+          </a-avatar>
+          <a-avatar
+            :style="{ backgroundColor: '#3370ff' }"
+            :size="100"
+            class="avatar"
+            v-else
+          >
+            <IconUser />
+            <template #trigger-icon>
+              <icon-camera />
+            </template>
           </a-avatar>
         </template>
       </a-upload>
@@ -44,8 +55,9 @@
             已认证
           </a-tag>
 
-          <div v-else-if="data.label === 'User.info.permission_group'"> 
-        {{ $t(`User.permission.group.${value}`) }}</div>
+          <div v-else-if="data.label === 'User.info.permission_group'">
+            {{ $t(`User.permission.group.${value}`) }}</div
+          >
           <span v-else>{{ value }}</span>
         </template>
       </a-descriptions>
@@ -64,6 +76,7 @@
   import { updateUserForm, updateUser } from '@/api/user';
   import type { DescData } from '@arco-design/web-vue/es/descriptions/interface';
   import { Notification } from '@arco-design/web-vue';
+  import router from '@/router';
 
   const userStore = useUserStore();
 
@@ -112,6 +125,7 @@
           title: '更新成功',
           content: '头像更新成功',
         });
+        router.go(0);
       }
     } catch (error) {
       Notification.error({
@@ -156,7 +170,7 @@
           controller,
           onUploadProgress
         );
-        console.log(res.data)
+        console.log(res.data);
         onSuccess(res);
         updateAvatar(res.data);
       } catch (error) {
@@ -169,7 +183,6 @@
       },
     };
   };
-
   defineExpose({
     userStore,
   });

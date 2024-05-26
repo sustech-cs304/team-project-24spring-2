@@ -8,16 +8,17 @@ import localeMonitor from '@/views/dashboard/monitor/locale/zh-CN';
 import localeEventTable from '@/views/event/manage/locale/zh-CN';
 import localeEventCreate from '@/views/event/create/locale/zh-CN';
 import localeEventAuditMange from '@/views/event/audit-manage/locale/zh-CN';
-import localeEventSettings from '@/views/event/settings/locale/zh-CN';
+import localeEventSettings from '@/views/global/settings/locale/zh-CN';
 import localeEventEdit from '@/views/event/edit-page/locale/zh-CN';
 import localeEventAudit from '@/views/event/audit-page/locale/zh-CN';
 
-import localeSearchTable from '@/views/list/search-table/locale/zh-CN';
+// import localeSearchTable from '@/views/list/search-table/locale/zh-CN';
 
 import localeUsersManage from '@/views/users/manage/locale/zh-CN';
 import localeUsersSettings from '@/views/users/settings/locale/zh-CN';
 
-import localeCardList from '@/views/list/card/locale/zh-CN';
+import localeGlobalSettings from '@/views/global/settings/locale/zh-CN';
+// import localeCardList from '@/views/list/card/locale/zh-CN';
 
 import localeStepForm from '@/views/form/step/locale/zh-CN';
 import localeGroupForm from '@/views/form/group/locale/zh-CN';
@@ -47,9 +48,7 @@ export default {
   'menu.list': '列表页',
   'menu.result': '结果页',
   'menu.exception': '异常页',
-  'menu.form': '表单页',
-  'menu.profile': '详情页',
-  'menu.visualization': '数据可视化',
+  'menu.global': '全局设置',
   'menu.event': '活动管理页',
   'menu.users': '用户管理页',
   'menu.user': '个人中心',
@@ -64,8 +63,6 @@ export default {
   ...localeEventTable,
   ...localeEventCreate,
   ...localeMonitor,
-  ...localeSearchTable,
-  ...localeCardList,
   ...localeStepForm,
   ...localeGroupForm,
   ...localeBasicProfile,
@@ -84,4 +81,5 @@ export default {
   ...localeUsersSettings,
   ...localeEventEdit,
   ...localeEventAuditMange,
+  ...localeGlobalSettings
 };

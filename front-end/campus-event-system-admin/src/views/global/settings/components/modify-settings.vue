@@ -1,11 +1,11 @@
 <template>
   <div class="list-wrap">
     <a-typography-title class="block-title" :heading="6">
-      {{ $t('cardList.tab.title.preset') }}
+      {{ $t('Global.settings.title.all') }}
     </a-typography-title>
     <a-row class="list-row" :gutter="24">
       <a-col
-        v-for="item in renderData"
+        v-for="item in props.settings"
         :key="item.key"
         :xs="12"
         :sm="12"
@@ -39,27 +39,28 @@
     getSetting,
     setSetting,
   } from '@/api/global';
-  import useRequest from '@/hooks/request';
   import useLoading from '@/hooks/loading';
   import SettingCard from './setting-card.vue';
 
-  const defaultValue: SettingRecord[] = new Array(6).fill({} as SettingRecord);
-  const renderData = ref<SettingRecord[]>(defaultValue);
+
+  const props = defineProps<{
+    settings: SettingRecord[];
+  }>();
+
   const { loading, setLoading } = useLoading();
-
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      const res = await getSettings();
-      renderData.value = res.data;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  onBeforeMount(async () => {
-    await fetchData();
-  });
 </script>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+.list-wrap{
+    min-height: 200px;
+    .block-title{
+        margin-bottom: 16px;
+    }
+    .list-row{
+        .list-col{
+        margin-bottom: 24px;
+        }
+    }
+
+}
+</style>

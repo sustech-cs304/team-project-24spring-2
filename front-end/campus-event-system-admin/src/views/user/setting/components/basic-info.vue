@@ -27,10 +27,10 @@
       field="real_name"
       :label="$t('User.info.realname')"
       :rules="[
-        {
-          required: true,
-          message: $t('userSetting.form.error.realname.required'),
-        },
+        // {
+        //   required: true,
+        //   message: $t('userSetting.form.error.realname.required'),
+        // },
       ]"
       disabled
     >

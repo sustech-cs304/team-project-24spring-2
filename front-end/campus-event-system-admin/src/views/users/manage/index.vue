@@ -155,6 +155,28 @@
           {{ record.id }}
         </template>
 
+        <template #avatar_url="{ record }">
+          <a-avatar
+            v-if="record.avatar_url"
+            :size="32"
+            :style="{ marginRight: '8px', cursor: 'pointer' }"
+          >
+            <img alt="avatar" :src="record.avatar_url" />
+          </a-avatar>
+          <a-avatar
+            :style="{
+              backgroundColor: '#3370ff',
+              marginRight: '8px',
+              cursor: 'pointer',
+            }"
+            :size="32"
+            class="avatar"
+            v-else
+          >
+            <IconUser />
+          </a-avatar>
+        </template>
+
         <template #permission_group="{ record }">
           <a-space>
             <a-select
@@ -345,6 +367,11 @@
       title: t('manageEventTable.columns.index'),
       dataIndex: 'index',
       slotName: 'index',
+    },
+    {
+      title: t('User.info.avatar'),
+      dataIndex: 'avatar_url',
+      slotName: 'avatar_url',
     },
     {
       title: t('User.info.id'),
