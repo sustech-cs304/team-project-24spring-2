@@ -60,7 +60,7 @@ export default {
   <div class="top-navbar">
     <div class="brand" @click="navigate('/')">
       <img src="@/assets/LOGO.png" alt="Logo" class="logo-image">
-      <span class="logo">Campus Events and Entertainment Center</span>
+      <span class="logo"><h2><strong>{{"南方科技大学" + " | " + "校园活动中心"}}</strong></h2></span>
     </div>
     <div class="navigation-icons">
       <a href="#" class="nav-item" @click="navigate('/')">
@@ -100,6 +100,7 @@ export default {
 }
 
 .logo-image {
+  scale: 1.4;
   margin-right: 15px;
   height: auto;
   width: 200px;

@@ -56,7 +56,7 @@ export default {
         let ticketPromises = eventInfo.value.tickets.map(ticket_id => getTicketInfo(ticket_id));
         tickets.value = await Promise.all(ticketPromises);
         selectedPrice.value = 0;
-        while (tickets.value[selectedPrice.value].total_amount <= tickets.value[selectedPrice.value].lock_amount) {
+        while (tickets.length > 0 && tickets.value[selectedPrice.value].total_amount <= tickets.value[selectedPrice.value].lock_amount) {
           selectedPrice.value++;
         }
       }
@@ -69,8 +69,50 @@ export default {
       return response.data;
     }
 
-    function onStarChange() {
-      star.value = !star.value;
+    async function onStarChange() {
+      if (!utils.verifyLoginState()) {
+        Message.error('请先登录');
+        return;
+      }
+      if (!star.value) {
+        try {
+          let response = await axios.post(`/api/recommend/add?eventId=${route.query.id}`, {}, 
+            {
+              headers: {
+                'Authorization': localStorage.getItem('token_type') + ' ' + localStorage.getItem('access_token')
+              }
+            }
+          );
+          if (response.status === 200) {
+            Message.success('收藏成功');
+          } else {
+            Message.error('收藏失败');
+          }
+          star.value = !star.value;
+        } catch (error) {
+          console.error(error);
+          Message.error('收藏失败');
+        }
+      } else {
+        try {
+          let response = await axios.post(`/api/recommend/delete?eventId=${route.query.id}`, {}, 
+            {
+              headers: {
+                'Authorization': localStorage.getItem('token_type') + ' ' + localStorage.getItem('access_token')
+              }
+            }
+          );
+          if (response.status === 200) {
+            Message.success('取消收藏');
+          } else {
+            Message.error('取消收藏失败');
+          }
+          star.value = !star.value;
+        } catch (error) {
+          console.error(error);
+          Message.error('取消收藏失败');
+        }
+      }
     }
 
     function getMarkdownConetent(url) {
@@ -112,7 +154,7 @@ export default {
     }
 
     function openAMap(latitude, longitude) {
-      let url = `https://www.amap.com/search?query=${latitude},${longitude}`;
+      let url = `https://uri.amap.com/marker?position=${longitude},${latitude}`;
       window.open(url, '_blank');
     }
 
@@ -306,7 +348,7 @@ export default {
         </div>
         <div class="details_container">
           <div class="title_container">
-            <h1>{{ eventInfo.title }}</h1>
+            <h1>{{ eventInfo.category + " | " + eventInfo.title }}</h1>
             <span class="action" key="star" @click="onStarChange">
               <span v-if="star">
                 <IconStarFill :style="{ color: '#ffb400' }" />
@@ -314,35 +356,34 @@ export default {
               <span v-else>
                 <IconStar />
               </span>
-              {{ 0 + (star ? 1 : 0) }}
             </span>
           </div>
 
-          <p class="details_item">时间：{{ $formatDateTime(eventInfo.start_time) }} - {{
-            $formatDateTime(eventInfo.end_time) }}</p>
+          <p class="details_item"><strong>时间:</strong> <a-tag>{{ $formatDateTime(eventInfo.start_time) }} - {{
+            $formatDateTime(eventInfo.end_time) }}</a-tag></p>
           <p class="details_item">
-            地点：{{ eventInfo.location_name }}
+            <strong>地点:</strong> <a-tag>{{ eventInfo.location_name }}</a-tag>
             <ALink @click="openAMap(eventInfo.latitude, eventInfo.longitude)">
               <IconLocation />
             </ALink>
-
           </p>
 
-          <div class="details_item">
-            票档
+          <div class="details_item" v-if="tickets.length > 0">
             <a-radio-group type="button" :model-value="selectedPrice" @change="(val) => selectedPrice = val">
               <a-radio v-for="(ticket, index) in tickets" :key="ticket.id" :value="index"
                 :disabled="ticket.total_amount <= ticket.lock_amount">{{ ticket.description + " " + ticket.price }}
                 元</a-radio>
             </a-radio-group>
-
           </div>
 
           <a-button v-if="selectedPrice < tickets.length" type="primary" class="details_item" @click="purchase()">
             购票
           </a-button>
-          <a-button v-if="selectedPrice >= tickets.length" type="secondary" class="details_item" :disabled=true >
+          <a-button v-if="tickets.length > 0 & selectedPrice >= tickets.length" type="secondary" class="details_item" :disabled=true >
             售罄
+          </a-button>
+          <a-button v-if="tickets.length === 0" type="secondary" class="details_item" :disabled=true >
+            暂无票务信息
           </a-button>
 
         </div>
@@ -473,6 +514,10 @@ export default {
 }
 
 .details_item {
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  gap: 1vh;
   margin-bottom: 20px;
 }
 

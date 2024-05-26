@@ -111,7 +111,7 @@ export default {
     </template>
     <div class="description-box">
       <div class="description-box-title" @click="navigateToDetail()">
-        {{ event.title }}
+        {{ event.category + " | " + event.title }}
       </div>
       <div class="description-box-row-box">
         <span class="icon-hover"> <IconLocation/> </span>

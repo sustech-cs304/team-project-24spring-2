@@ -53,14 +53,15 @@ export default {
 
 <template>
   <div class="container">
+    <a-divider/>
     <div class="picture">
       <Pictures
           :images=image_urls
       />
     </div>
-    <!-- <a-divider/> -->
+    <a-divider/>
     <a-typography-title class="title">
-      当下热门
+      时下热门
     </a-typography-title>
     <div class="cards-container">
       <EventCard
@@ -70,22 +71,22 @@ export default {
       />
     </div>
     <a-divider/>
-    <!-- <BottomNav/> -->
   </div>
 </template>
 
 <style scoped>
 .container {
+  
   width: 88vw;
   height: auto;
   margin: auto; 
   display: block; 
 }
 .picture {
+  margin: auto;
   height: 40vh;
   width: 80vw;
-  margin: auto; /* 将图片水平和垂直居中 */
-  display: block; /* 确保图片的显示类型为块级元素 */
+  display: block;
 }
 
 .cards-container {
