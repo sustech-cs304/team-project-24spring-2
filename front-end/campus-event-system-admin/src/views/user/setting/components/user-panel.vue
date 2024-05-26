@@ -125,8 +125,8 @@
           title: '更新成功',
           content: '头像更新成功',
         });
-        router.go(0);
-      }
+        userStore.info();
+    }
     } catch (error) {
       Notification.error({
         title: '更新失败',

@@ -20,8 +20,8 @@ import localeUsersSettings from '@/views/users/settings/locale/zh-CN';
 import localeGlobalSettings from '@/views/global/settings/locale/zh-CN';
 // import localeCardList from '@/views/list/card/locale/zh-CN';
 
-import localeStepForm from '@/views/form-backup/step/locale/zh-CN';
-import localeGroupForm from '@/views/form-backup/group/locale/zh-CN';
+// import localeStepForm from '@/views/form-backup/step/locale/zh-CN';
+// import localeGroupForm from '@/views/form-backup/group/locale/zh-CN';
 
 import localeBasicProfile from '@/views/profile/basic/locale/zh-CN';
 
@@ -63,8 +63,8 @@ export default {
   ...localeEventTable,
   ...localeEventCreate,
   ...localeMonitor,
-  ...localeStepForm,
-  ...localeGroupForm,
+//   ...localeStepForm,
+//   ...localeGroupForm,
   ...localeBasicProfile,
   ...localeDataAnalysis,
   ...localeMultiDAnalysis,
