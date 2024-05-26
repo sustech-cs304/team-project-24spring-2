@@ -338,6 +338,10 @@ public class EventController {
             return ResponseEntity.badRequest().body("Event Not Found");
         }
 
+        if (event.getStatus() != EventStatus.EDITING) {
+            return ResponseEntity.badRequest().body("Event is not deletable");
+        }
+
         if (user.getPermissionGroup() == PermissionGroup.DEPARTMENT_ADMIN && !event.getPublisher().equals(user.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
@@ -345,6 +349,9 @@ public class EventController {
         event.getTickets().forEach(ticketService::deleteTicket);
 
         eventService.deleteEvent(event);
+
+        minioService.deleteDirectory(minioService.getDocumentBucket(), eventId.toString());
+        minioService.deleteDirectory(minioService.getImageBucket(), eventId.toString());
 
         return ResponseEntity.ok(event);
 
