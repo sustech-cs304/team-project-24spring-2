@@ -5,9 +5,7 @@ import cn.edu.sustech.ces.entity.Event;
 import cn.edu.sustech.ces.entity.User;
 import cn.edu.sustech.ces.enums.EventStatus;
 import cn.edu.sustech.ces.enums.PermissionGroup;
-import cn.edu.sustech.ces.service.CommentService;
-import cn.edu.sustech.ces.service.EventService;
-import cn.edu.sustech.ces.service.GlobalSettingService;
+import cn.edu.sustech.ces.service.*;
 import cn.edu.sustech.ces.service.minio.MinioService;
 import cn.edu.sustech.ces.utils.CESUtils;
 import com.alibaba.fastjson.JSONObject;
@@ -35,6 +33,8 @@ public class CommentController {
     private final GlobalSettingService globalSettingService;
     private final MinioService minioService;
     private final EventService eventService;
+    private final MailService mailService;
+    private final UserService userService;
 
     @PostMapping("/make-comment")
     @PreAuthorize("isAuthenticated()")
@@ -66,6 +66,13 @@ public class CommentController {
         }
         if (user.getPermissionGroup().ordinal() < PermissionGroup.INSTITUTE_ADMIN.ordinal() && !comment.getUserId().equals(user.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not allowed to delete this comment");
+        }
+
+        if (!comment.getUserId().equals(user.getId())) {
+            User commentUser = userService.getUserById(comment.getUserId());
+            if (commentUser != null && commentUser.getEmail() != null && !commentUser.getEmail().isEmpty()) {
+                mailService.sendSimpleMessage(commentUser.getEmail(), "[CES] Comment deletion notification", "Your comment \"" + comment.getContent() + "\" has been deleted by admin.");
+            }
         }
 
         commentService.deleteComment(comment);
