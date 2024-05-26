@@ -42,11 +42,9 @@
   import { SettingRecord, setSetting } from '@/api/global';
   import { useI18n } from 'vue-i18n';
   import { Notification } from '@arco-design/web-vue';
-  import { useRouter } from 'vue-router';
   import modifyModal from './modify-modal.vue';
 
   const { t } = useI18n();
-  const router = useRouter();
   const props = defineProps({
     setting: {
       type: Object as PropType<SettingRecord>,
@@ -76,15 +74,14 @@
         title: '更新成功',
         content: `${renderData.value.title} 已更新`,
       });
+      renderData.value.value = value;
     } catch (e) {
       Notification.error({
         title: '更新失败',
         content: `${renderData.value.title} 更新失败`,
       });
       console.error(e);
-    } finally {
-      router.go(0);
-    }
+    } 
   };
 </script>
 

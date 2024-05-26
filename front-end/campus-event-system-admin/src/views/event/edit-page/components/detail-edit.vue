@@ -96,6 +96,7 @@
   import cropImageModal from '@/components/image/croper-modal.vue';
   import { watch } from 'vue';
   import { onUnmounted } from 'vue';
+  import { cloneDeep } from 'lodash';
 
   const coverImage = ref({
     url: '',
@@ -104,7 +105,10 @@
   const vditor = ref();
   const setted = false;
   const originText = ref('');
-  const originCover = ref();
+  const originCover = ref({
+    url: '',
+    blob: null as any,
+  });
 
   // 1.1 引入Vditor 构造函数
 
@@ -312,8 +316,8 @@
     () => formData.value,
     async (val) => {
       if (val.image_url !== '' && val.image_url) {
-        coverImage.value.url = val.image_url;
-        originCover.value = coverImage.value;
+        coverImage.value.url = cloneDeep(val.image_url);
+        originCover.value = cloneDeep(coverImage.value);
       }
       vditor.value = new Vditor('vditor', {
         height: 800,

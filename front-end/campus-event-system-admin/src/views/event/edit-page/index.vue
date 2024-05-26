@@ -103,6 +103,7 @@
   } from '@/api/event';
   import { uploadFile, getFile } from '@/api/file';
   import { keys } from 'lodash';
+  import { cloneDeep } from 'lodash';
 
   import useLoading from '@/hooks/loading';
   import baseEdit from './components/base-edit.vue';
@@ -150,18 +151,7 @@
         uuid,
       };
 
-      originData.value = {
-        title: data.title,
-        address: data.location_name,
-        category: data.category,
-        lng: data.longitude,
-        lat: data.latitude,
-        tickets: [...res.map((item) => item.data)],
-        document_url: data.document_url,
-        image_url: data.image_url,
-        time_range: [new Date(data.start_time), new Date(data.end_time)],
-        uuid,
-      };
+      originData.value = cloneDeep(formData.value);
       console.log(data.status);
       if (data.status !== 'EDITING') {
         Notification.warning({
@@ -310,9 +300,7 @@
   });
 
   const reset = () => {
-    formData.value = {
-      ...originData.value,
-    };
+    formData.value = cloneDeep(originData.value);
     ie.value.reset();
   };
 </script>

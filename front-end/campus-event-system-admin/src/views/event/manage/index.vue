@@ -217,10 +217,7 @@
 
         <template #operations="{ record }">
           <a-space>
-            <a-button
-              size="small"
-              @click.prevent="conEventView(record.id)"
-            >
+            <a-button size="small" @click.prevent="conEventView(record.id)">
               {{ $t('manageEventTable.columns.operations.view') }}
             </a-button>
             <a-button
@@ -349,6 +346,7 @@
 
   const getCategories = async () => {
     const categories = await getSetting('categories');
+    categoryOptions.value = [];
     categories.data.split(',').forEach((element: string) => {
       categoryOptions.value.push({
         // label: t(`Event.Category.${element}`),

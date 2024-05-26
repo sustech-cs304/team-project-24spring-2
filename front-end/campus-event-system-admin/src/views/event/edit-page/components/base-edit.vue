@@ -67,7 +67,7 @@
                   format="YYYY-MM-DD HH:mm"
                   type="datetime"
                   show-time
-                  :disabledDate="(current) => dayjs(current).isAfter(dayjs())"
+                  :disabledDate="(current) => dayjs(current).isBefore(dayjs())"
                 />
               </a-form-item>
             </a-col>
@@ -183,7 +183,8 @@
     const categories = await getSetting('categories');
     categories.data.split(',').forEach((element: string) => {
       categoryOptions.value.push({
-        label: t(`Event.Category.${element}`),
+        label: element,
+        // label: t(`Event.Category.${element}`),
         value: element,
       });
     });

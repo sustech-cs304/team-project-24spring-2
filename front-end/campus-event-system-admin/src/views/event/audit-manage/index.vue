@@ -12,19 +12,6 @@
           >
             <a-row :gutter="16">
               <a-col :span="12">
-                <a-form-item
-                  field="publisher"
-                  :label="$t('search.Event.Publisher')"
-                >
-                  <a-input
-                    v-model="searchForm.publisher"
-                    :placeholder="$t('search.Event.Publisher.placeholder')"
-                    allow-clear
-                    @change="search"
-                  />
-                </a-form-item>
-              </a-col>
-              <a-col :span="12">
                 <a-form-item field="title" :label="$t('Event.Title')">
                   <a-input
                     v-model="searchForm.title"
@@ -34,14 +21,27 @@
                   />
                 </a-form-item>
               </a-col>
-            </a-row>
-            <a-row :gutter="16">
               <a-col :span="12">
                 <a-form-item field="contentType" :label="$t('Event.Category')">
                   <a-select
                     v-model="searchForm.category"
                     :options="categoryOptions"
                     :placeholder="$t('search.event.selectDefault')"
+                    allow-clear
+                    @change="search"
+                  />
+                </a-form-item>
+              </a-col>
+            </a-row>
+            <a-row :gutter="16">
+              <a-col :span="12">
+                <a-form-item
+                  field="publisher"
+                  :label="$t('search.Event.Publisher')"
+                >
+                  <a-input
+                    v-model="searchForm.publisher"
+                    :placeholder="$t('search.Event.Publisher.placeholder')"
                     allow-clear
                     @change="search"
                   />
@@ -308,10 +308,11 @@
   const categoryOptions = ref<SelectOptionData[]>([]);
 
   const getCategories = async () => {
+    categoryOptions.value = [];
     const categories = await getSetting('categories');
     categories.data.split(',').forEach((element: string) => {
       categoryOptions.value.push({
-        label: t(`Event.Category.${element}`),
+        label: element,
         value: element,
       });
     });
@@ -408,14 +409,7 @@
     return newArray;
   };
 
-  const onEventEditClicked = (uuid: string) => {
-    router.push({
-      path: '/event/edit',
-      query: {
-        uuid,
-      },
-    });
-  };
+
 
   const longTime2String = (time: number) => {
     const date = new Date(time);
