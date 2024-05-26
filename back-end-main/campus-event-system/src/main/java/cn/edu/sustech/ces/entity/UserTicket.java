@@ -26,4 +26,7 @@ public class UserTicket {
     @Column(nullable = false)
     private Integer number;
 
+    @Column(nullable = false)
+    private Boolean checkedIn;
+
 }

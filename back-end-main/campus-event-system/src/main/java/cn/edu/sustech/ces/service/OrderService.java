@@ -118,6 +118,7 @@ public class OrderService {
             UserTicket userTicket = new UserTicket();
             userTicket.setTicketId(order.getTicketId());
             userTicket.setNumber(number);
+            userTicket.setCheckedIn(false);
             userTicket = userTicketRepository.save(userTicket);
             user.getUserTickets().add(userTicket.getId());
             userRepository.save(user);

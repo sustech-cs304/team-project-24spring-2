@@ -2,6 +2,7 @@ package cn.edu.sustech.ces.controller;
 
 import cn.edu.sustech.ces.entity.Order;
 import cn.edu.sustech.ces.entity.Ticket;
+import cn.edu.sustech.ces.entity.UserTicket;
 import cn.edu.sustech.ces.enums.PermissionGroup;
 import cn.edu.sustech.ces.enums.UserGender;
 import cn.edu.sustech.ces.security.CESUserDetails;
@@ -273,6 +274,20 @@ public class UserController {
             return ResponseEntity.ok(new ArrayList<>());
         }
         return ResponseEntity.ok(userService.getUserTickets(user));
+    }
+
+    @PostMapping("/checkout-ticket")
+    @PreAuthorize("hasAnyRole('INSTITUTE_ADMIN', 'SUPER_ADMIN')")
+    public ResponseEntity<?> checkoutTicket(@RequestParam UUID ticketId) {
+        UserTicket ticket = userService.getUserTicket(ticketId);
+        if (ticket == null) {
+            return ResponseEntity.badRequest().body("Ticket Not Found");
+        }
+        if (ticket.getCheckedIn()) {
+            return ResponseEntity.badRequest().body("Ticket Already Checked In");
+        }
+        ticket.setCheckedIn(true);
+        return ResponseEntity.ok(userService.updateUserTicket(ticket));
     }
 
 }

@@ -136,4 +136,12 @@ public class UserService implements UserDetailsService {
         }
         return user.getUserTickets().stream().map(userTicketRepository::findById).map(Optional::get).toList();
     }
+
+    public UserTicket getUserTicket(UUID ticketId) {
+        return userTicketRepository.findById(ticketId).orElse(null);
+    }
+
+    public UserTicket updateUserTicket(UserTicket ticket) {
+        return userTicketRepository.save(ticket);
+    }
 }
