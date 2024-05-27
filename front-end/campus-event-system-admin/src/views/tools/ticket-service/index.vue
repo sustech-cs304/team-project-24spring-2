@@ -1,14 +1,14 @@
 <template>
   <div class="container">
-    <Breadcrumb :items="['menu.tools', 'menu.tools.tickService']" />
+    <Breadcrumb :items="['menu.tools', 'menu.tools.ticketService']" />
     <div>
       <a-space direction="vertical" :size="16" fill>
         <div>
-          <GuestInfoCard
+          <!-- <GuestInfoCard
             class="guest-user"
             :user-info="publisherInfo"
             :loading="loading"
-          />
+          /> -->
           <div class="cover">
             <a-spin
               :loading="loading"
@@ -99,7 +99,6 @@
 
   const publisherInfo = ref<UserState>({} as UserState);
 
-
   const onConfirm = async () => {
     if (ticketId.value.length !== 36) {
       Notification.warning({
@@ -168,34 +167,14 @@
     border-radius: 8px;
   }
 
-  .more-info {
-    width: 75%;
-    float: right;
-    .location-info {
-      border-radius: 8px;
-
-      float: right;
-      width: 49%;
-      margin-left: 2%;
-      height: 500px;
-    }
-
-    .date-info {
-      border-radius: 8px;
-
-      float: right;
-      width: 49%;
-      height: 500px;
-    }
-  }
-
   .cover {
     min-height: 275px;
     padding: 10px 10px 10px 10px;
     background-color: #ffffff;
     border-radius: 8px;
     width: 70%;
-    float: right;
+    margin: auto;
+    // float: right;
     .has-cover {
       width: 100%;
       height: 100%;
@@ -235,7 +214,9 @@
 
   .ticket-id {
     font-size: 30px;
-    float: right;
+    // float: right;
+    margin: auto;
+
     width: 70%;
     height: 100px;
     border-radius: 8px;
