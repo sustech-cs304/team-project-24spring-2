@@ -29,9 +29,6 @@ export default {
   'Event.ID': '活动ID',
 
   'Event.Category': '活动类型',
-//   'Event.Category.course': '课程',
-//   'Event.Category.music': '音乐',
-//   'Event.Category.activity': '活动',
 
   'Event.Address': '活动地点',
   'Event.Address.map': '活动地图',
@@ -108,6 +105,14 @@ export default {
 
   
 
+  
+
   'Event.Settings.change': '修改设置',
   'Event.Settings.description': '暂无描述',
+
+
+
+  'menu.tools.ticketService': '票务工具',
+
+  
 };

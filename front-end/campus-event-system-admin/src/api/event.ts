@@ -1,6 +1,7 @@
 import axios from 'axios';
 import qs from 'query-string';
 import type { DescData } from '@arco-design/web-vue/es/descriptions/interface';
+import { number } from 'echarts';
 
 // MANAGE API
 
@@ -24,6 +25,13 @@ export interface Tickets {
   price: number;
   total_amount: number;
   sold_amount?: number;
+}
+
+export interface UserTicket {
+  id: string;
+  ticketId: string;
+  number: number;
+  checkedIn: boolean;
 }
 
 export interface EventBaseInfoModel {
@@ -71,7 +79,6 @@ export interface EventUpdateModel {
   image_url?: string;
 }
 
-
 export interface ExtraEventRecord {
   id: string;
   publisher: string;
@@ -88,12 +95,18 @@ export interface EventParams {
   publisher?: string;
   statuses?: string;
   title?: string;
-
 }
 
 export interface PolicyListRes {
   list: EventRecord[];
   total: number;
+}
+
+
+export interface UserTicketRecord {
+  user_ticket: UserTicket;
+  event: EventRecord;
+  ticket: Tickets;
 }
 
 export function CreateEventApi(data: EventCreationModel) {
@@ -130,7 +143,6 @@ export function getTicketInfo(uuid: string) {
 }
 
 export function listEvent(params: EventParams) {
-    
   return axios.post<EventRecord[]>(
     '/api/event/list-events',
     {},
@@ -139,8 +151,6 @@ export function listEvent(params: EventParams) {
     }
   );
 }
-
-
 
 export function publishEvent(uuid: string) {
   return axios.post(
@@ -187,6 +197,18 @@ export function auditEvent(
       params: {
         eventId: uuid,
         pass,
+      },
+    }
+  );
+}
+
+export function checkoutTicket(uuid: string) {
+  return axios.post<UserTicketRecord>(
+    '/api/ticket/checkout-ticket',
+    {},
+    {
+      params: {
+        ticketId: uuid,
       },
     }
   );

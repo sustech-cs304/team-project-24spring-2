@@ -24,16 +24,16 @@
       <Menu v-if="topMenu" />
     </div>
     <ul class="right-side">
-      <li>
+      <!-- <li>
         <a-tooltip :content="$t('settings.search')">
           <a-button class="nav-btn" type="outline" :shape="'circle'">
             <template #icon>
-              <icon-search />
+              <icon-search @click="() => {}"/>
             </template>
           </a-button>
         </a-tooltip>
-      </li>
-      <li>
+      </li> -->
+      <!-- <li>
         <a-tooltip :content="$t('settings.language')">
           <a-button
             class="nav-btn"
@@ -61,7 +61,7 @@
             </a-doption>
           </template>
         </a-dropdown>
-      </li>
+      </li> -->
       <li>
         <a-tooltip
           :content="

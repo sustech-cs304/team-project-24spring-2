@@ -40,7 +40,9 @@ export default {
   'ticket.total_amount': '总票数',
   'ticket.total_amount.required': '需要总票数',
   'ticket.total_amount.pattern': '总票数需要是大于等于零的数字',
-  
+  'ticket.sold_amount': '已售票数',
+
+
   'event.label.advertisingSource': '广告来源',
   'event.placeholder.advertisingSource': '引荐来源地址：sohu、sina',
   'event.error.advertisingSource.required': '请输入广告来源',

@@ -1,9 +1,9 @@
 <template>
   <div class="card-wrap">
-    <a-card v-if="props.loading" :bordered="false" hoverable>
+    <a-card v-if="props.loading" class="card-bone" :bordered="false" hoverable>
       <slot name="skeleton"></slot>
     </a-card>
-    <a-card v-else :bordered="false" hoverable>
+    <a-card v-else class="card-bone" :bordered="false" hoverable>
       <div class="card-content">
         <a-space align="start">
           <a-avatar
@@ -23,17 +23,15 @@
               <slot></slot>
             </template>
           </a-card-meta>
+          <div class="action">
+            <modifyModal
+              class="action-button"
+              :setting="renderData"
+              :clickText="$t('Event.Settings.change')"
+              @update="updateSetting"
+            />
+          </div>
         </a-space>
-        <!-- <template > -->
-        <div class="action">
-          <modifyModal
-            class="action-button"
-            :setting="renderData"
-            :clickText="$t('Event.Settings.change')"
-            @update="updateSetting"
-          />
-        </div>
-        <!-- </template> -->
       </div>
     </a-card>
   </div>
@@ -148,12 +146,17 @@
     }
   }
 
-  .card-content{
+  .card-bone {
+    border-radius: 16px;
+  }
+
+  .card-content {
     padding: 5px;
   }
 
   .action {
     width: 100%;
+    margin-top: 5vh;
     .action-button {
       float: right;
     }

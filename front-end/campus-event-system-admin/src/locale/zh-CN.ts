@@ -32,10 +32,14 @@ import locale403 from '@/views/exception/403/locale/zh-CN';
 import locale404 from '@/views/exception/404/locale/zh-CN';
 import locale500 from '@/views/exception/500/locale/zh-CN';
 
+
+
 import localeUserSetting from '@/views/user/setting/locale/zh-CN';
 
 import localeSettings from './zh-CN/settings';
 import localeCommon from './zh-CN/common';
+
+
 
 export default {
   'menu.dashboard': '仪表盘',
@@ -43,6 +47,7 @@ export default {
   'menu.server.workplace': '工作台-服务端',
   'menu.server.monitor': '实时监控-服务端',
   'menu.list': '列表页',
+  'menu.tools': '工具页',
   'menu.result': '结果页',
   'menu.exception': '异常页',
   'menu.global': '全局设置',
