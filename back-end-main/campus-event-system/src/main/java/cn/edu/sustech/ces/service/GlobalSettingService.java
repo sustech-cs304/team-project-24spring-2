@@ -3,6 +3,7 @@ package cn.edu.sustech.ces.service;
 import cn.edu.sustech.ces.entity.GlobalSetting;
 import cn.edu.sustech.ces.repository.GlobalSettingRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,9 @@ public class GlobalSettingService {
     public static final String CATEGORIES = "categories";
     public static final String MAX_PAGE_SIZE = "max_page_size";
     public static final String ORDER_EXPIRE_TIME = "order_expire_time";
-    public static final String[] DEFAULT_KEYS = {COMMENT_MAX_WEIGHT, COMMENT_IMAGE_WEIGHT, COMMENT_VIDEO_WEIGHT, CATEGORIES, ORDER_EXPIRE_TIME};
+    public static final String AMAP_API_CODE = "amap_api_code";
+    public static final String AMAP_API_KEY = "amap_api_key";
+    public static final String[] DEFAULT_KEYS = {COMMENT_MAX_WEIGHT, COMMENT_IMAGE_WEIGHT, COMMENT_VIDEO_WEIGHT, CATEGORIES, ORDER_EXPIRE_TIME, AMAP_API_CODE, AMAP_API_KEY};
 
     @Cacheable(cacheNames = "globalSettings", key = "#key")
     public String getSetting(String key) {
@@ -50,6 +53,12 @@ public class GlobalSettingService {
             }
             if (key.equals(ORDER_EXPIRE_TIME)) {
                 defaultValue = ""  + (1000 * 60 * 10);
+            }
+            if (key.equals(AMAP_API_CODE)) {
+                defaultValue = "";
+            }
+            if (key.equals(AMAP_API_KEY)) {
+                defaultValue = "";
             }
             if (defaultValue != null) {
                 setting = new GlobalSetting(key, defaultValue);
