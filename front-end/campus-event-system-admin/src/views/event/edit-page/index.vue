@@ -209,6 +209,8 @@
   };
 
   const handleBeforeSubmissionOk = async () => {
+    await saveEvent();
+
     await submitPublish();
     return true;
   };
