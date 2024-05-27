@@ -29,8 +29,8 @@ export default {
                 <p><strong>票档:</strong> <a-tag color="gold">{{ ticket.ticketInfo.description }}</a-tag></p>
                 <p><strong>编号:</strong> <a-tag color="arcoblue">NO. {{ ticket.number }}</a-tag></p>
                 <p><strong>标识码: </strong> <a-tag>{{ ticket.id }}</a-tag></p>
-                <p><strong>时间:</strong> <a-tag>{{ $formatDateTime(ticket.eventInfo.startTime) }} - {{
-                    $formatDateTime(ticket.eventInfo.endTime) }}</a-tag></p>
+                <p><strong>时间:</strong> <a-tag>{{ $formatDateTime(ticket.eventInfo.start_time) }} - {{
+                    $formatDateTime(ticket.eventInfo.end_time) }}</a-tag></p>
                 <p><strong>地点:</strong> <a-tag>{{ ticket.eventInfo.location_name }}</a-tag></p>
                 <p><strong>状态:</strong> <a-tag v-if="ticket.checked_in" color="green">已使用</a-tag><a-tag v-else
                         color="red">未使用</a-tag></p>

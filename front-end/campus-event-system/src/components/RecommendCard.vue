@@ -26,7 +26,7 @@ export default {
             <a-link :href="`/eventInfo?id=${event.id}`">查看详情</a-link>
         </template>
         <div class="card_layout">
-            <p><strong>时间:</strong> <a-tag>{{ $formatDateTime(event.startTime) }} - {{ $formatDateTime(event.endTime) }}</a-tag></p>
+            <p><strong>时间:</strong> <a-tag>{{ $formatDateTime(event.start_time) }} - {{ $formatDateTime(event.end_time) }}</a-tag></p>
             <p><strong>地点:</strong> <a-tag>{{ event.location_name }}</a-tag></p>
         </div>
     </a-card>

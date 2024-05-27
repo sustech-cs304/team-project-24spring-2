@@ -519,7 +519,7 @@ export default {
   margin-top: 2vh;
   /* border: 1px solid #ccc; */
   display: flex;
-  align-items: baseline;
+  align-items: flex-start;
   justify-content: center;
   flex-direction: row;
   width: 90vw;
@@ -542,20 +542,13 @@ export default {
 }
 
 .upper_container {
-  width: 100%;
-  height: auto;
   display: flex;
-  /* border-bottom: 1px solid #ccc; */
+  justify-content: flex-start;
 }
 
 .post_container {
-  flex: 1;
-
-}
-
-.details_container {
-
-  width: 70%;
+  height: 50%;
+  width: 50%;
 }
 
 .lower_conatiner {
@@ -584,9 +577,9 @@ export default {
 }
 
 .event_post {
-  width: 80%;
+  width: 100%;
   height: 100%;
-
+  padding: 3vh;
 }
 
 .action {

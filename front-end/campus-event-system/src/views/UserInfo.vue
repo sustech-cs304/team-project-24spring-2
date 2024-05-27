@@ -105,9 +105,15 @@ export default {
         let event_response = await axios.post(`/api/event/get-event?eventId=${ticketData[i].ticketInfo.event_id}`);
         ticketData[i].eventInfo = event_response.data;
       }
-
       ticketData.sort((a, b) => {
-        return b.eventInfo.endTime - a.eventInfo.endTime;
+        if (a.checked_in && !b.checked_in) {
+          return 1;
+        } else if (!a.checked_in && b.checked_in) {
+          return -1;
+        } else {
+          return b.eventInfo.end_time - a.eventInfo.end_time;
+        }
+
       });
       return ticketData;
     }

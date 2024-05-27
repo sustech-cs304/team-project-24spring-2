@@ -1,5 +1,5 @@
 <template>
-    <canvas id="canvas"></canvas>
+    <canvas :id="text"></canvas>
 </template>
 
 <script>
@@ -13,7 +13,6 @@ export default {
             type: String,
             required: true
         }
-    
     },
     setup(props) {
         const { text } = toRefs(props);
@@ -26,7 +25,7 @@ export default {
         }
 
         onMounted(() => {
-            generateQRCode("canvas", text.value);
+            generateQRCode(text.value, text.value);
         })
 
         return {
