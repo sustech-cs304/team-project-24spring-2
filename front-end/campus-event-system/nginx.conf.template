@@ -1,0 +1,32 @@
+server {
+    listen ${CES_PORT};
+    server_name ${CES_SERVER_NAME}; 
+    
+    location / {
+        root /usr/share/nginx/html; 
+        index index.html;
+        try_files $uri $uri/ /index.html; 
+    } 
+    
+    location @router { 
+        rewrite ^.*$ /index.html break; 
+    } 
+    
+    location /api/ { 
+        proxy_pass ${VITE_PROXY_API}; 
+    } 
+    location /images/ {
+        proxy_pass ${VITE_PROXY_IMAGES}; 
+    } 
+    location /documents/ { 
+        proxy_pass ${VITE_PROXY_DOCUMENTS}; 
+    }
+    location /comments/ { 
+        proxy_pass ${VITE_PROXY_COMMENTS}; 
+    } 
+    
+    error_page 500 502 503 504 /50x.html; 
+        location = /50x.html { 
+        root /usr/share/nginx/html; 
+    } 
+}
