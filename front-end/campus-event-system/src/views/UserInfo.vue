@@ -1,4 +1,8 @@
 <script>
+import {
+  IconHeartFill,
+  IconStarFill,
+} from '@arco-design/web-vue/es/icon';
 import { reactive, ref, onMounted } from 'vue';
 import axios from 'axios';
 import CustomImage from '@/components/CustomImage.vue';
@@ -8,6 +12,9 @@ import OrderCard from '@/components/OrderCard.vue';
 import TicketCard from '@/components/TicketCard.vue';
 import utils from '@/api/utils.ts';
 import { useRouter } from 'vue-router';
+import RecommendCard from '@/components/RecommendCard.vue';
+
+
 
 export default {
   name: "UserInfo",
@@ -16,6 +23,9 @@ export default {
     IconEdit,
     OrderCard,
     TicketCard,
+    RecommendCard,
+    IconHeartFill,
+    IconStarFill,
   },
   setup() {
 
@@ -37,6 +47,7 @@ export default {
     const confirmPassword = ref('');
     const orders = ref([]);
     const tickets = ref([]);
+    const starEvents = ref([]);
 
     onMounted(async () => {
       if (!utils.verifyLoginState(true)) {
@@ -55,8 +66,10 @@ export default {
 
       orders.value = await fetchOrders();
       tickets.value = await fetchTickets();
+    
+      // console.log(tickets.value)
 
-      console.log(tickets.value)
+      await fetchStarEvents();
     });
 
     async function fetchOrders() {
@@ -91,7 +104,7 @@ export default {
         let event_response = await axios.post(`/api/event/get-event?eventId=${ticketData[i].ticketInfo.event_id}`);
         ticketData[i].eventInfo = event_response.data;
       }
-      console.log(ticketData);
+
       ticketData.sort((a, b) => {
         return b.eventInfo.endTime - a.eventInfo.endTime;
       });
@@ -169,6 +182,25 @@ export default {
 
     }
 
+    async function fetchStarEvents() {
+      let response = await axios.post(`/api/recommend/get-ratings`, {},
+        {
+          headers: {
+            'Authorization': localStorage.getItem('token_type') + ' ' + localStorage.getItem('access_token')
+          }
+        }
+      );
+      let starEventIds = response.data;
+
+      for (let i = 0; i < starEventIds.length; i++) {
+        let response = await axios.post(`/api/event/get-event?eventId=${starEventIds[i]}`);
+        starEvents.value.push(response.data);
+      }
+      
+      // console.log(starEvents.value);
+      return response.data;
+    }
+
 
 
     return {
@@ -178,6 +210,7 @@ export default {
       tickets,
       password,
       confirmPassword,
+      starEvents,
       updateUser,
       uploadAvatar,
     }
@@ -247,10 +280,11 @@ export default {
       <a-tabs>
           <a-tab-pane key="1">
             <template #title>
+              <!-- <IconStarFill /> -->
               收藏
             </template>
             <div class="Information">
-              这里是收藏
+              <RecommendCard v-for="(item, index) in starEvents" :key="index" :event="item" style="margin-bottom: 15px;" />
             </div>
           </a-tab-pane>
           <a-tab-pane key="2">
@@ -306,5 +340,7 @@ export default {
   width: 100%;
   height: auto;
 }
+
+
 
 </style>
