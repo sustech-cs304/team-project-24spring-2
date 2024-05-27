@@ -38,10 +38,10 @@
     <a-form-item>
       <a-space>
         <a-button type="secondary" @click="goPrev">
-          {{ $t('stepForm.button.prev') }}
+          {{ $t('button.prev') }}
         </a-button>
         <a-button type="primary" @click="onNextClick">
-          {{ $t('stepForm.button.next') }}
+          {{ $t('button.next') }}
         </a-button>
       </a-space>
     </a-form-item>

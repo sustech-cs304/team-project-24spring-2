@@ -100,7 +100,7 @@
               const node =
                 element?.children && element?.children.length !== 0 ? (
                   <a-sub-menu
-                    key={element?.name}
+                    key={element.name}
                     v-slots={{
                       icon,
                       title: () => h(compile(t(element?.meta?.locale || ''))),

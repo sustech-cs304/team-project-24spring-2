@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <Breadcrumb :items="['menu.user', 'menu.users.manage']" />
+    <Breadcrumb :items="['menu.users', 'menu.users.manage']" />
     <a-card class="general-card" :title="$t('User.Manage')">
       <a-row>
         <a-col :flex="1">
@@ -43,6 +43,7 @@
               <template #icon>
                 <icon-search />
               </template>
+              {{ $t('search.event.search') }}
               {{ $t('search.event.search') }}
             </a-button>
             <a-button @click="reset">
@@ -436,6 +437,8 @@
   const search = () => {
     console.log(searchForm.value);
     fetchData({
+      ...searchForm.value,
+      ...defaultPagenation,
       ...searchForm.value,
       ...defaultPagenation,
     } as unknown as UsersParams);

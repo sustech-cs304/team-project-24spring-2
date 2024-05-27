@@ -1,11 +1,8 @@
 <template>
   <div class="container">
     <div class="logo">
-      <img
-        alt="logo"
-        src="//p3-armor.byteimg.com/tos-cn-i-49unhts6dw/dfdba5317c0c20ce20e64fac803d52bc.svg~tplv-49unhts6dw-image.image"
-      />
-      <div class="logo-text">Arco Design Pro</div>
+      <img alt="logo" :src="School" style="width: 100px" />
+      <div class="logo-text"> {{ $t('CSE.Console') }}</div>
     </div>
     <LoginBanner />
     <div class="content">
@@ -21,8 +18,11 @@
 
 <script lang="ts" setup>
   import Footer from '@/components/footer/index.vue';
+  import School from '@/assets/images/SUSTech_Main.png';
   import LoginBanner from './components/banner.vue';
   import LoginForm from './components/login-form.vue';
+
+  console.log(import.meta.env);
 </script>
 
 <style lang="less" scoped>
@@ -32,7 +32,7 @@
 
     .banner {
       width: 550px;
-      background: linear-gradient(163.85deg, #1d2129 0%, #00308f 100%);
+      background: linear-gradient(163.85deg, #3464c4 0%, #25385e 100%);
     }
 
     .content {

@@ -4,7 +4,7 @@ import { useUserStore } from '@/store';
 function checkPermission(el: HTMLElement, binding: DirectiveBinding) {
   const { value } = binding;
   const userStore = useUserStore();
-  const { role } = userStore;
+  const { permission_group: role } = userStore;
 
   if (Array.isArray(value)) {
     if (value.length > 0) {

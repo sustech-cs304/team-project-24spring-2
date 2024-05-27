@@ -82,9 +82,16 @@ export default {
   'Event.Publisher.info': '发布者',
   'Event.edit.submit': '提交活动',
   'Event.edit.submit.info': '您确定提交活动并进行审核吗？在没有审核结果之前无法再次进行编辑！',
-  'Event.edit.submit.success': '提交审核成功',
+  'Event.edit.submit.success': '提交审核成功！',
   'Event.edit.submit.success.info': '请耐心等待，在出结果之后我们将邮件通知您',
   'Event.edit.submit.goback': '返回上层',
+
+    
+  'Event.edit.delete': '删除活动',
+  'Event.edit.delete.info': '您确定删除活动吗？此操作不可逆！',
+  'Event.edit.delete.success': '删除活动成功',
+  'Event.edit.delete.success.info': '活动没有啦',
+
 
   'Event.AuditManage': '活动审核管理',
   'Event.Audit': '活动审核',
@@ -98,6 +105,8 @@ export default {
   'Event.Audit.submit.success': '提交审核结果成功',
   'Event.Audit.submit.success.info': '审核结果已由系统发送至发布者邮箱',
   'Event.Audit.submit.goback': '返回上层',
+
+  
 
   'Event.Settings.change': '修改设置',
   'Event.Settings.description': '暂无描述',

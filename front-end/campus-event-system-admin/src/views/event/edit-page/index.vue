@@ -54,17 +54,23 @@
           {{ $t('basicProfile.goBack') }}
         </a-button>
         <a-space>
+          <a-button status="danger" @click="onDeleteEvent">
+            <template #icon>
+              <icon-delete />
+            </template>
+            {{ $t('button.delete') }}
+          </a-button>
           <a-button @click="reset">
             <template #icon>
               <icon-redo />
             </template>
-            {{ $t('eventEdit.reset') }}
+            {{ $t('button.reset') }}
           </a-button>
           <a-button type="secondary" @click="saveEvent">
             <template #icon>
               <icon-save />
             </template>
-            {{ $t('eventEdit.save') }}
+            {{ $t('button.save') }}
           </a-button>
           <a-button type="primary" @click="confirmVis = true">
             {{ $t('eventEdit.submit') }}
@@ -75,13 +81,25 @@
 
     <a-modal
       v-model:visible="confirmVis"
-      @cancel="handleCancel"
-      :on-before-ok="handleBeforeOk"
+      @cancel="handleSubmissionCancel"
+      :on-before-ok="handleBeforeSubmissionOk"
       unmountOnClose
     >
       <template #title> {{ $t('Event.edit.submit') }} </template>
       <div>
         {{ $t('Event.edit.submit.info') }}
+      </div>
+    </a-modal>
+
+    <a-modal
+      v-model:visible="deleteVis"
+      @cancel="handleDeleteCancel"
+      :on-before-ok="handleBeforeDeleteOk"
+      unmountOnClose
+    >
+      <template #title> {{ $t('Event.edit.delete') }} </template>
+      <div>
+        {{ $t('Event.edit.delete.info') }}
       </div>
     </a-modal>
   </div>
@@ -100,6 +118,7 @@
     getTicketInfo,
     updateEvent,
     publishEvent,
+    deleteEvent,
   } from '@/api/event';
   import { uploadFile, getFile } from '@/api/file';
   import { keys } from 'lodash';
@@ -113,6 +132,8 @@
   const be = ref();
   const ie = ref();
   const router = useRouter();
+
+  const { t: $t } = useI18n();
 
   const { loading, setLoading } = useLoading(true);
 
@@ -128,6 +149,11 @@
   const args = new URLSearchParams(window.location.search);
   const uuid = args.get('uuid') as string;
   const confirmVis = ref(false);
+  const deleteVis = ref(false);
+
+  const onDeleteEvent = () => {
+    deleteVis.value = true;
+  };
 
   const fetchData = async () => {
     setLoading(true);
@@ -169,11 +195,20 @@
 
   const pageStep = ref(1);
 
-  const handleCancel = () => {
+  const handleDeleteCancel = () => {
+    deleteVis.value = false;
+  };
+
+  const handleBeforeDeleteOk = async () => {
+    await confirmDelete();
+    return true;
+  };
+
+  const handleSubmissionCancel = () => {
     confirmVis.value = false;
   };
 
-  const handleBeforeOk = async () => {
+  const handleBeforeSubmissionOk = async () => {
     await submitPublish();
     return true;
   };
@@ -277,8 +312,8 @@
       setLoading(true);
       const res = publishEvent(uuid);
       Notification.success({
-        title: 'Success',
-        content: '提交审核成功！',
+        title: $t('note.success'),
+        content: $t('Event.edit.submit.success'),
       });
       goSuccess();
     } catch (e) {
@@ -287,6 +322,23 @@
       setLoading(false);
     }
   };
+
+  const confirmDelete = async () => {
+    try {
+      setLoading(true);
+      const res = await deleteEvent(uuid);
+      Notification.success({
+        title: $t('Event.edit.delete.success'),
+        content: $t('Event.edit.delete.success.info'),
+      });
+      router.push('/event/manage');
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const goBack = () => {
     router.go(-1);
   };

@@ -9,9 +9,6 @@ export default {
   'event.create.subTitle.finish': '创建成功',
   'event.success.title': '提交成功',
   'event.success.subTitle': '表单提交成功！',
-  'event.button.next': '下一步',
-  'event.button.prev': '上一步',
-  'event.button.submit': '提交',
   'event.button.again': '再次创建',
   'event.button.view': '查看详情',
 
@@ -60,8 +57,7 @@ export default {
   'event.error.advertisingContent.required': '请输入广告内容',
   'event.error.advertisingContent.maxLength': '最多不超过200字',
   'event.description.title': '渠道表单说明',
-  'event.description.text':
-    '广告商渠道推广支持追踪在第三方广告商投放广告下载App用户的场景，例如在今日头条渠道投放下载App广告，追踪通过在渠道下载激活App的用户。',
+  
   'tickets.columns.description': '票种描述',
   'tickets.columns.price': '票价',
   'tickets.columns.total_amount': '总票数',

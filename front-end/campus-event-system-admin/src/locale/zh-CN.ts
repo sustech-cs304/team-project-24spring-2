@@ -15,7 +15,6 @@ import localeEventAudit from '@/views/event/audit-page/locale/zh-CN';
 // import localeSearchTable from '@/views/list/search-table/locale/zh-CN';
 
 import localeUsersManage from '@/views/users/manage/locale/zh-CN';
-import localeUsersSettings from '@/views/users/settings/locale/zh-CN';
 
 import localeGlobalSettings from '@/views/global/settings/locale/zh-CN';
 // import localeCardList from '@/views/list/card/locale/zh-CN';
@@ -25,8 +24,6 @@ import localeGlobalSettings from '@/views/global/settings/locale/zh-CN';
 
 import localeBasicProfile from '@/views/profile/basic/locale/zh-CN';
 
-import localeDataAnalysis from '@/views/visualization/data-analysis/locale/zh-CN';
-import localeMultiDAnalysis from '@/views/visualization/multi-dimension-data-analysis/locale/zh-CN';
 
 import localeSuccess from '@/views/result/success/locale/zh-CN';
 import localeError from '@/views/result/error/locale/zh-CN';
@@ -35,10 +32,10 @@ import locale403 from '@/views/exception/403/locale/zh-CN';
 import locale404 from '@/views/exception/404/locale/zh-CN';
 import locale500 from '@/views/exception/500/locale/zh-CN';
 
-import localeUserInfo from '@/views/user/info/locale/zh-CN';
 import localeUserSetting from '@/views/user/setting/locale/zh-CN';
 
 import localeSettings from './zh-CN/settings';
+import localeCommon from './zh-CN/common';
 
 export default {
   'menu.dashboard': '仪表盘',
@@ -52,10 +49,13 @@ export default {
   'menu.event': '活动管理页',
   'menu.users': '用户管理页',
   'menu.user': '个人中心',
-  'menu.arcoWebsite': 'Arco Design',
   'menu.faq': '常见问题',
   'navbar.docs': '文档中心',
   'navbar.action.locale': '切换为中文',
+
+  'menu.aboutCES': '关于CES',
+  'CSE.Console': '校园活动管理系统 - 控制台',
+  ...localeCommon,
   ...localeSettings,
   ...localeMessageBox,
   ...localeLogin,
@@ -66,19 +66,15 @@ export default {
 //   ...localeStepForm,
 //   ...localeGroupForm,
   ...localeBasicProfile,
-  ...localeDataAnalysis,
-  ...localeMultiDAnalysis,
   ...localeSuccess,
   ...localeError,
   ...locale403,
   ...locale404,
   ...locale500,
-  ...localeUserInfo,
   ...localeUserSetting,
   ...localeEventAudit,
   ...localeEventSettings,
   ...localeUsersManage,
-  ...localeUsersSettings,
   ...localeEventEdit,
   ...localeEventAuditMange,
   ...localeGlobalSettings

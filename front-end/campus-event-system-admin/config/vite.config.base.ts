@@ -1,5 +1,5 @@
 import { resolve } from 'path';
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import svgLoader from 'vite-svg-loader';
@@ -30,7 +30,6 @@ export default defineConfig({
         find: 'vue',
         replacement: 'vue/dist/vue.esm-bundler.js', // compile template
       },
-
     ],
     extensions: ['.ts', '.js'],
   },
@@ -38,26 +37,29 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8080/api',
+        target:
+        //   loadEnv('production', process.cwd()).VITE_PROXY_API_TARGET ||
+          'http://172.17.0.1:8080/api',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '/'),
       },
       '/images': {
-        target: 'http://localhost:19000/images',
+        target:
+        //   loadEnv('production', process.cwd()).VITE_PROXY_IMAGE_TARGET ||
+          'http://172.17.0.1:19000/images',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/images/, '/'),
       },
       '/documents': {
-        target: 'http://localhost:19000/documents',
+        target:
+        //   loadEnv('production', process.cwd()).VITE_PROXY_DOC_TARGET ||
+          'http://172.17.0.1:19000/documents',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/documents/, '/'),
       },
     },
   },
 
-  define: {
-    'process.env': {},
-  },
   css: {
     preprocessorOptions: {
       less: {

@@ -71,6 +71,7 @@ export interface EventUpdateModel {
   image_url?: string;
 }
 
+
 export interface ExtraEventRecord {
   id: string;
   publisher: string;
@@ -87,6 +88,7 @@ export interface EventParams {
   publisher?: string;
   statuses?: string;
   title?: string;
+
 }
 
 export interface PolicyListRes {
@@ -94,13 +96,12 @@ export interface PolicyListRes {
   total: number;
 }
 
-
-
 export function CreateEventApi(data: EventCreationModel) {
   return axios.post('/api/event/create-event', data);
 }
 
 export function listEventSize(params: EventParams) {
+  return axios.post<number>('/api/event/list-events-size', {}, { params });
   return axios.post<number>('/api/event/list-events-size', {}, { params });
 }
 
@@ -139,6 +140,8 @@ export function listEvent(params: EventParams) {
   );
 }
 
+
+
 export function publishEvent(uuid: string) {
   return axios.post(
     '/api/event/publish-event',
@@ -158,19 +161,35 @@ export function updateEvent(uuid: string, data: EventUpdateModel) {
   });
 }
 
+export function deleteEvent(uuid: string) {
+  return axios.post(
+    '/api/event/delete-event',
+    {},
+    {
+      params: {
+        eventId: uuid,
+      },
+    }
+  );
+}
+
 export function auditEvent(
   uuid: string,
   pass: 'true' | 'false',
-  reason: string,
-  ) {
-  return axios.post('/api/event/audit-event', {
-    reason
-  }, {
-    params: {
-      eventId: uuid,
-      pass,
+  reason: string
+) {
+  return axios.post(
+    '/api/event/audit-event',
+    {
+      reason,
     },
-  });
+    {
+      params: {
+        eventId: uuid,
+        pass,
+      },
+    }
+  );
 }
 
 const integralDigits = 6;

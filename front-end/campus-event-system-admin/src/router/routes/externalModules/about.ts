@@ -1,8 +1,8 @@
 export default {
-  path: 'https://arco.design',
-  name: 'arcoWebsite',
+  path: 'https://google.com',
+  name: 'aboutCES',
   meta: {
-    locale: 'menu.arcoWebsite',
+    locale: 'menu.aboutCES',
     icon: 'icon-link',
     requiresAuth: true,
     order: 8,

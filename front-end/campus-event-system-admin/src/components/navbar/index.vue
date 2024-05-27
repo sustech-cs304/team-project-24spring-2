@@ -4,14 +4,14 @@
       <a-space>
         <img
           alt="logo"
-          src="//tse1-mm.cn.bing.net/th/id/OIP-C.fXpoThIQDcXWZKAMVBpevwHaB7?rs=1&pid=ImgDetMain"
-          style="width: 128px; height: 35px"
+          :src="SchoolWide"
+          style="height: 35px"
         />
         <a-typography-title
           :style="{ margin: 0, fontSize: '18px' }"
           :heading="5"
         >
-          {{ 'SUSTech Campus Event Management System' }}
+        {{ $t('CSE.Console') }}
         </a-typography-title>
         <icon-menu-fold
           v-if="!topMenu && appStore.device === 'mobile'"
@@ -212,6 +212,7 @@
   import { useDark, useToggle, useFullscreen } from '@vueuse/core';
   import { useAppStore, useUserStore } from '@/store';
   import { LOCALE_OPTIONS } from '@/locale';
+  import SchoolWide from '@/assets/images/SUSTech_Wide.png';
   import useLocale from '@/hooks/locale';
   import useUser from '@/hooks/user';
   import Menu from '@/components/menu/index.vue';

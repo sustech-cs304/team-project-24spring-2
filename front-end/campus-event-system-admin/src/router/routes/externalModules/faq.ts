@@ -1,5 +1,5 @@
 export default {
-  path: 'https://arco.design/vue/docs/pro/faq',
+  path: 'https://google.com',
   name: 'faq',
   meta: {
     locale: 'menu.faq',

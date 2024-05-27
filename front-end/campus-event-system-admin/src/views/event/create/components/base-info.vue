@@ -57,7 +57,12 @@
         v-model="formData.time_range"
         format="YYYY-MM-DD HH:mm"
         type="datetime"
-        :disabledDate="(current) => dayjs(current).isBefore(dayjs())"
+        :disabledDate="
+          (current) => {
+            return false;
+            // dayjs(current).isBefore(dayjs())
+          }
+        "
       />
     </a-form-item>
     <a-form-item
@@ -88,7 +93,7 @@
     </a-form-item>
     <a-form-item>
       <a-button type="primary" @click="onNextClick">
-        {{ $t('event.button.next') }}
+        {{ $t('button.next') }}
       </a-button>
     </a-form-item>
   </a-form>

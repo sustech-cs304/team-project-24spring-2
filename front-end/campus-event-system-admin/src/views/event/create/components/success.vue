@@ -2,15 +2,15 @@
   <div class="success-wrap">
     <a-result
       status="success"
-      :title="$t('stepForm.success.title')"
-      :subtitle="$t('stepForm.success.subTitle')"
+      :title="$t('event.create.title.finish')"
+      :subtitle="$t('event.create.subTitle.finish')"
     />
     <a-space :size="16">
       <a-button key="view" type="primary" @click="onView">
-        {{ $t('stepForm.button.view') }}
+        {{ $t('event.button.view') }}
       </a-button>
       <a-button key="again" type="secondary" @click="oneMore">
-        {{ $t('stepForm.button.again') }}
+        {{ $t('event.button.again') }}
       </a-button>
     </a-space>
 
@@ -27,7 +27,6 @@
 </template>
 
 <script lang="ts" setup>
-
   const emits = defineEmits(['changeStep', 'editEvent']);
 
   const oneMore = () => {
@@ -35,8 +34,7 @@
   };
   const onView = () => {
     emits('editEvent');
-    
-  }
+  };
 </script>
 
 <style scoped lang="less">

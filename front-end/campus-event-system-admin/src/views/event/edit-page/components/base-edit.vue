@@ -67,7 +67,12 @@
                   format="YYYY-MM-DD HH:mm"
                   type="datetime"
                   show-time
-                  :disabledDate="(current) => dayjs(current).isBefore(dayjs())"
+                  :disabledDate="
+                    (current) => {
+                      return false;
+                      // dayjs(current).isBefore(dayjs())
+                    }
+                  "
                 />
               </a-form-item>
             </a-col>
