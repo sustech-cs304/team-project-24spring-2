@@ -1,14 +1,11 @@
 package cn.edu.sustech.ces.controller;
 
-import cn.edu.sustech.ces.entity.Order;
-import cn.edu.sustech.ces.entity.Ticket;
-import cn.edu.sustech.ces.entity.UserTicket;
+import cn.edu.sustech.ces.entity.*;
 import cn.edu.sustech.ces.enums.PermissionGroup;
 import cn.edu.sustech.ces.enums.UserGender;
 import cn.edu.sustech.ces.security.CESUserDetails;
 import cn.edu.sustech.ces.security.JwtTokenProvider;
 import cn.edu.sustech.ces.security.LoginRequest;
-import cn.edu.sustech.ces.entity.User;
 import cn.edu.sustech.ces.security.RegisterRequest;
 import cn.edu.sustech.ces.service.*;
 import cn.edu.sustech.ces.service.minio.MinioService;
@@ -43,6 +40,8 @@ public class UserController {
     private final MinioService minioService;
     private final VerifyCodeService codeService;
     private final MailService mailService;
+    private final TicketService ticketService;
+    private final EventService eventService;
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -258,7 +257,7 @@ public class UserController {
     }
 
     @PostMapping("/checkout-ticket")
-    @PreAuthorize("hasAnyRole('INSTITUTE_ADMIN', 'SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('DEPARTMENT_ADMIN', 'INSTITUTE_ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<?> checkoutTicket(@RequestParam UUID ticketId) {
         UserTicket ticket = userService.getUserTicket(ticketId);
         if (ticket == null) {
@@ -268,7 +267,19 @@ public class UserController {
             return ResponseEntity.badRequest().body("Ticket Already Checked In");
         }
         ticket.setCheckedIn(true);
-        return ResponseEntity.ok(userService.updateUserTicket(ticket));
+        Ticket ticketType = ticketService.getTicketById(ticket.getTicketId());
+        if (ticketType == null) {
+            return ResponseEntity.badRequest().body("Ticket Type Not Found");
+        }
+        Event event = eventService.getEventById(ticketType.getEventId());
+        if (event == null) {
+            return ResponseEntity.badRequest().body("Event Not Found");
+        }
+        JSONObject result = new JSONObject();
+        result.put("user_ticket", userService.updateUserTicket(ticket));
+        result.put("event", event);
+        result.put("ticket", ticketType);
+        return ResponseEntity.ok(result);
     }
 
 }
