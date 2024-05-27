@@ -196,7 +196,6 @@
         getTicketInfo(id)
       );
       const res = await Promise.all(promises);
-      console.log(data);
       formData.value = {
         title: data.title,
         address: data.location_name,
@@ -209,7 +208,6 @@
         time_range: [new Date(data.start_time), new Date(data.end_time)],
         uuid,
       };
-      console.log(data.status);
       if (data.status !== 'AUDITING' && usage === 'AUDITING') {
         Notification.warning({
           title: '审核失败',
@@ -238,7 +236,6 @@
           step.value = 1;
       }
       const publisher = await getUserInfo(data.publisher);
-      console.log(publisher.data);
       publisherInfo.value = publisher.data;
     } finally {
       setLoading(false);

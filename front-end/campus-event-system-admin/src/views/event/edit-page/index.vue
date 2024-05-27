@@ -178,7 +178,6 @@
       };
 
       originData.value = cloneDeep(formData.value);
-      console.log(data.status);
       if (data.status !== 'EDITING') {
         Notification.warning({
           title: '编辑失败',
@@ -221,7 +220,6 @@
   const updateMkd = async () => {
     const mkdText = ie.value.getDiffMkd();
     if (mkdText !== '' && mkdText) {
-      console.log('mkdText', mkdText);
       const newMkd = new File([mkdText], 'content.md', {
         type: 'text/markdown',
       });
@@ -289,7 +287,6 @@
         sendData.value.document_url = mkdUrl;
       }
       const updKeys = keys(sendData.value);
-      console.log('updated', updKeys);
       if (updKeys.length > 0) {
         const res = await updateEvent(uuid, sendData.value);
         Notification.success({
@@ -298,7 +295,6 @@
         });
         fetchData();
       } else {
-        console.log('Nothing Updated');
         Notification.info({
           title: 'Info',
           content: '没有更新',
