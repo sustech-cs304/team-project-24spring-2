@@ -125,7 +125,6 @@ export default {
         }else{
           star.value = true;
         }
-        console.log(response)
       } catch (error) {
         console.error(error);
       }
@@ -406,7 +405,7 @@ export default {
     <div class="main_container">
       <div class="upper_container">
         <div class="post_container">
-          <CustomImage :src="eventInfo.image_url" :fallbackSrc="'college.jpg'" alt="event image" class="event_post" />
+          <CustomImage :src="eventInfo.image_url" :fallbackSrc="'error.png'" alt="event image" class="event_post" />
         </div>
         <div class="details_container">
           <div class="title_container">

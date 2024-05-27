@@ -144,14 +144,14 @@ export default {
         <a-pagination :total="totalEvents" :page-size=10 @change="loadEventsData" />
       </div>
     </div>
-    <Recommends :eventsData="recommendEvents" />
+
+    <Recommends :eventsData="recommendEvents" style="margin-top: 3.5vh" />
   </div>
 </template>
 
 <style scoped>
 .main-container {
   display: flex;
-  align-items: baseline;
   justify-content: center;
   flex-direction: row;
   width: 80%;
@@ -167,6 +167,7 @@ export default {
   align-items: center;
   flex-direction: column;
   gap: 20px;
+  min-width: 100vh;
 }
 
 .pagination {

@@ -70,6 +70,9 @@ export default {
     onMounted(async () => {
       try {
         user.value = await fetchUser(comment.value.user_id);
+        if (user.value.avatar_url === null) {
+          user.value.avatar_url = 'error.png';
+        }
         attachment.value = await getAttachment(comment.value.id);
 
         if (attachment.value.length > 0) {
@@ -136,13 +139,13 @@ export default {
         <CustomImage
           alt="avatar"
           :src="user.avatar_url"
-          fallbackSrc="error.jpeg"
+          :fallbackSrc="'error.png'"
         />
       </a-avatar>
     </template>
   </a-comment> 
   <div v-if="hasAttachment&&isPicture" class="comment-pics">
-    <a-image-preview-group v-if="hasAttachment&&isPicture">
+    <a-image-preview-group v-if="hasAttachment&&isPicture" class="comment-pics-group">
       <a-image v-for="(img, index) in attachment" :key="index" :src="img" width="100" height="100" class="comment-picture"/>
     </a-image-preview-group>
   </div>
@@ -218,6 +221,8 @@ export default {
 .comment-picture {
   margin-top: 0.2vh;
   cursor: pointer;
+  border-radius: 0.6vh;
+  margin-right: 0.6vh;
 }
 
 .comment-picture:hover {

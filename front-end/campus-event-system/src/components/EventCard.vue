@@ -103,7 +103,7 @@ export default {
       >
         <CustomImage
             :src="event.image_url"
-            :fallbackSrc="'error.jpeg'"
+            :fallbackSrc="'error.png'"
             :style="{ width: '100%', transform: 'translateY(-20px)' }"
             alt="event image"
         />

@@ -56,6 +56,9 @@ export default {
         });
       }
       user.value = await fetchUser();
+      if (user.value.avatar_url === null) {
+        user.value.avatar_url = 'error.png';
+      }
       form.realName = user.value.real_name;
       form.nickname = user.value.nickname;
       form.email = user.value.email;
@@ -67,8 +70,6 @@ export default {
       orders.value = await fetchOrders();
       tickets.value = await fetchTickets();
     
-      // console.log(tickets.value)
-
       await fetchStarEvents();
     });
 
@@ -143,6 +144,9 @@ export default {
       if (response.status === 200) {
         Message.success('更新成功');
         user.value = await fetchUser();
+        if (user.value.avatar_url === null) {
+          user.value.avatar_url = 'error.png';
+        }
         form.data = user.value;
       } else {
         Message.error('更新失败');
