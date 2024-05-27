@@ -115,7 +115,6 @@ export function CreateEventApi(data: EventCreationModel) {
 
 export function listEventSize(params: EventParams) {
   return axios.post<number>('/api/event/list-events-size', {}, { params });
-  return axios.post<number>('/api/event/list-events-size', {}, { params });
 }
 
 export function getEventInfo(uuid: string) {
@@ -204,7 +203,7 @@ export function auditEvent(
 
 export function checkoutTicket(uuid: string) {
   return axios.post<UserTicketRecord>(
-    '/api/ticket/checkout-ticket',
+    '/api/user/checkout-ticket',
     {},
     {
       params: {
