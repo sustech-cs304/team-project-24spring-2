@@ -132,8 +132,6 @@
         break;
       }
     }
-    console.log('data', formData.value.tickets);
-    console.log('delete', id);
   };
   const regHandel = (value: any) => {
     let reg = null;

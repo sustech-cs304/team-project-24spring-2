@@ -1,15 +1,12 @@
 <template>
-  <div id="MyMap" style="height:400px; width: 100%; margin-top: 10px"></div>
+  <div id="MyMap" style="height: 400px; width: 100%; margin-top: 10px"></div>
 </template>
 
 <script setup lang="ts">
   import { ref, onMounted, onUnmounted } from 'vue';
+  import { getSetting } from '@/api/global';
 
   import AMapLoader from '@amap/amap-jsapi-loader';
-
-  (window as any)._AMapSecurityConfig = {
-    securityJsCode: import.meta.env.VITE_AMAP_API_CODE as string,
-  };
 
   const props = defineProps({
     lng: {
@@ -62,14 +59,17 @@
     map.setCenter([val.location?.lng, val.location?.lat], '', 500);
   };
 
-  const initMap = () => {
+  const initMap = async () => {
+    const API_CODE = await getSetting('amap_api_code');
+    const API_KEY = await getSetting('amap_api_key');
+   
+    (window as any)._AMapSecurityConfig = {
+      securityJsCode: API_CODE.data,
+    };
     AMapLoader.load({
-      key: import.meta.env.VITE_AMAP_API_KEY as string, //  申请好的Web端开发者Key，首次调用 load 时必填
+      key: API_KEY.data, //  申请好的Web端开发者Key，首次调用 load 时必填
       version: '2.0', //  指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
-      plugins: [
-        'AMap.ToolBar',
-        'AMap.Scale',
-      ], //  需要使用的的插件列表，如比例尺'AMap.Scale'等
+      plugins: ['AMap.ToolBar', 'AMap.Scale'], //  需要使用的的插件列表，如比例尺'AMap.Scale'等
     })
       .then((AMap: any) => {
         aMap = AMap;
@@ -96,10 +96,7 @@
       });
   };
 
-
-  const open = () => {
-    
-  };
+  const open = () => {};
 
   defineExpose({
     open,

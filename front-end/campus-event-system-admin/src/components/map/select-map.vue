@@ -57,15 +57,10 @@
 <script setup lang="ts">
   import { ref, onUnmounted } from 'vue';
   //    import { ElMessage } from 'element-plus';
+  import { getSetting } from '@/api/global';
 
   import AMapLoader from '@amap/amap-jsapi-loader';
   import { Notification } from '@arco-design/web-vue';
-
-  (window as any)._AMapSecurityConfig = {
-    //  安全密钥
-    // securityJsCode: "123",
-    securityJsCode: import.meta.env.VITE_AMAP_API_CODE as string,
-  };
 
   const props = defineProps({
     lng: {
@@ -141,9 +136,17 @@
     map.setCenter([val.location?.lng, val.location?.lat], '', 500);
   };
 
-  const initMap = () => {
+  const initMap = async () => {
+    const API_CODE = await getSetting('amap_api_code');
+    const API_KEY = await getSetting('amap_api_key');
+   
+
+    (window as any)._AMapSecurityConfig = {
+      securityJsCode: API_CODE.data,
+    };
+
     AMapLoader.load({
-      key: import.meta.env.VITE_AMAP_API_KEY as string, //  申请好的Web端开发者Key，首次调用 load 时必填
+      key: API_KEY.data, //  申请好的Web端开发者Key，首次调用 load 时必填
       version: '2.0', //  指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
       plugins: [
         'AMap.Geocoder',

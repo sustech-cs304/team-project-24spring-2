@@ -34,6 +34,27 @@
             placeholder="Please Enter"
             allow-clear
           />
+          <a-input
+            v-if="props.setting.type === 'Input-String'"
+            v-model="submition"
+            mode="button"
+            size="large"
+            :precision="0"
+            :style="{ width: '80%', textAlign: 'center' }"
+            placeholder="Please Enter"
+            allow-clear
+          />
+          <a-time-picker
+            v-if="props.setting.type === 'Input-Time-Minutes'"
+            v-model="submition"
+            format="mm"
+            size="large"
+            :style="{ width: '80%', textAlign: 'center' }"
+            placeholder="Please Enter"
+            allow-clear
+            disableConfirm
+          >
+        </a-time-picker>
         </div>
       </div>
     </a-modal>

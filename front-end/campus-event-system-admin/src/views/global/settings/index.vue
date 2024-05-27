@@ -75,7 +75,7 @@
         return {
           title: '评论最大权重',
           description:
-            '设置评论的最大容量，决定了一条评论可以容下多少视频和图片内容，与图片视频权重一起设置可以达到限制的目的',
+            '设置评论的最大容量，决定了一条评论可以容下多少视频和图片内容，通常设置为9',
           type: 'Input-Integer',
         };
       case 'comment_image_weight':
@@ -92,11 +92,32 @@
             '设置视频的权重，决定了一段视频占用的评论容量，通常设置为9',
           type: 'Input-Integer',
         };
+      case 'order_expire_time':
+        return {
+          title: '订单过期时间',
+          description:
+            '设置订单的过期时间，超过这个时间的订单将被自动取消，单位为毫秒',
+          type: 'Input-Integer',
+        };
+
+      case 'amap_api_code':
+        return {
+          title: '高德地图API Code',
+          description: '设置高德地图API Code，用于地图服务，该API管理平台共享',
+          type: 'Input-String',
+        };
+
+      case 'amap_api_key':
+        return {
+          title: '高德地图API Key',
+          description: '设置高德地图API Key，用于地图服务，该API管理平台共享',
+          type: 'Input-String',
+        };
       default:
         return {
-          title: '未知',
-          description: '未知',
-          type: '未知',
+          title: key,
+          description: key,
+          type: 'Input-String',
         };
     }
   };
@@ -129,7 +150,6 @@
   };
 
   const search = (value: string) => {
-    console.log('search', value);
     fetchData(value);
   };
 

@@ -49,7 +49,6 @@
       userInfo.value = { ...userStore.userInfo };
       userInfoOrigin.value = { ...userStore.userInfo };
 
-      console.log(userInfo.value);
     } catch (err) {
       console.log(err);
     } finally {

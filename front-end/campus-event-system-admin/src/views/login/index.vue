@@ -22,7 +22,6 @@
   import LoginBanner from './components/banner.vue';
   import LoginForm from './components/login-form.vue';
 
-  console.log(import.meta.env);
 </script>
 
 <style lang="less" scoped>
