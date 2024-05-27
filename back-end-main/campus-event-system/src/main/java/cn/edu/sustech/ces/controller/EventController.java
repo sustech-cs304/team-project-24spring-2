@@ -3,6 +3,7 @@ package cn.edu.sustech.ces.controller;
 import cn.edu.sustech.ces.entity.Event;
 import cn.edu.sustech.ces.entity.Ticket;
 import cn.edu.sustech.ces.entity.User;
+import cn.edu.sustech.ces.entity.UserTicket;
 import cn.edu.sustech.ces.enums.EventStatus;
 import cn.edu.sustech.ces.enums.PermissionGroup;
 import cn.edu.sustech.ces.service.*;
@@ -400,6 +401,31 @@ public class EventController {
 
         return ResponseEntity.ok(event);
 
+    }
+
+    @PostMapping("/get-event-user-tickets-status")
+    @PreAuthorize("hasAnyRole('INSTITUTE_ADMIN', 'DEPARTMENT_ADMIN', 'SUPER_ADMIN')")
+    public ResponseEntity<?> getEventUserTicketsStatus(@RequestParam UUID eventId) {
+        Event event = eventService.getEventById(eventId);
+        if (event == null) {
+            return ResponseEntity.badRequest().body("Event Not Found");
+        }
+        if (event.getStatus() == EventStatus.EDITING || event.getStatus() == EventStatus.AUDITING) {
+            return ResponseEntity.badRequest().body("Event is not published");
+        }
+        List<Ticket> tickets = event.getTickets().stream().map(ticketService::getTicketById).toList();
+        JSONArray ticketStatuses = new JSONArray();
+        for (Ticket ticket : tickets) {
+            JSONObject ticketStatus = new JSONObject();
+            ticketStatus.put("ticket", ticket);
+            List<UserTicket> userTickets = ticketService.getSoldTickets(ticket);
+            long checked = userTickets.stream().filter(UserTicket::getCheckedIn).count();
+            ticketStatus.put("checked", checked);
+            ticketStatus.put("not_checked", userTickets.size() - checked);
+            ticketStatus.put("total", userTickets.size());
+            ticketStatuses.add(ticketStatus);
+        }
+        return ResponseEntity.ok(ticketStatuses);
     }
 
     @PostMapping("/audit-event")
