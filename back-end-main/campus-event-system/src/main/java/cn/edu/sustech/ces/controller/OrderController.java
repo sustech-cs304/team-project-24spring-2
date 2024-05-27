@@ -1,10 +1,15 @@
 package cn.edu.sustech.ces.controller;
 
+import cn.edu.sustech.ces.entity.Event;
 import cn.edu.sustech.ces.entity.Order;
+import cn.edu.sustech.ces.entity.Ticket;
 import cn.edu.sustech.ces.entity.User;
+import cn.edu.sustech.ces.enums.EventStatus;
 import cn.edu.sustech.ces.enums.OrderStatus;
 import cn.edu.sustech.ces.security.CESUserDetails;
+import cn.edu.sustech.ces.service.EventService;
 import cn.edu.sustech.ces.service.OrderService;
+import cn.edu.sustech.ces.service.TicketService;
 import cn.edu.sustech.ces.utils.CESUtils;
 import com.alibaba.fastjson.JSONObject;
 import lombok.AllArgsConstructor;
@@ -21,6 +26,8 @@ import java.util.UUID;
 public class OrderController {
 
     private final OrderService orderService;
+    private final TicketService ticketService;
+    private final EventService eventService;
 
     @PostMapping("/make-order")
     @PreAuthorize("isAuthenticated()")
@@ -32,6 +39,17 @@ public class OrderController {
         }
 
         UUID ticketId = UUID.fromString(orderRequest.getString("ticketId"));
+        Ticket ticket = ticketService.getTicketById(ticketId);
+        if (ticket == null) {
+            return ResponseEntity.badRequest().body("Ticket not found");
+        }
+        Event event = eventService.getEventById(ticket.getEventId());
+        if (event == null) {
+            return ResponseEntity.badRequest().body("Event not found");
+        }
+        if (event.getStatus() != EventStatus.IN_PROGRESS && event.getStatus() != EventStatus.PENDING) {
+            return ResponseEntity.badRequest().body("Event not in progress or pending");
+        }
         Order order = orderService.lockAndMakeOrder(user.getId(), ticketId);
         if (order == null) {
             return ResponseEntity.badRequest().body("Failed to make order");

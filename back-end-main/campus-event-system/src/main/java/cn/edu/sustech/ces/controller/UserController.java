@@ -41,7 +41,6 @@ public class UserController {
     private final AuthService authService;
     private final OrderService orderService;
     private final MinioService minioService;
-    private final TicketService ticketService;
     private final VerifyCodeService codeService;
     private final MailService mailService;
 
@@ -214,24 +213,6 @@ public class UserController {
         List<Order> orders = orderService.getUserOrders(user.getId());
 
         return ResponseEntity.ok(orders);
-    }
-
-    @PostMapping("/list-tickets")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> listTickets() {
-        CESUserDetails userDetails = (CESUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = userDetails.getUser();
-
-        List<Ticket> tickets = new ArrayList<>();
-
-        user.getUserTickets().forEach(ticketId -> {
-            Ticket t = ticketService.getTicketById(ticketId);
-            if (t != null) {
-                tickets.add(t);
-            }
-        });
-
-        return ResponseEntity.ok(tickets);
     }
 
     @PostMapping("/change-permission")
