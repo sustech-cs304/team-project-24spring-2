@@ -85,7 +85,6 @@
         category: submitModel.value.category,
         tickets: submitModel.value.tickets,
       };
-      console.log('sending', sendData.value);
 
       const res = await CreateEventApi(sendData.value); // The mock api default success
       uuid.value = res.data.id;
@@ -96,7 +95,6 @@
       step.value = 3;
       submitModel.value = {} as originalEventCreationModel; // init
     } catch (err) {
-      console.log(submitModel.value);
       console.log(err);
       // you can report use errorHandler or other
     } finally {

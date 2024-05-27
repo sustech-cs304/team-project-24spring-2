@@ -4,34 +4,37 @@
       <slot name="skeleton"></slot>
     </a-card>
     <a-card v-else :bordered="false" hoverable>
-      <a-space align="start">
-        <a-avatar
-          :size="36"
-          style="margin-right: 8px; background-color: #626aea"
-        >
-          <icon-settings />
-        </a-avatar>
-        <a-card-meta>
-          <template #title>
-            <a-typography-text style="margin-right: 10px">
-              {{ renderData.title }}
-            </a-typography-text>
-          </template>
-          <template #description>
-            {{ renderData.description }}
-            <slot></slot>
-          </template>
-        </a-card-meta>
-      </a-space>
-      <template #actions>
+      <div class="card-content">
+        <a-space align="start">
+          <a-avatar
+            :size="36"
+            style="margin-right: 8px; background-color: #626aea"
+          >
+            <icon-settings />
+          </a-avatar>
+          <a-card-meta>
+            <template #title>
+              <a-typography-text style="margin-right: 10px">
+                {{ renderData.title }}
+              </a-typography-text>
+            </template>
+            <template #description>
+              {{ renderData.description }}
+              <slot></slot>
+            </template>
+          </a-card-meta>
+        </a-space>
+        <!-- <template > -->
         <div class="action">
           <modifyModal
+            class="action-button"
             :setting="renderData"
             :clickText="$t('Event.Settings.change')"
             @update="updateSetting"
           />
         </div>
-      </template>
+        <!-- </template> -->
+      </div>
     </a-card>
   </div>
 </template>
@@ -81,7 +84,7 @@
         content: `${renderData.value.title} 更新失败`,
       });
       console.error(e);
-    } 
+    }
   };
 </script>
 
@@ -145,8 +148,14 @@
     }
   }
 
+  .card-content{
+    padding: 5px;
+  }
+
   .action {
-    float: right;
-    align-items: right;
+    width: 100%;
+    .action-button {
+      float: right;
+    }
   }
 </style>

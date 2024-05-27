@@ -14,7 +14,7 @@ export function getSettings() {
 }
 
 export function getSetting(key: string) {
-  return axios.post('/api/global/get-setting', {}, { params: { key } });
+  return axios.post<string>('/api/global/get-setting', {}, { params: { key } });
 }
 
 export function setSetting(key: string, value: string) {

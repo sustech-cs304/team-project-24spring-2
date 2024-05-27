@@ -288,12 +288,10 @@
   });
 
   const resetUser = () => {
-    console.log(renderData.value);
     for (let i = 0; i < renderData.value.length; i += 1) {
       renderData.value[i].permission_group =
         originData.value[i].permission_group;
     }
-    console.log(renderData.value);
   };
 
   const handleCancel = () => {
@@ -422,7 +420,6 @@
       const resLen = await listUsersSize(sizeParams);
       const res = await listUsers(queryParams);
 
-      console.log(res.data);
       renderData.value = res.data;
       originData.value = cloneDeep(res.data);
       pagination.current = params.page;
@@ -435,7 +432,6 @@
   };
 
   const search = () => {
-    console.log(searchForm.value);
     fetchData({
       ...searchForm.value,
       ...defaultPagenation,

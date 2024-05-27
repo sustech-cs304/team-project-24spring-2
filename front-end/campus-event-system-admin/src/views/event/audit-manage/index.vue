@@ -350,7 +350,6 @@
   };
 
   const search = () => {
-    console.log(searchForm.value);
     fetchData({
       ...searchForm.value,
       ...defaultPagenation,
