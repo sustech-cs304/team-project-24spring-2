@@ -3,20 +3,28 @@ import EventCard from "@/components/EventCard.vue";
 import { ref } from 'vue';
 import axios from 'axios';
 import { onMounted } from "vue";
-
+import RecommendCard from "@/components/RecommendCard.vue";
+import Recommends from "@/components/Recommends.vue";
 
 export default {
   name: 'Events',
   components: {
     EventCard,
+    RecommendCard,
+    Recommends
   },
 
   setup() {
     const eventsData = ref([]);
     const totalEvents = ref(0);
+    const categories = ref([]);
+    const selectedCategory = ref("all");
+    const recommendEvents = ref([]);
 
-    onMounted(() => {
+    onMounted(async () => {
       loadEventsData(1);
+      fetchCategory();
+      recommendEvents.value = await fetchRecommendEvents();
     });
 
     async function loadEventsData(current) {
@@ -41,27 +49,114 @@ export default {
         });
     }
 
-    return { eventsData, totalEvents, loadEventsData, loadTotalEventSize };
+    async function fetchCategory() {
+      axios.post(`/api/global/get-setting?key=categories`)
+        .then(response => {
+          let sting = response.data;
+          // spilt string by ,
+          categories.value = sting.split(',');
+          console.log(categories.value);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
+
+    async function changeCategory(val) {
+      console.log(val);
+      selectedCategory.value = val;
+      if (val === "all") {
+        loadEventsData(1);
+      } else {
+        axios.post(`/api/event/explore-events?category=${val}`)
+          .then(response => {
+            eventsData.value = response.data;
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
+    }
+
+    async function fetchRecommendEvents() {
+      try {
+        let response = await axios.post(`/api/recommend/get-recommendation`,{},
+          {
+            headers: {
+              'Authorization': localStorage.getItem('token_type') + ' ' + localStorage.getItem('access_token')
+            }
+          });
+        let events = Object.keys(response.data);
+        let return_events = [];
+        if(events.length == 0){
+          // using expore events to fill the recommend events
+          console.log("explore events")
+          let response = await axios.post(`/api/event/explore-events`);
+          let explore_event = response.data;
+          for(let i = 0; i < 3; i++){
+            console.log(explore_event[i])
+            return_events.push(explore_event[i]);
+          }
+        }else{
+          for(let i = 0; i < events.length; i++){
+            let response = await axios.post(`/api/event/get-event?eventId=${events[i]}`);
+            return_events.push(response.data);
+          }
+        }
+        return return_events;
+      } catch (error) {
+        let return_events = [];
+        let response = await axios.post(`/api/event/explore-events`);
+          let explore_event = response.data;
+          for(let i = 0; i < 3; i++){
+            console.log(explore_event[i])
+            return_events.push(explore_event[i]);
+          }
+        return return_events;
+      }
+    }
+
+    return { eventsData, totalEvents, categories, selectedCategory, loadEventsData, loadTotalEventSize, changeCategory, recommendEvents };
   }
 }
 </script>
 
 <template>
-  <div class="page-container">
-    <!-- 设置 a-scrollbar 的高度以适应页面布局，这里假设为页面布局允许的最大高度 -->
-    <!-- <a-scrollbar style="height: 100%; max-height: 770px; overflow: auto;"> -->
-    <a-scrollbar>
-      <div class="cards-container">
-        <EventCard v-for="(item, index) in eventsData" :key="index" :event="item" />
+  <div class="main-container">
+    <div class="page-container">
+      <div style="display: flex; align-items: center; margin-top: 20px; margin-left: 30px;">
+        <p style="margin: 0;"><strong>分类: </strong></p>
+        <a-radio-group type="button" :model-value="selectedCategory" @change="(val) => changeCategory(val)"
+          style="margin-left: 10px;">
+          <a-radio value="all" style="width: 100px;">全部</a-radio>
+          <a-radio v-for="(categorie, index) in categories" :key="categorie" :value="categorie" style="width: 100px;">
+            {{ categorie }}
+          </a-radio>
+        </a-radio-group>
       </div>
-    </a-scrollbar>
-    <div class="pagination">
-      <a-pagination :total="totalEvents" :page-size=10 @change="loadEventsData"/>
+
+      <a-scrollbar>
+        <div class="cards-container">
+          <EventCard v-for="(item, index) in eventsData" :key="index" :event="item" />
+        </div>
+      </a-scrollbar>
+      <div class="pagination">
+        <a-pagination :total="totalEvents" :page-size=10 @change="loadEventsData" />
+      </div>
     </div>
+    <Recommends :eventsData="recommendEvents" />
   </div>
 </template>
 
 <style scoped>
+.main-container {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  flex-direction: row;
+  width: 80%;
+}
+
 .page-container {
   height: 100%;
 }

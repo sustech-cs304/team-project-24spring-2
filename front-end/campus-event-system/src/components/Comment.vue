@@ -136,7 +136,7 @@ export default {
         <CustomImage
           alt="avatar"
           :src="user.avatar_url"
-          fallbackSrc="test1.jpeg"
+          fallbackSrc="error.jpeg"
         />
       </a-avatar>
     </template>

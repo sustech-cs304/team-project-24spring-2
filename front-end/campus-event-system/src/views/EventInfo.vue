@@ -15,6 +15,7 @@ import { Message } from '@arco-design/web-vue';
 import utils from '../api/utils.ts';
 
 import MarkdownIt from 'markdown-it';
+import Recommends from '@/components/Recommends.vue';
 
 
 export default {
@@ -24,7 +25,8 @@ export default {
     IconStar,
     IconStarFill,
     IconLocation,
-    CustomImage
+    CustomImage,
+    Recommends,
   },
   setup() {
     const eventInfo = ref({});
@@ -40,6 +42,7 @@ export default {
     const star = ref(false);
     const markdownContent = ref("");
     const loadingComments = ref(false);
+    const recommendEvents = ref([]);
     uploadTypeChange();
 
     const markdown = new MarkdownIt()
@@ -62,11 +65,70 @@ export default {
       }
       await fetchComments(route.query.id);
       markdownContent.value = getMarkdownConetent(eventInfo.value.document_url);
+      recommendEvents.value = await fetchRecommendEvents();
+      await fetchStarState();
     });
+
+    async function fetchRecommendEvents() {
+      try {
+        let response = await axios.post(`/api/recommend/get-recommendation`,{},
+          {
+            headers: {
+              'Authorization': localStorage.getItem('token_type') + ' ' + localStorage.getItem('access_token')
+            }
+          });
+        let events = Object.keys(response.data);
+        let return_events = [];
+        if(events.length == 0){
+          let response = await axios.post(`/api/event/explore-events`);
+          let explore_event = response.data;
+          for(let i = 0; i < 3; i++){
+            return_events.push(explore_event[i]);
+          }
+        }else{
+          for(let i = 0; i < events.length; i++){
+            let response = await axios.post(`/api/event/get-event?eventId=${events[i]}`);
+            return_events.push(response.data);
+          }
+        }
+        return return_events;
+      } catch (error) {
+        let return_events = [];
+        let response = await axios.post(`/api/event/explore-events`);
+          let explore_event = response.data;
+          for(let i = 0; i < 3; i++){
+            return_events.push(explore_event[i]);
+          }
+        return return_events;
+      }
+    }
 
     async function getTicketInfo(ticket_id) {
       let response = await axios.post(`/api/ticket/get-ticket?ticketId=${ticket_id}`);
       return response.data;
+    }
+
+    async function fetchStarState() {
+      if(!utils.verifyLoginState()){
+        star.value = false;
+        return;
+      }
+      try {
+        let response = await axios.post(`/api/recommend/get?eventId=${route.query.id}`,{},
+          {
+            headers: {
+              'Authorization': localStorage.getItem('token_type') + ' ' + localStorage.getItem('access_token')
+            }
+          });
+        if(response.data == 0){
+          star.value = false;
+        }else{
+          star.value = true;
+        }
+        console.log(response)
+      } catch (error) {
+        console.error(error);
+      }
     }
 
     async function onStarChange() {
@@ -256,7 +318,6 @@ export default {
 
     async function refreshComments() {
       await fetchComments(route.query.id);
-      console.log(comments)
     }
 
     async function purchase() {
@@ -328,7 +389,8 @@ export default {
       checkDeletePermission,
       refreshComments,
       loadingComments,
-      purchase
+      purchase,
+      recommendEvents,
     };
   }
 };
@@ -441,7 +503,7 @@ export default {
       </div>
     </div>
     <div class="right_container">
-      推荐内容
+      <Recommends :eventsData="recommendEvents" />
     </div>
   </div>
 </template>
@@ -458,23 +520,25 @@ export default {
   margin-top: 2vh;
   /* border: 1px solid #ccc; */
   display: flex;
-  align-items: center;
-  width: 86vw;
+  align-items: baseline;
+  justify-content: center;
+  flex-direction: row;
+  width: 90vw;
 }
 
 .main_container {
   flex: 1;
-
+  /* width: 60vw; */
   /* border-right: 1px solid #ccc; */
   /* border-left: 1px solid #ccc; */
 }
 
 .right_container {
-  width: 25%;
+  /* width: 25%; */
   display: flex;
   flex-direction: column;
   align-items: center;
-
+  margin-left: 10px;
   /* border-right: 1px solid #ccc; */
 }
 
@@ -491,7 +555,6 @@ export default {
 }
 
 .details_container {
-
 
   width: 70%;
 }
