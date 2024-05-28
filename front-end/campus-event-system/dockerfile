@@ -18,7 +18,7 @@ RUN npm install
 RUN npm run build
 
 # 产生静态文件
-FROM nginx:stable-alpine
+FROM --platform=$TARGETPLATFORM nginx:stable-alpine
 COPY --from=0 /app/dist /usr/share/nginx/html/
 COPY nginx.conf.template /etc/nginx/conf.d/
 
