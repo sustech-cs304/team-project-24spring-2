@@ -5,7 +5,7 @@
       <a-space direction="vertical" :size="16" fill>
         <div>
           <TicketView
-          v-if="userTicket.id"
+            v-if="userTicket.id"
             :image_url="eventData.image_url"
             :user_ticket="userTicket"
             :ticket_form="ticketFrom"
@@ -24,7 +24,7 @@
                     border: 1px solid #e8e8e8;
                   "
                 >
-                  {{ ticketId }}
+                  {{ displayTicketID }}
                 </div>
                 <span>{{ '票码：' }}</span>
                 <a-input
@@ -36,12 +36,17 @@
               </div>
               <a-button
                 type="primary"
-                long
-                style="margin-top: 20px"
+                style="margin-top: 20px; width: 180px"
                 size="large"
                 @click="onConfirm"
                 >{{ '确认' }}</a-button
               >
+              <span>
+                <span style="margin-left: 10px ;">
+                  {{ '自动确认' }}
+                  <a-switch v-model="autoConfirm"> </a-switch>
+                </span>
+              </span>
             </a-card>
           </div>
         </div>
@@ -64,14 +69,14 @@
     UserTicket,
     Tickets,
   } from '@/api/event';
-  import showMap from '@/components/map/show-map.vue';
   import { UserState } from '@/store/modules/user/types';
   import { getUserInfo } from '@/api/users';
   import { Notification } from '@arco-design/web-vue';
+  import { watch } from 'vue';
 
+  import showMap from '@/components/map/show-map.vue';
   import TicketView from './components/ticket-view.vue';
   import GuestInfoCard from './components/guest-info.vue';
-  import {} from '@/api/event';
 
   const router = useRouter();
   const { loading, setLoading } = useLoading(false);
@@ -79,6 +84,7 @@
 
   const step = ref(0);
   const pageStep = ref(1);
+  const autoConfirm = ref(false);
 
   const review = ref({
     ac: '',
@@ -86,10 +92,12 @@
   });
 
   const ticketId = ref('');
+  const displayTicketID = ref('');
 
   const eventData = ref<EventRecord>({} as EventRecord);
 
   const ticketFrom = ref({} as Tickets);
+
   const publisherInfo = ref<UserState>({} as UserState);
 
   const userTicket = ref({} as UserTicket);
@@ -111,6 +119,10 @@
       userTicket.value = ticket.data.user_ticket;
       eventData.value = ticket.data.event;
       ticketFrom.value = ticket.data.ticket;
+      Notification.success({
+        title: '检票成功',
+        content: '欢迎参加，玩得愉快！',
+      });
     } catch (err) {
       Notification.warning({
         title: '检票失败',
@@ -121,16 +133,20 @@
     }
   };
 
-  const submitTicket = async () => {
-    setLoading(true);
-    try {
-      // fetching
-    } finally {
-      setLoading(false);
-    }
-  };
-
   onBeforeMount(async () => {});
+
+  watch(ticketId, async (newVal) => {
+    if (newVal.length === 0) {
+      return;
+    }
+    if (newVal.length === 36 && autoConfirm.value) {
+      await onConfirm();
+      displayTicketID.value = newVal;
+      ticketId.value = '';
+    } else {
+        displayTicketID.value = newVal;
+    }
+  });
 </script>
 
 <script lang="ts">
