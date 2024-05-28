@@ -4,25 +4,14 @@
     <div>
       <a-space direction="vertical" :size="16" fill>
         <div>
-          <!-- <GuestInfoCard
-            class="guest-user"
-            :user-info="publisherInfo"
+          <TicketView
+          v-if="userTicket.id"
+            :image_url="eventData.image_url"
+            :user_ticket="userTicket"
+            :ticket_form="ticketFrom"
             :loading="loading"
-          /> -->
-          <div class="cover">
-            <a-spin
-              :loading="loading"
-              tip="This may take a while..."
-              class="spin"
-            >
-              <div class="has-cover" v-if="formData.image_url !== ''">
-                <img :src="formData.image_url" class="cover-image" />
-              </div>
-              <div class="has-cover" v-else>
-                <icon-image style="width: 50%; height: 200px" />
-              </div>
-            </a-spin>
-          </div>
+            :event_info="eventData"
+          />
           <div class="ticket-id">
             <a-card class="ticket-id-card">
               <div>
@@ -72,12 +61,15 @@
     auditEvent,
     checkoutTicket,
     EventRecord,
+    UserTicket,
+    Tickets,
   } from '@/api/event';
   import showMap from '@/components/map/show-map.vue';
   import { UserState } from '@/store/modules/user/types';
   import { getUserInfo } from '@/api/users';
   import { Notification } from '@arco-design/web-vue';
 
+  import TicketView from './components/ticket-view.vue';
   import GuestInfoCard from './components/guest-info.vue';
   import {} from '@/api/event';
 
@@ -95,9 +87,12 @@
 
   const ticketId = ref('');
 
-  const formData = ref<EventRecord>({} as EventRecord);
+  const eventData = ref<EventRecord>({} as EventRecord);
 
+  const ticketFrom = ref({} as Tickets);
   const publisherInfo = ref<UserState>({} as UserState);
+
+  const userTicket = ref({} as UserTicket);
 
   const onConfirm = async () => {
     if (ticketId.value.length !== 36) {
@@ -113,7 +108,9 @@
     setLoading(true);
     try {
       const ticket = await checkoutTicket(uuid);
-      formData.value = ticket.data.event;
+      userTicket.value = ticket.data.user_ticket;
+      eventData.value = ticket.data.event;
+      ticketFrom.value = ticket.data.ticket;
     } catch (err) {
       Notification.warning({
         title: '检票失败',
@@ -167,28 +164,6 @@
     border-radius: 8px;
   }
 
-  .cover {
-    min-height: 275px;
-    padding: 10px 10px 10px 10px;
-    background-color: #ffffff;
-    border-radius: 8px;
-    width: 70%;
-    margin: auto;
-    // float: right;
-    .has-cover {
-      width: 100%;
-      height: 100%;
-      border-radius: 8px;
-      background-color: #fafafa;
-      cursor: pointer;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      .cover-image {
-        height: 100%;
-      }
-    }
-  }
   .spin {
     display: flex;
     justify-content: center;
@@ -217,7 +192,7 @@
     // float: right;
     margin: auto;
 
-    width: 70%;
+    width: 80%;
     height: 100px;
     border-radius: 8px;
     margin-top: 20px;

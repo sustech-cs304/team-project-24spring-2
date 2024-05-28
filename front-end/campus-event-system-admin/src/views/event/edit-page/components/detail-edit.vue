@@ -132,7 +132,7 @@
   const modalVisible = ref(false);
   const cropOptions = {
     viewMode: 2,
-    aspectRatio: 16 / 4,
+    aspectRatio: 8/3,
     dragMode: 'move',
   };
 

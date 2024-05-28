@@ -13,7 +13,7 @@
         </template>
       </a-card>
 
-      <div class="cover">
+      <div class="ticket-view">
         <a-spin
           :loading="loading"
           tip="This may take a while..."
@@ -101,7 +101,7 @@
   .container {
     padding: 0 20px 20px 20px;
   }
-  .cover {
+  .ticket-view {
     min-height: 275px;
     // max-height: 300px;
     padding: 10px 10px 10px 10px;

@@ -39,21 +39,21 @@ export default defineConfig({
       '/api': {
         target:
         //   loadEnv('production', process.cwd()).VITE_PROXY_API_TARGET ||
-          'http://127.0.0.1:8080/api',
+          'http://sustc.mark455.cn:8080/api',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '/'),
       },
       '/images': {
         target:
         //   loadEnv('production', process.cwd()).VITE_PROXY_IMAGE_TARGET ||
-          'http://127.0.0.1:19000/images',
+          'http://sustc.mark455.cn:19000/images',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/images/, '/'),
       },
       '/documents': {
         target:
         //   loadEnv('production', process.cwd()).VITE_PROXY_DOC_TARGET ||
-          'http://127.0.0.1:19000/documents',
+          'http://sustc.mark455.cn:19000/documents',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/documents/, '/'),
       },

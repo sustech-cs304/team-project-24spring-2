@@ -20,7 +20,7 @@
           </a-steps>
         </a-card>
 
-        <div class="cover">
+        <div class="ticket-view">
           <a-spin
             :loading="loading"
             tip="This may take a while..."
@@ -28,13 +28,13 @@
           >
             <div
               class="has-cover"
-              v-if="formData.image_url !== ''"
+              v-if="formData.image_url"
               @click="ViewEvent()"
             >
               <img :src="formData.image_url" class="cover-image" />
             </div>
             <div class="has-cover" @click="ViewEvent()" v-else>
-              <icon-image style="width: 50%; height: 200px" />
+              <icon-image style="width: 200px; height: 200px" />
             </div>
           </a-spin>
         </div>
@@ -341,21 +341,26 @@
     }
   }
 
-  .cover {
-    min-height: 275px;
+  .ticket-view {
+    width: 100%;
+    height: 275px;
     padding: 10px 10px 10px 10px;
     background-color: #ffffff;
     border-radius: 8px;
+    margin: auto;
 
+    // float: right;
     .has-cover {
       width: 100%;
       height: 100%;
+      margin-top: 5px;
       border-radius: 8px;
       background-color: #fafafa;
       cursor: pointer;
       justify-content: center;
       align-items: center;
       text-align: center;
+      display: flex;
       .cover-image {
         height: 100%;
       }
