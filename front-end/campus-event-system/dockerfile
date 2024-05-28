@@ -11,8 +11,8 @@ COPY jsconfig.json .
 COPY vite.config.js .
 COPY src ./src
 COPY public ./public
-RUN npm install -g npm@9.6.7
-RUN npm install
+
+RUN npm install --registry=http://registry.npmmirror.com
 
 # 编译前端项目
 RUN npm run build
