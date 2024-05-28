@@ -68,7 +68,8 @@ public class PayController {
             return ResponseEntity.badRequest().body("Order has been paid");
         }
         if (order.getPrice() == 0) {
-            return ResponseEntity.ok(completeOrder(user, order, PurchaseMethod.CASH));
+            completeOrder(user, order, PurchaseMethod.CASH);
+            return ResponseEntity.ok("Order paid successfully");
         }
         if (purchaseMethod == PurchaseMethod.ALIPAY) {
             AlipayClient alipayClient = new DefaultAlipayClient(alipayConfig.getAlipayGatewayUrl(),
