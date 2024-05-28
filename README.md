@@ -102,10 +102,10 @@ We provide a lot of settings, allowing you to customize your system. This page c
 
 The institute manager and super admin can control the permission of users.
 
-![manual-permission-control](/Users/austin/workspace/campus_event_system/assets/manual_permission_control.png)
+![manual-permission-control](./assets/manual_permission_control.png)
 
 #### 2.2.4 Check In TIckets
 
 You can check in ticket here.
 
-![manual-check-ticket](/Users/austin/workspace/campus_event_system/assets/manual_check_ticket.png)
+![manual-check-ticket](./assets/manual_check_ticket.png)
