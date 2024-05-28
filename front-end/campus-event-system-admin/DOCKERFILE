@@ -5,18 +5,21 @@ FROM node:latest
 WORKDIR /app
 
 # 将node_modules添加到工作目录
-COPY package*.json .
-RUN npm install -g npm@9.6.7
-RUN npm install
+COPY node_modules ./node_modules
+COPY package.json .
+COPY package-lock.json .
+COPY nginx.conf.template .
+COPY index.html .
+COPY config ./config
+COPY src ./src
 
-# 将所有文件复制到工作目录
-COPY . .
+RUN npm install --registry=http://registry.npmmirror.com
 
-# 编译前端项目
+# 编译前端项目`
 RUN npm run build
 
 # 产生静态文件
-FROM nginx:stable-alpine
+FROM --platform=$TARGETPLATFORM nginx:stable-alpine
 COPY --from=0 /app/dist /usr/share/nginx/html/
 COPY nginx.conf.template /etc/nginx/conf.d/
 
