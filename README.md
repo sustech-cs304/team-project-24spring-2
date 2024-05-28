@@ -50,7 +50,7 @@ Tap "登录" to register and login.
 
 Tap "个人信息" to change your profile and upload your avatar.
 
-![manual-change-profile](/Users/austin/workspace/campus_event_system/assets/manual_change_profile.png)
+![manual-change-profile](./assets/manual_change_profile.png)
 
 ### 2.1.3 Explore Events
 
