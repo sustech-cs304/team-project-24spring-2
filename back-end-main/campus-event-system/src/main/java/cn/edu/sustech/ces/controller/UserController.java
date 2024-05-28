@@ -79,6 +79,8 @@ public class UserController {
         response.put("email", email);
         response.put("birthday", birthday);
         response.put("gender", gender);
+        response.put("phone", user.getPhone());
+        response.put("description", user.getDescription());
         return ResponseEntity.ok(response);
     }
 
