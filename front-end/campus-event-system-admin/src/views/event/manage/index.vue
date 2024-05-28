@@ -460,7 +460,7 @@
 
   const conEventView = (uuid: string) => {
     router.push({
-      path: '/event/audit',
+      path: '/event/info',
       query: {
         uuid,
       },

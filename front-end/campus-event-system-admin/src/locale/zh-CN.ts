@@ -57,6 +57,7 @@ export default {
   'menu.faq': '常见问题',
   'navbar.docs': '文档中心',
   'navbar.action.locale': '切换为中文',
+  'menu.event.info': '活动详情',
 
   'menu.aboutCES': '关于CES',
   'CSE.Console': '校园活动管理系统 - 控制台',

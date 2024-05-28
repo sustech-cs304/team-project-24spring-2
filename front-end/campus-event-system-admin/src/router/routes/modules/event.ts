@@ -67,11 +67,22 @@ const EVENTS: AppRouteRecordRaw = {
       },
     },
     {
+        path: 'info',
+        name: 'EventInfo',
+        component: () => import('@/views/event/audit-page/index.vue'),
+        meta: {
+          locale: 'menu.event.info',
+          requiresAuth: true,
+          hideInMenu: true,
+          roles: basicPerm,
+        },
+      },
+    {
       path: 'view',
       name: 'EventView',
       component: () => import('@/views/event/view/index.vue'),
       meta: {
-        locale: 'menu.event.audit',
+        locale: 'menu.event.view',
         requiresAuth: true,
         hideInMenu: true,
         roles: basicPerm,
