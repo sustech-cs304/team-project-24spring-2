@@ -24,14 +24,18 @@ export default {
 
     onMounted(async () => {
       try {
-        await loadEventsData(1);        
+        await loadEventsData(1);
+        let first2data = [];
         for (let i = 0; i < 2; i++) {
           if (data.value[i] && data.value[i].image_url) {
             image_urls.value.push(data.value[i].image_url);
+            first2data.push(data.value[i]);
           } else {
             console.warn(`data.value[${i}] is undefined or has no image_url`);
           }
         }
+        data.value = first2data;
+        
         recommendEvents.value = await fetchRecommendEvents();
       } catch (error) {
         console.error('Error loading events data:', error);
@@ -43,7 +47,6 @@ export default {
       await axios.post(`/api/event/explore-events?page=${current}`)
         .then(response => {
           data.value = response.data;
-          console.log(data.value);
         })
         .catch(error => {
           console.error(error);
@@ -61,12 +64,9 @@ export default {
         let events = Object.keys(response.data);
         let return_events = [];
         if(events.length == 0){
-          // using expore events to fill the recommend events
-          console.log("explore events")
           let response = await axios.post(`/api/event/explore-events`);
           let explore_event = response.data;
           for(let i = 0; i < 3; i++){
-            console.log(explore_event[i])
             return_events.push(explore_event[i]);
           }
         }else{
@@ -81,7 +81,6 @@ export default {
         let response = await axios.post(`/api/event/explore-events`);
           let explore_event = response.data;
           for(let i = 0; i < 3; i++){
-            console.log(explore_event[i])
             return_events.push(explore_event[i]);
           }
         return return_events;

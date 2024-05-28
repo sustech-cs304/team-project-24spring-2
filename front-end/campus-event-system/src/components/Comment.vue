@@ -150,7 +150,7 @@ export default {
     </a-image-preview-group>
   </div>
   <div v-if="hasAttachment&&!isPicture" >
-    <video  controls :style="{ width: '400px', height: '300px' }" >
+    <video  controls :style="{ width: '300px', height: '200px' }" >
       <source :src="attachment[0]">
       Your browser does not support the video tag.
     </video>

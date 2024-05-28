@@ -180,7 +180,6 @@ export default {
           }
         }
       );
-      console.log(response);
       if (response.status === 200) {
         Message.success('上传成功');
         user.value.avatar_url = response.data;
@@ -207,7 +206,6 @@ export default {
         starEvents.value.push(response.data);
       }
       
-      // console.log(starEvents.value);
       return response.data;
     }
 

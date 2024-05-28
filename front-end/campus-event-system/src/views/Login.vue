@@ -93,22 +93,13 @@ export default {
     async function handleRegister() {
       if (registerForm.value.password !== confirmPassword.value) {
         Message.error('密码和确认密码不匹配');
-        return false;
+        return;
       }
 
       try {
-        console.log(registerForm.value);
-        // console.log({ ...registerForm.value }); // 展开运算符
-        // console.log(JSON.parse(JSON.stringify(toRaw(registerForm.value)))); // 深拷贝
-
-
         const response = await axios.post('/api/user/register', registerForm.value);
-        console.log('注册成功:', response.data);
         Message.success('注册成功');
-        // registerForm.resetFields();
-        // isRegisterVisible.value = false;
       } catch (error) {
-        console.log('注册失败:', error);
         Message.error('注册失败');
       }
       
@@ -123,7 +114,6 @@ export default {
         return false;
       }
       try {
-        console.log(registerForm.value.email)
         const response = await axios.post(`/api/user/fetch-register-code?email=${registerForm.value.email}`);
         Message.success('发送验证码成功');
 
