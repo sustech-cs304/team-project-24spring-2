@@ -41,7 +41,7 @@ export function listUsersSize(params: UsersParams) {
 
 export function getUserInfo(uuid: string) {
   return axios.post(
-    `/api/user/get-full-user`,
+    `/api/user/get-user`,
     {},
     {
       params: {

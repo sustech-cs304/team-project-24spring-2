@@ -337,6 +337,7 @@
       title: '更新成功',
       content: '用户权限更新成功',
     });
+    originData.value = cloneDeep(renderData.value);
   };
 
   const changeUserPermission = (uuid: string, group: string) => {

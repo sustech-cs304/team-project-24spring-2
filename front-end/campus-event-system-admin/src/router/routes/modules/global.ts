@@ -20,7 +20,7 @@ const EVENTS: AppRouteRecordRaw = {
       meta: {
         locale: 'menu.global.settings',
         requiresAuth: true,
-        roles: superPerm,
+        roles: auditPerm,
       },
     },
   ],
