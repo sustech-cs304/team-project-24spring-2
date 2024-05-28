@@ -28,47 +28,20 @@ export default {
     });
 
     async function loadEventsData(current) {
+      eventsData.value = []
+      totalEvents.value = 0
       current -= 1;
       loadTotalEventSize();
-      axios.post(`/api/event/explore-events?page=${current}`)
-        .then(response => {
-          eventsData.value = response.data;
-        })
-        .catch(error => {
-          console.error(error);
-        });
-    }
-
-    async function loadTotalEventSize() {
-      axios.post(`/api/event/explore-events-size`)
-        .then(response => {
-          totalEvents.value = response.data;
-        })
-        .catch(error => {
-          console.error(error);
-        });
-    }
-
-    async function fetchCategory() {
-      axios.post(`/api/global/get-setting?key=categories`)
-        .then(response => {
-          let sting = response.data;
-          // spilt string by ,
-          categories.value = sting.split(',');
-          console.log(categories.value);
-        })
-        .catch(error => {
-          console.error(error);
-        });
-    }
-
-    async function changeCategory(val) {
-      console.log(val);
-      selectedCategory.value = val;
-      if (val === "all") {
-        loadEventsData(1);
+      if (selectedCategory.value === "all") {
+        axios.post(`/api/event/explore-events?page=${current}`)
+          .then(response => {
+            eventsData.value = response.data;
+          })
+          .catch(error => {
+            console.error(error);
+          });
       } else {
-        axios.post(`/api/event/explore-events?category=${val}`)
+        axios.post(`/api/event/explore-events?category=${selectedCategory.value}&page=${current}`)
           .then(response => {
             eventsData.value = response.data;
           })
@@ -76,6 +49,42 @@ export default {
             console.error(error);
           });
       }
+    }
+
+    async function loadTotalEventSize() {
+      if (selectedCategory.value === "all") {
+        axios.post(`/api/event/explore-events-size`)
+          .then(response => {
+            totalEvents.value = response.data;
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      } else {
+        axios.post(`/api/event/explore-events-size?category=${selectedCategory.value}`)
+          .then(response => {
+            totalEvents.value = response.data;
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
+    }
+
+    async function fetchCategory() {
+      axios.post(`/api/global/get-setting?key=categories`)
+        .then(response => {
+          let sting = response.data;
+          categories.value = sting.split(',');
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
+
+    async function changeCategory(val) {
+      selectedCategory.value = val;
+      loadEventsData(1);
     }
 
     async function fetchRecommendEvents() {
@@ -89,12 +98,9 @@ export default {
         let events = Object.keys(response.data);
         let return_events = [];
         if(events.length == 0){
-          // using expore events to fill the recommend events
-          console.log("explore events")
           let response = await axios.post(`/api/event/explore-events`);
           let explore_event = response.data;
           for(let i = 0; i < 3; i++){
-            console.log(explore_event[i])
             return_events.push(explore_event[i]);
           }
         }else{
@@ -109,7 +115,6 @@ export default {
         let response = await axios.post(`/api/event/explore-events`);
           let explore_event = response.data;
           for(let i = 0; i < 3; i++){
-            console.log(explore_event[i])
             return_events.push(explore_event[i]);
           }
         return return_events;

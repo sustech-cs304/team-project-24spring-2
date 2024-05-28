@@ -1,6 +1,8 @@
 server {
     listen ${CES_PORT};
-    server_name ${CES_SERVER_NAME}; 
+    server_name ${CES_SERVER_NAME};
+
+    client_max_body_size ${CLIENT_MAX_BODY_SIZE};
     
     location / {
         root /usr/share/nginx/html; 

@@ -45,7 +45,9 @@ export default {
     const recommendEvents = ref([]);
     uploadTypeChange();
 
-    const markdown = new MarkdownIt()
+    const markdown = new MarkdownIt({
+      html: true
+    });
 
     const customRequest = (option) => {
       let { onProgress, onError, onSuccess, fileItem, name } = option
@@ -350,6 +352,10 @@ export default {
           );
           if (payResponse.status !== 200) {
             throw new Error('支付订单失败');
+          }
+          if (payResponse.data === 'Order paid successfully') {
+            Message.success('购票成功，请前往后台查看');
+            return;
           }
           let payWindow = window.open("", "_blank");
           payWindow.document.write(payResponse.data);

@@ -72,7 +72,6 @@ export default {
                     }
                 );
                 if (payResponse.status !== 200) {
-                    console.log(payResponse)
                     throw new Error('支付订单失败');
                 }
                 let payWindow = window.open("", "_blank");

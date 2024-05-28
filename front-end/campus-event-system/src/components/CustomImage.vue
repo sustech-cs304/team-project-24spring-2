@@ -25,7 +25,7 @@
     },
     methods: {
       handleImageError(event) {
-        console.log('Failed to load image:', event.target.src);
+        console.error('Failed to load image:', event.target.src);
         event.target.src = this.fallbackSrc;
       },
     }
