@@ -16,22 +16,22 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8080/api/',
+        target: 'http://sustc.mark455.cn:8080/api/',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '')
       },
       '/images': {
-        target: 'http://localhost:19000/images/',
+        target: 'http://sustc.mark455.cn:19000/images/',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/images/, '')
       },
       '/documents': {
-        target: 'http://localhost:19000/documents/',
+        target: 'http://sustc.mark455.cn:19000/documents/',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/documents/, '')
       },
       '/comments': {
-        target: 'http://localhost:19000/comments/',
+        target: 'http://sustc.mark455.cn:19000/comments/',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/comments/, '')
       },

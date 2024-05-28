@@ -1,0 +1,17 @@
+node_modules
+.DS_Store
+dist
+dist-ssr
+*.local
+node_modules
+.DS_Store
+dist
+dist-ssr
+*.local
+example/
+.vscode/
+api_keys.json
+.idea
+.env.development
+.env.production
+.envrc
