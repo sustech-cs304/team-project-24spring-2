@@ -63,7 +63,6 @@
         getTicketInfo(id)
       );
       const res = await Promise.all(promises);
-      console.log(data);
       formData.value = {
         title: data.title,
         address: data.location_name,
