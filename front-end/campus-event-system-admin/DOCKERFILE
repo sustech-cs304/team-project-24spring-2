@@ -1,5 +1,5 @@
 # 安装Node.js
-FROM node:latest
+FROM --platform=$BUILDPLATFORM node:latest
 
 # 创建工作目录
 WORKDIR /app

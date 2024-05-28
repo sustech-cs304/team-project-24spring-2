@@ -1,11 +1,12 @@
 # 安装Node.js
-FROM node:latest
+FROM --platform=$BUILDPLATFORM node:latest
 
 # 创建工作目录
 WORKDIR /app
 
 # 将node_modules添加到工作目录
-COPY package*.json .
+COPY package.json .
+COPY package-lock.json .
 COPY index.html .
 COPY jsconfig.json .
 COPY vite.config.js .
