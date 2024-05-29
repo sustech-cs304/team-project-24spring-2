@@ -18,7 +18,12 @@ export interface ServiceRecord {
 }
 
 // CREATE API
-
+export interface EventLocation {
+    address: string;
+    lng: number;
+    lat: number;
+    
+}
 export interface Tickets {
   id?: number;
   description: string;

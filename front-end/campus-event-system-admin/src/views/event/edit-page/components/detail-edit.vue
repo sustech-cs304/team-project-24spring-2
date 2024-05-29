@@ -165,7 +165,6 @@
   };
 
   const onExceed = (file: any) => {
-    console.log('exceed');
     Notification.error({
       title: 'Error',
       content: '最多上传9张图片',
@@ -182,7 +181,6 @@
       });
     }
     renderImages.value.splice(0, renderImages.value.length);
-    console.log('fetchData', res);
   };
 
   const pushNewData = async (time: number) => {
@@ -220,7 +218,6 @@
       }
     )
       .then((res: any) => {
-        console.log('res', res);
         Notification.success({
           title: 'Success',
           content: '上传成功',
@@ -246,7 +243,6 @@
     };
   };
   const deleteImage = async (url: string) => {
-    console.log('deleting', url);
     try {
       await deteleFile(url, {
         usage: 'user',
@@ -283,7 +279,6 @@
   };
 
   const onCloseCrop = () => {
-    console.log('close');
     modalVisible.value = false;
   };
   const onConfirmCrop = (currentFile: any) => {
@@ -293,7 +288,6 @@
       blob: currentFile,
       url: URL.createObjectURL(currentFile),
     };
-    console.log(coverImage);
   };
   const onChange = (_: any, currentFile: any) => {};
   const onProgress = (currentFile: any) => {
@@ -303,7 +297,6 @@
   const reset = () => {
     coverImage.value = originCover.value;
     vditor.value.setValue(originText.value);
-    console.log('reset', originText.value);
   };
 
   onMounted(async () => {});

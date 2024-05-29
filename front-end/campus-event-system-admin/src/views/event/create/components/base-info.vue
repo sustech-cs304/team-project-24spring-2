@@ -60,7 +60,6 @@
         :disabledDate="
           (current) => {
             return false;
-            // dayjs(current).isBefore(dayjs())
           }
         "
       />
@@ -80,12 +79,7 @@
         v-model="formData.address"
         :placeholder="$t('event.placeholder.address')"
       />
-      <MyMAP
-        @confirm="onSelectedAddress"
-        :address="formData.address"
-        :lat="formData.lat"
-        :lng="formData.lng"
-      />
+      <MyMAP v-model="formData" @confirm="onSelectedAddress" />
 
       <template #help>
         <span>{{ $t('event.tip.eventAddress') }}</span>
@@ -104,15 +98,16 @@
   import { FormInstance } from '@arco-design/web-vue/es/form';
   import { getSetting } from '@/api/global';
   import { useI18n } from 'vue-i18n';
-  import { EventBaseInfoModel } from '@/api/event';
+  import { EventBaseInfoModel, EventLocation } from '@/api/event';
   import type { SelectOptionData } from '@arco-design/web-vue/es/select/interface';
   import MyMAP from '@/components/map/select-map.vue';
   import { Notification } from '@arco-design/web-vue';
-  import dayjs from 'dayjs';
 
   const { t } = useI18n();
   const emits = defineEmits(['changeStep']);
   const formRef = ref<FormInstance>({} as FormInstance);
+
+
   const formData = ref<EventBaseInfoModel>({
     title: '',
     category: '',
@@ -147,10 +142,8 @@
     emits('changeStep', 'forward', { ...formData.value });
   };
 
-  const onSelectedAddress = (form: any) => {
-    formData.value.address = form.address;
-    formData.value.lng = form.lng;
-    formData.value.lat = form.lat;
+  const onSelectedAddress = () => {
+    formRef.value.clearValidate('address');
   };
   onBeforeMount(() => {
     getCategories();

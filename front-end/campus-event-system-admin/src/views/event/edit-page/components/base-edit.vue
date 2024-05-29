@@ -93,12 +93,7 @@
                   v-model="formData.address"
                   :placeholder="$t('event.placeholder.address')"
                 />
-                <MyMAP
-                  :address="formData.address"
-                  :lat="formData.lat"
-                  :lng="formData.lng"
-                  @confirm="onSelectedAddress"
-                />
+                <MyMAP v-model="formData"/>
 
                 <template #help>
                   <span>{{ $t('event.tip.eventAddress') }}</span>
@@ -199,11 +194,7 @@
   //   );
 
   const formRef = ref<FormInstance>();
-  const onSelectedAddress = (form: any) => {
-    formData.value.address = form.address;
-    formData.value.lng = form.lng;
-    formData.value.lat = form.lat;
-  };
+
   const columns = computed<TableColumnData[]>(() => [
     {
       title: t('tickets.columns.description'),

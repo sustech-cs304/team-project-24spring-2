@@ -4,11 +4,11 @@
     <a-space direction="vertical" :size="16" fill>
       <a-card class="general-card">
         <template #title>
-          {{ $t('basicProfile.title.form') }}
+          {{ $t('menu.event.view') }}
         </template>
         <template #extra>
           <a-button type="primary" @click="goBack">
-            {{ $t('basicProfile.goBack') }}
+            {{ $t('button.back') }}
           </a-button>
         </template>
       </a-card>
@@ -28,7 +28,7 @@
         </a-spin>
       </div>
       <a-card class="markdown">
-        <VueMarkdown :source="source" />
+        <VueMarkdown :source="source" class="markdown-html"/>
       </a-card>
     </a-space>
   </div>
@@ -127,10 +127,21 @@
   }
   .markdown {
     width: 100%;
-    padding: 50px;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-left: 100px;
+    padding-right: 100px;
     align-items: center;
     border-radius: 8px;
     min-height: 200px;
+    background-color: #fafafa;
+  }
+  .markdown-html {
+    width: 100%;
+    padding: 20px;
+    margin: auto;
+    max-width: 1000px;
+    border-radius: 8px;
     background-color: #fafafa;
   }
 </style>

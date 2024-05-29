@@ -44,7 +44,6 @@
                 <icon-search />
               </template>
               {{ $t('search.event.search') }}
-              {{ $t('search.event.search') }}
             </a-button>
             <a-button @click="reset">
               <template #icon>
