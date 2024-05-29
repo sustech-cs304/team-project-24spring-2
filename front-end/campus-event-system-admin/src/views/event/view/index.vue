@@ -14,21 +14,19 @@
       </a-card>
 
       <div class="ticket-view">
-        <a-spin
-          :loading="loading"
-          tip="This may take a while..."
-          class="spin"
-        >
-        <div class="has-cover" v-if="formData.image_url !== ''">
-          <img :src="formData.image_url" class="cover-image" />
-        </div>
-        <div class="has-cover" v-else>
-          <icon-image style="width: 50%; height: 200px" />
-        </div>
+        <a-spin :loading="loading" tip="This may take a while..." class="spin">
+          <div class="has-cover" v-if="formData.image_url !== ''">
+            <img :src="formData.image_url" class="cover-image" />
+          </div>
+          <div class="has-cover" v-else>
+            <icon-image style="width: 50%; height: 200px" />
+          </div>
         </a-spin>
       </div>
       <a-card class="markdown">
-        <VueMarkdown :source="source" class="markdown-html"/>
+        <div class="markdown-html">
+          <VMdEditor v-model="source" />
+        </div>
       </a-card>
     </a-space>
   </div>
@@ -39,13 +37,14 @@
   import { useRouter } from 'vue-router';
   import useLoading from '@/hooks/loading';
   import { getFile } from '@/api/file';
-  import VueMarkdown from 'vue3-markdown-it';
   import {
     originalEventCreationModel,
     getEventInfo,
     getTicketInfo,
   } from '@/api/event';
-  import showMap from '@/components/map/show-map.vue';
+  import {} from 'vditor';
+
+  import VMdEditor from './components/EditorMarkdown.vue';
 
   const router = useRouter();
   const formData = ref<originalEventCreationModel>(
@@ -91,9 +90,14 @@
     router.go(-1);
   };
 
+  const renderMarkdown = () => {
+    // VMdEditor.use(githubTheme);
+  };
+
   onBeforeMount(async () => {
     await fetchData();
     await fetchMarkdown();
+    renderMarkdown();
   });
 </script>
 <style scoped lang="less">
@@ -127,6 +131,7 @@
   }
   .markdown {
     width: 100%;
+
     padding-top: 50px;
     padding-bottom: 50px;
     padding-left: 100px;
@@ -134,14 +139,12 @@
     align-items: center;
     border-radius: 8px;
     min-height: 200px;
-    background-color: #fafafa;
+    background-color: #ffffff;
   }
   .markdown-html {
-    width: 100%;
     padding: 20px;
     margin: auto;
     max-width: 1000px;
-    border-radius: 8px;
-    background-color: #fafafa;
+    background-color: #ffffff;
   }
 </style>

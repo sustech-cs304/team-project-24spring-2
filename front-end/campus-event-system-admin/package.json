@@ -29,7 +29,10 @@
     "dependencies": {
         "@amap/amap-jsapi-loader": "^1.0.1",
         "@arco-design/web-vue": "^2.44.7",
+        "@kangc/v-md-editor": "^2.3.18",
         "@vueuse/core": "^9.3.0",
+        "@wangeditor/editor": "^5.1.23",
+        "@wangeditor/editor-for-vue": "^5.1.12",
         "arco-design-pro-vue": "^2.7.2",
         "axios": "^0.24.0",
         "babel-runtime": "^6.26.0",
@@ -40,6 +43,7 @@
         "mitt": "^3.0.0",
         "nprogress": "^0.2.0",
         "pinia": "^2.0.23",
+        "prismjs": "^1.29.0",
         "qrcode": "^1.5.3",
         "query-string": "^8.0.3",
         "sortablejs": "^1.15.0",
