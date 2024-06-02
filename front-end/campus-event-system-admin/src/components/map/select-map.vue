@@ -231,7 +231,8 @@
     initMap();
   };
   watch(selectValue, (val) => {
-    if (val) {
+    
+    if (val > -1) {
       const { lng, lat } = areaList.value[val].location;
       addmark(lng, lat, aMap);
     }
