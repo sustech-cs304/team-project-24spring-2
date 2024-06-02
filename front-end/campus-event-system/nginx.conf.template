@@ -1,5 +1,6 @@
 server {
     listen ${CES_PORT};
+    listen [::]:${CES_ADMIN_PORT} ipv6only=on;
     server_name ${CES_SERVER_NAME};
 
     client_max_body_size ${CLIENT_MAX_BODY_SIZE};
